@@ -87,14 +87,13 @@
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
 
     /* ══════════════════════════════════════════════════
-       LOGIN SHIELD — matches dashboard light theme
+       LOGIN SHIELD — light themed, matches dashboard
     ══════════════════════════════════════════════════ */
     #login-shield {
       position: fixed; inset: 0; z-index: 9999;
       background: var(--bg);
       display: flex; align-items: center; justify-content: center;
       padding: 20px;
-      /* subtle dot-grid matching dashboard */
       background-image: radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0);
       background-size: 28px 28px;
       animation: shieldIn .3s ease;
@@ -135,12 +134,10 @@
       font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 26px;
     }
 
-    /* Label matches .form-label from Add Task modal */
     .login-label {
       display: block; font-size: 11px; font-weight: 700; color: var(--text-2);
       text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px;
     }
-    /* Input matches .form-input from Add Task modal */
     .login-input {
       width: 100%; background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
@@ -153,7 +150,6 @@
       box-shadow: 0 0 0 3px rgba(67,97,238,.12);
     }
 
-    /* Button matches .btn-primary */
     .login-btn {
       width: 100%; margin-top: 16px; padding: 11px;
       background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
@@ -168,7 +164,6 @@
     .login-btn:active { transform: translateY(0); }
     .login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
-    /* Error box — light red matching dashboard */
     .login-error {
       margin-top: 10px; background: var(--red-lt); border: 1px solid var(--red-bd);
       border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--red);
@@ -176,7 +171,6 @@
     }
     .login-error.visible { display: flex; }
 
-    /* OTP info box — light indigo matching dashboard */
     .login-otp-info {
       background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
       border-radius: 9px; padding: 11px 13px; font-size: 12px; color: var(--indigo);
@@ -197,7 +191,6 @@
       text-align: center; font-size: 11px; color: var(--text-3); margin-top: 18px;
     }
 
-    /* Spinner — white for use inside indigo buttons */
     .spin {
       width: 16px; height: 16px;
       border: 2px solid rgba(255,255,255,.4);
@@ -208,7 +201,7 @@
     @keyframes spin { to{ transform: rotate(360deg); } }
 
     /* ══════════════════════════════════════════════════
-       SESSION CHECK OVERLAY — light version
+       SESSION CHECK OVERLAY
     ══════════════════════════════════════════════════ */
     #session-check {
       position: fixed; inset: 0; z-index: 10000;
@@ -469,6 +462,7 @@
     .modal-close:hover { background: var(--bg); color: var(--text); }
     .form-group { margin-bottom: 14px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+    .form-label .req { color: var(--red); margin-left: 2px; }
     .form-input, .form-select, .form-textarea {
       width: 100%; background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
@@ -477,6 +471,17 @@
     .form-input:focus, .form-select:focus, .form-textarea:focus {
       border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); background: #fff;
     }
+    /* Field error state */
+    .form-input.field-error, .form-select.field-error, .form-textarea.field-error {
+      border-color: var(--red) !important;
+      background: var(--red-lt) !important;
+      box-shadow: 0 0 0 3px rgba(220,38,38,.10) !important;
+    }
+    .form-field-msg {
+      font-size: 11px; color: var(--red); margin-top: 5px;
+      display: none; align-items: center; gap: 5px; font-weight: 500;
+    }
+    .form-field-msg.visible { display: flex; }
     .form-textarea { resize: none; line-height: 1.5; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .added-by-display {
@@ -489,12 +494,23 @@
     .btn-ghost:hover { background: var(--bg); border-color: var(--border-md); color: var(--text); }
     .btn-save { flex: 1; padding: 11px; }
 
+    /* ── Validation Banner inside modal ── */
+    .modal-validation-banner {
+      background: var(--red-lt); border: 1.5px solid var(--red-bd);
+      border-radius: 9px; padding: 10px 14px; font-size: 12px; color: var(--red);
+      display: none; align-items: center; gap: 9px; line-height: 1.5;
+      margin-bottom: 6px; font-weight: 500;
+    }
+    .modal-validation-banner.visible { display: flex; }
+    .modal-validation-banner svg { flex-shrink: 0; }
+
     /* ── Toast ── */
     #toast { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
     .toast-item { background: var(--text); color: #fff; border-radius: 10px; padding: 11px 16px; font-size: 12px; font-weight: 500; box-shadow: var(--shadow-lg); animation: fadeUp .18s ease; max-width: 320px; display: flex; align-items: center; gap: 8px; }
     .toast-item.success { background: #065f46; }
     .toast-item.error   { background: #991b1b; }
     .toast-item.info    { background: var(--indigo); }
+    .toast-item.warning { background: var(--amber); }
 
     .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); position: absolute; top: -2px; right: -2px; display: none; }
     .notif-dot.visible { display: block; }
@@ -596,7 +612,7 @@
       <div class="login-footer">🔒 Access restricted to authorised team members only</div>
     </div>
 
-    <!-- Step 2: OTP -->
+    <!-- Step 2: OTP (6–8 digits) -->
     <div id="login-step-otp" style="display:none">
       <div class="login-heading">Check your inbox.</div>
       <div class="login-sub">We sent a sign-in code to <strong id="otp-email-display" style="color:var(--indigo)"></strong></div>
@@ -788,7 +804,7 @@
 
 <div id="toast"></div>
 
-<!-- MODAL 1: Assign Task -->
+<!-- MODAL 1: Assign / Edit Task -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -798,10 +814,33 @@
       </div>
       <button class="modal-close" onclick="closeModal()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Task Name</label>
-      <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS" />
+
+    <!-- ── Validation Banner ── -->
+    <div class="modal-validation-banner" id="modal-val-banner">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span id="modal-val-msg">Please fill in all required fields: Client, Project, and Task Title.</span>
     </div>
+
+    <!-- Task Title (required) -->
+    <div class="form-group">
+      <label class="form-label">Task Title <span class="req">*</span></label>
+      <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS" />
+      <div class="form-field-msg" id="err-name">
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Task title is required.
+      </div>
+    </div>
+
+    <!-- Project Name (required) -->
+    <div class="form-group">
+      <label class="form-label">Project Name <span class="req">*</span></label>
+      <input class="form-input" id="f-project" placeholder="e.g. Website Redesign, App v2.0" />
+      <div class="form-field-msg" id="err-project">
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Project name is required.
+      </div>
+    </div>
+
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Assigned To</label>
@@ -812,16 +851,23 @@
         <div class="added-by-display" id="added-by-display">—</div>
       </div>
     </div>
+
+    <!-- Client (required) -->
     <div class="form-row" style="margin-top:14px;">
       <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Client</label>
+        <label class="form-label">Client <span class="req">*</span></label>
         <select class="form-select" id="f-client"><option value="">— Select Client —</option></select>
+        <div class="form-field-msg" id="err-client">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Please select a client.
+        </div>
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Priority</label>
         <select class="form-select" id="f-priority"><option>High</option><option selected>Medium</option><option>Low</option></select>
       </div>
     </div>
+
     <div class="form-group" style="margin-top:14px;">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <input class="form-input" type="date" id="f-due" />
@@ -830,10 +876,7 @@
       <label class="form-label">Notes / Brief <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Context, links, or instructions…"></textarea>
     </div>
-    <!-- <div style="background:var(--indigo-lt);border:1px solid var(--indigo-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#3451d1;margin-bottom:6px;display:flex;align-items:center;gap:7px;">
-      <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Task starts as <strong style="margin:0 3px;">To Do · 0 hrs</strong> — the assignee logs work via <strong style="margin-left:3px;">Log Work</strong>.
-    </div> -->
+
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary btn-save" id="btn-save" onclick="saveTask()">
@@ -893,9 +936,9 @@
 
 <!-- ══ JAVASCRIPT ══ -->
 <script>
-/* ─── Supabase client ── */
-/* FIX: persistSession:true prevents the RLS 42501 "anon key has no permission" error
-   by ensuring the authenticated JWT is always sent rather than falling back to anon. */
+/* ─── Supabase client ──
+   persistSession:true ensures authenticated JWT is always sent,
+   preventing RLS 42501 "anon key has no permission" errors.        */
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, storageKey: "sharvii_auth" }
@@ -944,17 +987,11 @@ function applyConfig() {
 let tasks=[],editingId=null,activeTab="board",filterPerson="",filterPriority="",
     filterStatus="",filterSearch="",filterDue="",activeClient=null,
     pollTimer=null,lastTaskIds=new Set(),notifications=[];
-let currentUser="", currentUserEmail="";
+let currentUser="", currentUserEmail="", currentUserId="";
 
-// /* ─── REST helpers ── */
-// const REST    = `${SUPABASE_URL}/rest/v1`;
-// const HEADERS = {
-//   "Content-Type":  "application/json",
-//   "apikey":        SUPABASE_KEY,
-//   "Authorization": `Bearer ${SUPABASE_KEY}`,
-// };
+const REST = `${SUPABASE_URL}/rest/v1`;
 
-  // Replace the static HEADERS block with this function:
+/* ─── Auth headers (always use live session token) ── */
 async function getHeaders() {
   const { data: { session } } = await sb.auth.getSession();
   const token = session?.access_token || SUPABASE_KEY;
@@ -965,6 +1002,7 @@ async function getHeaders() {
   };
 }
 
+/* ─── REST helpers ── */
 async function dbSelect() {
   const h = await getHeaders();
   const res = await fetch(`${REST}/tasks?select=*&order=created_at.desc`, { headers:{...h,"Accept":"application/json"} });
@@ -1076,8 +1114,10 @@ async function signOut() {
 }
 
 function bootApp(session) {
-  currentUserEmail=session.user.email;
-  currentUser=nameFromEmail(currentUserEmail);
+  currentUserEmail = session.user.email;
+  currentUserId    = session.user.id;       // ← store the Supabase UUID
+  currentUser      = nameFromEmail(currentUserEmail);
+
   document.getElementById("auth-avatar").textContent=currentUser[0]||"?";
   document.getElementById("auth-display-name").textContent=currentUser;
   document.getElementById("auth-display-email").textContent=currentUserEmail;
@@ -1284,12 +1324,13 @@ function renderClientSnapshot(cn){
     const pc=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
     return `<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td>
+      <td style="padding:10px 12px;font-size:12px;">${t.project?`<span style="font-size:11px;color:var(--text-2);font-weight:500;">${esc(t.project)}</span>`:'—'}</td>
       <td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td>
       <td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td>
       <td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td>
       <td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td>
     </tr>`;
-  }).join(""):`<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
+  }).join(""):`<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
   document.getElementById("client-snapshot").innerHTML=`
     <div style="max-width:900px;">
       <button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;">
@@ -1309,6 +1350,7 @@ function renderClientSnapshot(cn){
         <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
           <thead><tr style="background:var(--bg);">
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th>
+            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Project</th>
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th>
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th>
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th>
@@ -1361,7 +1403,7 @@ function getFiltered(){
     if(filterPerson&&t.person!==filterPerson)return false;
     if(filterPriority&&t.priority!==filterPriority)return false;
     if(filterStatus&&t.status!==filterStatus)return false;
-    if(filterSearch){const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")).toLowerCase();if(!h.includes(filterSearch))return false;}
+    if(filterSearch){const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")+" "+(t.project||"")).toLowerCase();if(!h.includes(filterSearch))return false;}
     if(filterDue){
       if(!t.due_date)return false;
       const due=new Date(t.due_date);due.setHours(0,0,0,0);
@@ -1399,6 +1441,8 @@ function hoursBadge(hours){
   if(!hours&&hours!==0)return"";const h=parseFloat(hours)||0;if(h===0)return"";
   return `<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);">⏱ ${h.toFixed(1)}h</span>`;
 }
+
+/* ── renderBoard: Edit button shown ONLY to the task creator (matched by user_id) ── */
 function renderBoard(){
   const filtered=getFiltered(),grid=document.getElementById("cards-grid"),empty=document.getElementById("empty-state");
   if(!filtered.length){grid.innerHTML="";empty.style.display="flex";return;}
@@ -1420,15 +1464,31 @@ function renderBoard(){
     }
     const isOverdue=ds==="overdue"&&t.status!=="Done";
     const addedByHtml=t.added_by?`<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`:"";
-    const canEditDetails=(currentUser===t.person||currentUser===MANAGER_NAME);
+
+    /*
+     * OWNER-ONLY EDITING:
+     * - If the task has a creator_user_id, compare it to the current user's UUID.
+     * - Fallback: if no creator_user_id (old tasks), allow the manager or the assignee.
+     * - The Edit & Delete buttons are ONLY rendered when isOwner is true.
+     */
+    const isOwner = t.creator_user_id
+      ? t.creator_user_id === currentUserId
+      : (currentUser === MANAGER_NAME || currentUser === t.added_by);
+
+    /* Log Work is still restricted to the task assignee */
     const canLogWork=(currentUser===t.person);
-    const statusControl=canEditDetails
+
+    /* Status dropdown: assignee or owner can change status */
+    const canEditStatus=(currentUser===t.person||isOwner);
+
+    const statusControl=canEditStatus
       ?`<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}',this.value)">
           <option ${t.status==="To Do"?"selected":""}>To Do</option>
           <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
           <option ${t.status==="Done"?"selected":""}>Done</option>
         </select>`
       :`<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
+
     const logWorkRow=canLogWork
       ?`<div class="card-footer-row" style="margin-top:4px;">
           <button class="log-work-btn" onclick="openLogModal('${esc(t.id)}')">
@@ -1442,16 +1502,22 @@ function renderBoard(){
             Assigned to ${esc(t.person)}
           </span>
         </div>`;
+
+    /* Project badge — shown in card meta if present */
+    const projectBadge = t.project
+      ? `<span class="badge" style="background:var(--violet)18;color:var(--violet);border-color:var(--violet)44;font-size:10px;">📁 ${esc(t.project)}</span>`
+      : "";
+
     return `
       <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
           <div class="card-actions">
-            ${canEditDetails?`
-            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit">
+            ${isOwner?`
+            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task">
               <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
-            <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete">
+            <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete task">
               <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>`:""}
           </div>
@@ -1460,6 +1526,7 @@ function renderBoard(){
         <div class="card-meta">
           <span class="badge ${pClass}">${t.priority}</span>
           ${hoursBadge(t.hours_worked)}
+          ${projectBadge}
           ${t.client?`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);font-size:10px;">🏢 ${esc(t.client)}</span>`:""}
           ${dueBadge}
         </div>
@@ -1524,13 +1591,95 @@ function switchTab(tab){
   render();
 }
 
+/* ══════════════════════════════════════════════════
+   FORM VALIDATION HELPERS
+══════════════════════════════════════════════════ */
+
+/** Mark a field as errored or clear it */
+function setFieldError(inputId, errId, hasError) {
+  const input = document.getElementById(inputId);
+  const err   = document.getElementById(errId);
+  if (!input || !err) return;
+  if (hasError) {
+    input.classList.add("field-error");
+    err.classList.add("visible");
+  } else {
+    input.classList.remove("field-error");
+    err.classList.remove("visible");
+  }
+}
+
+/** Clear all field errors and the banner */
+function clearModalErrors() {
+  ["f-name","f-project","f-client"].forEach(id => {
+    document.getElementById(id)?.classList.remove("field-error");
+  });
+  ["err-name","err-project","err-client"].forEach(id => {
+    document.getElementById(id)?.classList.remove("visible");
+  });
+  document.getElementById("modal-val-banner").classList.remove("visible");
+}
+
+/** Live-clear errors as user fills in each field */
+["f-name","f-project"].forEach(id => {
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById(id)?.addEventListener("input", () => {
+      if (document.getElementById(id).value.trim())
+        setFieldError(id, "err-" + id.replace("f-",""), false);
+    });
+  });
+});
+
+/**
+ * Validate the three required fields.
+ * Returns true if all good; false + highlights errors if not.
+ */
+function validateTaskForm() {
+  const name    = document.getElementById("f-name").value.trim();
+  const project = document.getElementById("f-project").value.trim();
+  const client  = document.getElementById("f-client").value;
+
+  const nameErr    = !name;
+  const projectErr = !project;
+  const clientErr  = !client;
+
+  setFieldError("f-name",    "err-name",    nameErr);
+  setFieldError("f-project", "err-project", projectErr);
+  setFieldError("f-client",  "err-client",  clientErr);
+
+  if (nameErr || projectErr || clientErr) {
+    const missing = [];
+    if (clientErr)  missing.push("Client");
+    if (projectErr) missing.push("Project Name");
+    if (nameErr)    missing.push("Task Title");
+
+    const banner  = document.getElementById("modal-val-banner");
+    const bannerMsg = document.getElementById("modal-val-msg");
+    bannerMsg.textContent = `Please fill in all required fields: ${missing.join(", ")}.`;
+    banner.classList.add("visible");
+
+    /* Scroll to top of modal box and focus the first empty field */
+    document.querySelector(".modal-box").scrollTo({top:0,behavior:"smooth"});
+    if (nameErr)         document.getElementById("f-name").focus();
+    else if (projectErr) document.getElementById("f-project").focus();
+    else                 document.getElementById("f-client").focus();
+
+    return false;
+  }
+
+  document.getElementById("modal-val-banner").classList.remove("visible");
+  return true;
+}
+
 /* ─── Modals ── */
 function openModal(){
   editingId=null;
+  clearModalErrors();
   document.getElementById("modal-title").textContent="Assign Task";
   document.getElementById("modal-subtitle").textContent="New task · auto-starts as To Do";
-  document.getElementById("btn-save").textContent="Assign Task";
+  document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg> Assign Task`;
   document.getElementById("f-name").value="";
+  document.getElementById("f-project").value="";
   document.getElementById("f-person").value=TEAM[0].name;
   document.getElementById("f-priority").value="Medium";
   document.getElementById("f-client").value=activeClient||"";
@@ -1540,13 +1689,16 @@ function openModal(){
   document.getElementById("modal").style.display="flex";
   setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
+
 function openEdit(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;
   editingId=id;
+  clearModalErrors();
   document.getElementById("modal-title").textContent="Edit Task Details";
   document.getElementById("modal-subtitle").textContent=`Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
-  document.getElementById("btn-save").textContent="Save Changes";
+  document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
   document.getElementById("f-name").value=t.name;
+  document.getElementById("f-project").value=t.project||"";
   document.getElementById("f-person").value=t.person;
   document.getElementById("f-priority").value=t.priority;
   document.getElementById("f-client").value=t.client||"";
@@ -1556,24 +1708,43 @@ function openEdit(id){
   document.getElementById("modal").style.display="flex";
   setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
-function closeModal(){document.getElementById("modal").style.display="none";editingId=null;}
+function closeModal(){document.getElementById("modal").style.display="none";editingId=null;clearModalErrors();}
 function handleOverlayClick(e){if(e.target.id==="modal")closeModal();}
 
 async function saveTask(){
-  const name=document.getElementById("f-name").value.trim();
-  if(!name){document.getElementById("f-name").focus();return;}
+  /* ── Run validation before doing anything ── */
+  if (!validateTaskForm()) return;
+
   if(!isConfigured()){showToast("Configure Supabase first","error");return;}
+
   const payload={
-    name,person:document.getElementById("f-person").value,
+    name:    document.getElementById("f-name").value.trim(),
+    project: document.getElementById("f-project").value.trim(),
+    person:  document.getElementById("f-person").value,
     priority:document.getElementById("f-priority").value,
-    client:document.getElementById("f-client").value||null,
-    notes:document.getElementById("f-notes").value.trim(),
+    client:  document.getElementById("f-client").value,           // guaranteed non-empty by validation
+    notes:   document.getElementById("f-notes").value.trim(),
     due_date:document.getElementById("f-due").value||null,
   };
-  if(!editingId){payload.status="To Do";payload.hours_worked=0;payload.added_by=currentUser;}
-  closeModal();setSyncStatus("syncing","Saving…");
-  if(editingId){const ok=await updateTaskDB(editingId,payload);if(ok)showToast("Task updated ✓","success");}
-  else{const ok=await insertTask(payload);if(ok)showToast("Task assigned ✓","success");}
+
+  if(!editingId){
+    /* New task — stamp creator identity */
+    payload.status         = "To Do";
+    payload.hours_worked   = 0;
+    payload.added_by       = currentUser;
+    payload.creator_user_id = currentUserId;   // ← Supabase auth UUID
+  }
+
+  closeModal();
+  setSyncStatus("syncing","Saving…");
+
+  if(editingId){
+    const ok=await updateTaskDB(editingId,payload);
+    if(ok)showToast("Task updated ✓","success");
+  } else {
+    const ok=await insertTask(payload);
+    if(ok)showToast("Task assigned ✓","success");
+  }
 }
 
 let logWorkId=null;
@@ -1636,6 +1807,22 @@ function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){closeModal();closeLogModal();}
   if(e.key==="n"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))openModal();
+});
+
+/* ── Live-clear field errors on input (wired after DOM ready) ── */
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("f-name")?.addEventListener("input", () => {
+    if (document.getElementById("f-name").value.trim())
+      setFieldError("f-name","err-name",false);
+  });
+  document.getElementById("f-project")?.addEventListener("input", () => {
+    if (document.getElementById("f-project").value.trim())
+      setFieldError("f-project","err-project",false);
+  });
+  document.getElementById("f-client")?.addEventListener("change", () => {
+    if (document.getElementById("f-client").value)
+      setFieldError("f-client","err-client",false);
+  });
 });
 </script>
 </body>
