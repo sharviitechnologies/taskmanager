@@ -800,6 +800,18 @@ async function dbUpdate(id, payload) {
   if(!res.ok){const t=await res.text();throw new Error(t);}
   return true;
 }
+  async function saveTask() {
+  const taskId = document.getElementById('edit-task-id').value; // Hidden field for ID
+
+  if (taskId) {
+    // 1. UPDATE logic for existing task
+    const { error } = await sb.from('tasks').update(formData).eq('id', taskId);
+  } else {
+    // 2. INSERT logic for new task
+    const { error } = await sb.from('tasks').insert([formData]);
+  }
+}
+  
 async function dbDelete(id) {
   const h = await getHeaders();
   const res = await fetch(`${REST}/tasks?id=eq.${id}`,{method:"DELETE",headers:h});
