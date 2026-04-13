@@ -8,9 +8,43 @@
   <script>
     const SUPABASE_URL = "https://aagztfgkthgpysrlyksa.supabase.co";
     const SUPABASE_KEY = "sb_publishable_dCYu2aNVBG2DIIeIC_hwdw_p18eQsa5";
+
+    /* ════════════════════════════════════════════════════════════
+       AUTH CONFIG — edit these to match your team
+       ════════════════════════════════════════════════════════════
+       ALLOWED_DOMAIN : any email ending in this domain is allowed.
+                        Set to "" to disable domain-based access.
+       ALLOWED_EMAILS : explicit whitelist (case-insensitive).
+                        Always checked regardless of domain.
+
+       EMAIL → NAME MAP: maps each user's login email to their
+       display name in the TEAM array. Add every team member here.
+    ════════════════════════════════════════════════════════════ */
+    const ALLOWED_DOMAIN  = "@sharvii.com";          // e.g. "@sharvii.com"
+    const ALLOWED_EMAILS  = [                         // individual overrides / guests
+      "umesh@sharvii.com",
+      "prabhu@sharvii.com",
+      "mounika@sharvii.com",
+      "chaithra@sharvii.com",
+      "sarika@sharvii.com",
+      "divya@sharvii.com",
+      "hema@sharvii.com",
+    ];
+
+    // Map login email → TEAM name (case-insensitive key lookup)
+    const EMAIL_TO_NAME = {
+      "umesh@sharvii.com":    "Umesh",
+      "prabhu@sharvii.com":   "Prabhu",
+      "mounika@sharvii.com":  "Mounika",
+      "chaithra@sharvii.com": "Chaithra",
+      "sarika@sharvii.com":   "Sarika",
+      "divya@sharvii.com":    "Divya",
+      "hema@sharvii.com":     "Hema",
+    };
   </script>
 
-  <!-- No Supabase JS library — all DB calls use plain fetch() against the REST API -->
+  <!-- Supabase JS v2 (ESM CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -65,7 +99,140 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
 
-    /* ── Layout ── */
+    /* ══════════════════════════════════════════════════
+       LOGIN SHIELD
+    ══════════════════════════════════════════════════ */
+    #login-shield {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(145deg, #0d1b2e 0%, #1a2a4a 50%, #0d1b2e 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      /* subtle grid texture */
+      background-image:
+        linear-gradient(145deg, #0d1b2e 0%, #1a2a4a 50%, #0d1b2e 100%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,.02) 39px, rgba(255,255,255,.02) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,.02) 39px, rgba(255,255,255,.02) 40px);
+      animation: shieldIn .3s ease;
+    }
+    @keyframes shieldIn { from{opacity:0} to{opacity:1} }
+
+    .login-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 22px;
+      backdrop-filter: blur(20px);
+      padding: 42px 40px 36px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+      animation: cardRise .4s cubic-bezier(.16,1,.3,1) .1s both;
+    }
+    @keyframes cardRise { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    .login-logo-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+    }
+    .login-logo-icon {
+      width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(67,97,238,.5);
+    }
+    .login-logo-text {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px;
+      color: #fff; letter-spacing: -.01em; line-height: 1.15;
+    }
+    .login-logo-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; font-weight: 400; }
+
+    .login-heading {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px;
+      color: #fff; line-height: 1.2; margin-bottom: 8px; letter-spacing: -.02em;
+    }
+    .login-sub {
+      font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; margin-bottom: 28px;
+    }
+
+    .login-label {
+      display: block; font-size: 11px; font-weight: 700; color: rgba(255,255,255,.5);
+      text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px;
+    }
+    .login-input {
+      width: 100%; background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+      border-radius: 11px; padding: 12px 14px; font-size: 14px; color: #fff;
+      outline: none; transition: border-color .15s, background .15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .login-input::placeholder { color: rgba(255,255,255,.25); }
+    .login-input:focus {
+      border-color: var(--indigo); background: rgba(255,255,255,.1);
+      box-shadow: 0 0 0 3px rgba(67,97,238,.25);
+    }
+
+    .login-btn {
+      width: 100%; margin-top: 18px; padding: 13px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      color: #fff; border: none; border-radius: 11px;
+      font-size: 14px; font-weight: 700; font-family: 'Syne', sans-serif;
+      letter-spacing: .01em; cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      box-shadow: 0 4px 20px rgba(67,97,238,.45);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .login-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+    .login-btn:active { transform: translateY(0); }
+    .login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .login-error {
+      margin-top: 12px; background: rgba(220,38,38,.15); border: 1px solid rgba(220,38,38,.3);
+      border-radius: 9px; padding: 10px 13px; font-size: 12px; color: #fca5a5;
+      display: none; align-items: center; gap: 8px; line-height: 1.5;
+    }
+    .login-error.visible { display: flex; }
+
+    /* OTP step */
+    .login-otp-info {
+      background: rgba(67,97,238,.15); border: 1px solid rgba(67,97,238,.3);
+      border-radius: 9px; padding: 12px 14px; font-size: 12px; color: #a5b4fc;
+      display: flex; align-items: flex-start; gap: 9px; line-height: 1.6; margin-bottom: 18px;
+    }
+    .login-otp-info svg { flex-shrink: 0; margin-top: 1px; }
+
+    .login-resend {
+      background: none; border: none; color: rgba(255,255,255,.35); font-size: 12px;
+      cursor: pointer; text-decoration: underline; margin-top: 14px; display: block;
+      width: 100%; text-align: center; transition: color .12s;
+    }
+    .login-resend:hover { color: rgba(255,255,255,.65); }
+
+    .login-divider {
+      height: 1px; background: rgba(255,255,255,.08); margin: 24px 0;
+    }
+    .login-footer {
+      text-align: center; font-size: 11px; color: rgba(255,255,255,.2);
+      margin-top: 20px;
+    }
+
+    /* spinner */
+    .spin {
+      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to{ transform: rotate(360deg); } }
+
+    /* ══════════════════════════════════════════════════
+       CHECKING SESSION OVERLAY (shown briefly on load)
+    ══════════════════════════════════════════════════ */
+    #session-check {
+      position: fixed; inset: 0; z-index: 10000;
+      background: #0d1b2e;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    }
+    #session-check .spin { width: 28px; height: 28px; border-width: 3px; }
+    #session-check p { font-size: 12px; color: rgba(255,255,255,.3); font-family: 'DM Sans', sans-serif; }
+
+    /* ══════════════════════════════════════════════════
+       MAIN APP (hidden until authed)
+    ══════════════════════════════════════════════════ */
     #app { display: flex; height: 100vh; overflow: hidden; }
 
     /* ── Sidebar ── */
@@ -78,31 +245,32 @@
       height: var(--header-h); display: flex; align-items: center; gap: 10px;
       padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
-    .logo-icon {
-      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(67,97,238,.35);
-    }
-    .logo-text {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
-      color: var(--text); letter-spacing: -.01em; line-height: 1.2;
-    }
     .logo-badge {
       font-size: 9px; font-weight: 700; color: var(--indigo);
       background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
       border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em; flex-shrink: 0;
     }
 
-    /* ── Current user selector ── */
-    .current-user-bar { padding: 12px 16px 0; flex-shrink: 0; }
-    .current-user-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
-    .current-user-select {
-      width: 100%; background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
-      border-radius: 9px; padding: 8px 10px; font-size: 13px; font-weight: 600;
-      color: var(--indigo); outline: none; cursor: pointer; transition: border-color .15s;
+    /* ── Auth user badge in sidebar ── */
+    .auth-user-bar {
+      padding: 12px 16px 0; flex-shrink: 0;
     }
-    .current-user-select:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); }
+    .auth-user-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
+    .auth-user-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
+      border-radius: 10px; padding: 8px 12px;
+    }
+    .auth-user-avatar {
+      width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff; line-height: 1;
+    }
+    .auth-user-info { flex: 1; min-width: 0; }
+    .auth-user-name { font-size: 13px; font-weight: 700; color: var(--indigo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .auth-user-email { font-size: 10px; color: var(--text-3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .auth-verified-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 
     .sidebar-section-title {
       font-size: 10px; font-weight: 700; color: var(--text-3);
@@ -122,29 +290,40 @@
     .member-avatar {
       width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 13px; line-height: 1;
-      text-align: center; overflow: hidden;
+      font-weight: 700; font-size: 13px; line-height: 1; text-align: center; overflow: hidden;
     }
     .member-info { flex: 1; min-width: 0; }
     .member-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .member-role { font-size: 11px; color: var(--text-3); margin-top: 1px; }
-
     .member-count {
       width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0;
       background: var(--bg); border: 1px solid var(--border);
       font-size: 11px; font-weight: 700; color: var(--text-2);
-      display: flex; align-items: center; justify-content: center;
-      line-height: 1; text-align: center;
+      display: flex; align-items: center; justify-content: center; line-height: 1;
     }
     .member-row.active .member-count { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 
     .sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
-    .sidebar-footer { border-top: 1px solid var(--border); padding: 14px 20px; flex-shrink: 0; }
+
+    /* ── Sidebar footer with logout ── */
+    .sidebar-footer { border-top: 1px solid var(--border); padding: 12px 16px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
     .sync-status { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-3); }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
     .sync-dot.syncing { background: #f59e0b; animation: pulse 1.2s infinite; }
     .sync-dot.error   { background: #ef4444; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── Logout button ── */
+    .logout-btn {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      background: none; border: 1.5px solid var(--border); border-radius: 9px;
+      padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text-3);
+      cursor: pointer; transition: all .15s;
+    }
+    .logout-btn:hover {
+      background: var(--red-lt); border-color: var(--red-bd); color: var(--red);
+    }
+    .logout-btn svg { flex-shrink: 0; }
 
     /* ── Main Area ── */
     #main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; overflow: hidden; }
@@ -212,11 +391,7 @@
     #content { flex: 1; overflow-y: auto; padding: 22px 24px; }
 
     /* ── Task Cards ── */
-    #cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 14px;
-    }
+    #cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
     .task-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 14px; box-shadow: var(--shadow-sm);
@@ -231,7 +406,7 @@
     .task-card.pri-High::before   { background: var(--red); }
     .task-card.pri-Medium::before { background: var(--amber); }
     .task-card.pri-Low::before    { background: var(--green); }
-    .task-card.overdue            { border-color: var(--red-bd); }
+    .task-card.overdue { border-color: var(--red-bd); }
     .task-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
@@ -248,9 +423,7 @@
     .icon-btn.danger:hover { background: var(--red-lt); color: var(--red); }
 
     .card-notes { font-size: 12px; color: var(--text-2); line-height: 1.5; padding: 8px 10px; background: var(--bg); border-radius: 8px; }
-
     .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-
     .badge {
       display: inline-flex; align-items: center; gap: 4px;
       border-radius: 5px; padding: 3px 8px; font-size: 11px; font-weight: 600; border: 1px solid;
@@ -259,38 +432,27 @@
     .badge-medium  { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
     .badge-low     { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
 
-    .badge-effort-high   { background: #fdf2f8; color: #9d174d; border-color: #f9a8d4; }
-    .badge-effort-medium { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
-    .badge-effort-low    { background: var(--teal-lt); color: var(--teal); border-color: var(--teal-bd); }
-
     .card-footer { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
     .card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-
     .card-assignee { display: flex; align-items: center; gap: 7px; }
     .assignee-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; line-height: 1; }
     .assignee-name { font-size: 12px; font-weight: 600; color: var(--text); }
     .assignee-role { font-size: 10px; color: var(--text-3); }
-
     .added-by-pill {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 10px; color: var(--text-3); background: var(--bg);
       border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px;
     }
     .added-by-pill strong { color: var(--text-2); font-weight: 600; }
+    .status-lock-hint { font-size: 10px; color: var(--text-3); font-style: italic; display: flex; align-items: center; gap: 4px; }
 
-    .status-lock-hint {
-      font-size: 10px; color: var(--text-3); font-style: italic;
-      display: flex; align-items: center; gap: 4px;
-    }
-
-    /* ── FIX 3: "Assigned to [Name]" label shown when Log Work button is hidden ── */
+    /* ── Log Work restricted label ── */
     .log-work-restricted {
       display: inline-flex; align-items: center; gap: 6px;
       width: 100%; justify-content: center;
       background: var(--bg); border: 1.5px dashed var(--border-md);
       color: var(--text-3); border-radius: 7px; padding: 5px 11px;
-      font-size: 11px; font-weight: 500; cursor: default;
-      font-style: italic;
+      font-size: 11px; font-weight: 500; cursor: default; font-style: italic;
     }
     .log-work-restricted svg { opacity: 0.5; flex-shrink: 0; }
 
@@ -304,7 +466,6 @@
     .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
     .status-select.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
 
-    /* ── Due date chips ── */
     .due-chip {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 10px; font-weight: 600; border-radius: 99px; padding: 2px 8px; border: 1px solid;
@@ -314,7 +475,6 @@
     .due-chip.soon    { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
     .due-chip.normal  { background: var(--bg);        color: var(--text-3); border-color: var(--border); }
 
-    /* ── Empty State ── */
     #empty-state {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 14px; padding: 80px 20px; color: var(--text-3); text-align: center;
@@ -322,16 +482,10 @@
     #empty-state p { font-size: 13px; line-height: 1.6; }
     #empty-state strong { color: var(--indigo); }
 
-    /* ── Summary Grid ── */
-    #summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px;
-    }
+    #summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
     .summary-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; box-shadow: var(--shadow-sm); padding: 20px;
-      animation: fadeUp .2s ease both;
+      border-radius: 14px; box-shadow: var(--shadow-sm); padding: 20px; animation: fadeUp .2s ease both;
     }
     .summary-card.overloaded { border-color: var(--red-bd); box-shadow: 0 0 0 1px var(--red-bd), var(--shadow-sm); }
     .sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
@@ -341,23 +495,20 @@
     .sc-total-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
     .sc-bar-wrap { height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .sc-bar { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
-
     .sc-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .sc-stat {
       background: var(--bg); border-radius: 8px; padding: 10px 6px;
       text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .sc-stat-num {
-      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
-      line-height: 1; width: 34px; height: 34px;
-      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; line-height: 1;
+      width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
       border-radius: 50%; margin: 0 auto 4px;
     }
     .sc-stat-num.todo-num  { background: var(--bg);       color: var(--text-2); border: 1.5px solid var(--border-md); }
     .sc-stat-num.prog-num  { background: var(--blue-lt);  color: var(--blue);   border: 1.5px solid var(--blue-bd); }
     .sc-stat-num.done-num  { background: var(--green-lt); color: var(--green);  border: 1.5px solid var(--green-bd); }
     .sc-stat-lbl { font-size: 10px; color: var(--text-3); }
-
     .sc-foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
     .sc-warn { margin-top: 8px; background: var(--red-lt); border: 1px solid var(--red-bd); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--red); font-weight: 500; }
 
@@ -381,7 +532,6 @@
       display: flex; align-items: center; justify-content: center;
     }
     .modal-close:hover { background: var(--bg); color: var(--text); }
-
     .form-group { margin-bottom: 14px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
     .form-input, .form-select, .form-textarea {
@@ -394,14 +544,11 @@
     }
     .form-textarea { resize: none; line-height: 1.5; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-
     .added-by-display {
       background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
       border-radius: 9px; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--indigo);
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: center; gap: 8px; height: 38px;
     }
-
     .modal-footer { display: flex; gap: 10px; margin-top: 22px; }
     .btn-ghost {
       flex: 1; padding: 11px; border: 1.5px solid var(--border); background: none;
@@ -422,12 +569,10 @@
     .toast-item.error   { background: #991b1b; }
     .toast-item.info    { background: var(--indigo); }
 
-    /* ── Notification bell ── */
     .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); position: absolute; top: -2px; right: -2px; display: none; }
     .notif-dot.visible { display: block; }
     .notif-btn { position: relative; }
 
-    /* ── Setup Banner ── */
     #setup-banner {
       background: #fef3c7; border: 1px solid #fcd34d; border-radius: var(--radius);
       padding: 12px 16px; margin-bottom: 18px; font-size: 12px; color: #92400e; line-height: 1.6;
@@ -435,18 +580,16 @@
     #setup-banner strong { color: #78350f; }
     #setup-banner code { background: #fde68a; border-radius: 4px; padding: 1px 5px; font-size: 11px; }
 
-    /* ── Log Work button on cards ── */
     .log-work-btn {
       display: inline-flex; align-items: center; gap: 5px;
       background: var(--teal-lt); border: 1.5px solid var(--teal-bd);
       color: var(--teal); border-radius: 7px; padding: 5px 11px;
       font-size: 11px; font-weight: 700; cursor: pointer;
       transition: background .12s, border-color .12s, transform .1s;
-      width: 100%;  justify-content: center;
+      width: 100%; justify-content: center;
     }
     .log-work-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); transform: translateY(-1px); }
 
-    /* ── Sidebar add (+) button ── */
     .sidebar-add-btn {
       width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-md);
       background: var(--bg); color: var(--text-2); font-size: 15px; line-height: 1;
@@ -455,17 +598,14 @@
     }
     .sidebar-add-btn:hover { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 
-    /* ── Client Snapshot ── */
     #view-client { padding: 0; }
     .kpi-body { display:flex; flex-direction:column; }
 
-    /* ── Responsive ── */
     @media (max-width: 768px) {
       :root { --sidebar-w: 0px; }
       #sidebar { display: none; }
     }
 
-    /* ── Notification Panel ── */
     #notif-panel {
       position: fixed; top: var(--header-h); right: 16px; z-index: 150;
       width: 340px; background: var(--surface); border: 1px solid var(--border);
@@ -487,19 +627,127 @@
 </head>
 <body>
 
-<div id="app">
+<!-- ══ SESSION CHECK OVERLAY (shown on cold load) ══ -->
+<div id="session-check">
+  <div class="spin"></div>
+  <p>Checking session…</p>
+</div>
 
-  <!-- ══ SIDEBAR ══ -->
+<!-- ══ LOGIN SHIELD ══ -->
+<div id="login-shield" style="display:none">
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="login-logo-row">
+      <div class="login-logo-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="login-logo-text">Sharvii Technologies</div>
+        <div class="login-logo-sub">Team Task Manager</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Email -->
+    <div id="login-step-email">
+      <div class="login-heading">Welcome back.</div>
+      <div class="login-sub">Sign in with your Sharvii email to access the team workspace.</div>
+
+      <label class="login-label" for="login-email-input">Work Email</label>
+      <input
+        class="login-input"
+        id="login-email-input"
+        type="email"
+        placeholder="you@sharvii.com"
+        autocomplete="email"
+        onkeydown="if(event.key==='Enter') sendOTP()"
+      />
+
+      <div class="login-error" id="login-error">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span id="login-error-msg">This email is not authorised.</span>
+      </div>
+
+      <button class="login-btn" id="login-send-btn" onclick="sendOTP()">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Send Sign-in Link
+      </button>
+
+      <div class="login-divider"></div>
+      <div class="login-footer">🔒 Access restricted to authorised team members only</div>
+    </div>
+
+    <!-- Step 2: OTP / Magic link sent -->
+    <div id="login-step-otp" style="display:none">
+      <div class="login-heading">Check your inbox.</div>
+      <div class="login-sub">We sent a 6-digit code to <strong id="otp-email-display" style="color:rgba(255,255,255,.7)"></strong></div>
+
+      <div class="login-otp-info">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Enter the 6-digit code from the email, or click the magic link directly.
+      </div>
+
+      <label class="login-label" for="login-otp-input">One-Time Code</label>
+      <input
+        class="login-input"
+        id="login-otp-input"
+        type="text"
+        inputmode="numeric"
+        placeholder="· · · · · ·"
+        maxlength="6"
+        autocomplete="one-time-code"
+        style="font-size:22px;letter-spacing:.35em;text-align:center;font-family:'Syne',sans-serif;"
+        oninput="this.value=this.value.replace(/\D/g,'')"
+        onkeydown="if(event.key==='Enter') verifyOTP()"
+      />
+
+      <div class="login-error" id="otp-error">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span id="otp-error-msg">Invalid or expired code. Please try again.</span>
+      </div>
+
+      <button class="login-btn" id="otp-verify-btn" onclick="verifyOTP()">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Verify & Sign In
+      </button>
+
+      <button class="login-resend" onclick="backToEmail()">← Use a different email</button>
+      <div class="login-footer" style="margin-top:8px;">Code expires in 10 minutes · Check spam if not received</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
   <aside id="sidebar">
     <div class="sidebar-logo" style="padding:0 12px;">
-      <img src="ST-logo__1_.webp" alt="Sharvii Technologies" style="height:38px;width:auto;object-fit:contain;" />
+      <img src="ST-logo__1_.webp" alt="Sharvii Technologies" style="height:38px;width:auto;object-fit:contain;"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <div style="display:none;align-items:center;gap:8px;">
+        <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--indigo),var(--violet));display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:13px;">Sharvii</span>
+      </div>
       <span class="logo-badge" style="margin-left:auto;">PRO</span>
     </div>
 
-    <!-- Who am I -->
-    <div class="current-user-bar">
-      <div class="current-user-label">Logged in as</div>
-      <select class="current-user-select" id="current-user-select" onchange="onCurrentUserChange()"></select>
+    <!-- Auth user display -->
+    <div class="auth-user-bar">
+      <div class="auth-user-label">Logged in as</div>
+      <div class="auth-user-chip">
+        <div class="auth-user-avatar" id="auth-avatar">?</div>
+        <div class="auth-user-info">
+          <div class="auth-user-name" id="auth-display-name">—</div>
+          <div class="auth-user-email" id="auth-display-email">—</div>
+        </div>
+        <div class="auth-verified-dot" title="Verified"></div>
+      </div>
     </div>
 
     <div class="sidebar-scroll">
@@ -539,13 +787,20 @@
         <span class="sync-dot syncing" id="sync-dot"></span>
         <span id="sync-label">Connecting…</span>
       </div>
+      <!-- ══ LOGOUT BUTTON ══ -->
+      <button class="logout-btn" onclick="signOut()" title="Sign out of Sharvii Task Manager">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Sign Out
+      </button>
     </div>
   </aside>
 
-  <!-- ══ MAIN ══ -->
+  <!-- MAIN -->
   <div id="main">
-
-    <!-- Top Bar -->
     <div id="topbar">
       <div class="topbar-left">
         <div>
@@ -558,7 +813,6 @@
           <button class="tab-btn active" onclick="switchTab('board')"   id="tab-board">Board</button>
           <button class="tab-btn"        onclick="switchTab('summary')" id="tab-summary">Summary</button>
         </div>
-        <!-- Bell -->
         <button class="icon-btn notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications" style="width:36px;height:36px;border:1px solid var(--border);background:var(--bg);">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -573,41 +827,29 @@
       </div>
     </div>
 
-    <!-- KPI Strip -->
     <div id="kpi-strip">
       <div class="kpi-card">
-        <div class="kpi-icon" style="background:#eef1fd;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--indigo)" stroke-width="2"/><path d="M9 12h6M9 8h6M9 16h3" stroke="var(--indigo)" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
+        <div class="kpi-icon" style="background:#eef1fd;"><svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--indigo)" stroke-width="2"/><path d="M9 12h6M9 8h6M9 16h3" stroke="var(--indigo)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <div class="kpi-body"><div class="kpi-num" id="kpi-total">0</div><div class="kpi-label">Total Tasks</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-icon" style="background:var(--blue-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="2"/><path d="M12 7v5l3 3" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
+        <div class="kpi-icon" style="background:var(--blue-lt);"><svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="2"/><path d="M12 7v5l3 3" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div class="kpi-body"><div class="kpi-num" id="kpi-inprog">0</div><div class="kpi-label">In Progress</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-icon" style="background:var(--green-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
+        <div class="kpi-icon" style="background:var(--green-lt);"><svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="kpi-body"><div class="kpi-num" id="kpi-done">0</div><div class="kpi-label">Completed</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-icon" style="background:var(--red-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="var(--red)" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
+        <div class="kpi-icon" style="background:var(--red-lt);"><svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="var(--red)" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/></svg></div>
         <div class="kpi-body"><div class="kpi-num" id="kpi-high">0</div><div class="kpi-label">High Priority Open</div></div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-icon" style="background:var(--orange-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--orange)" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="var(--orange)" stroke-width="2"/></svg>
-        </div>
+        <div class="kpi-icon" style="background:var(--orange-lt);"><svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--orange)" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="var(--orange)" stroke-width="2"/></svg></div>
         <div class="kpi-body"><div class="kpi-num" id="kpi-overdue">0</div><div class="kpi-label">Overdue</div></div>
       </div>
     </div>
 
-    <!-- Filter Bar -->
     <div id="filterbar">
       <select class="filter-select" id="flt-priority" onchange="applyFilters()">
         <option value="">All Priorities</option>
@@ -632,13 +874,10 @@
       <div class="filter-spacer"></div>
     </div>
 
-    <!-- Content -->
     <div id="content">
       <div id="setup-banner" style="display:none">
-        ⚙️ <strong>Supabase not configured.</strong> Replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>, then run the SQL below.
+        ⚙️ <strong>Supabase not configured.</strong> Update SUPABASE_URL and SUPABASE_KEY at the top of the file.
       </div>
-
-      <!-- Board view -->
       <div id="view-board">
         <div id="cards-grid"></div>
         <div id="empty-state" style="display:none">
@@ -646,16 +885,8 @@
           <p>No tasks match your filters.<br/>Hit <strong>Add Task</strong> to create the first one.</p>
         </div>
       </div>
-
-      <!-- Summary view -->
-      <div id="view-summary" style="display:none">
-        <div id="summary-grid"></div>
-      </div>
-
-      <!-- Client Snapshot view -->
-      <div id="view-client" style="display:none">
-        <div id="client-snapshot"></div>
-      </div>
+      <div id="view-summary" style="display:none"><div id="summary-grid"></div></div>
+      <div id="view-client"  style="display:none"><div id="client-snapshot"></div></div>
     </div>
   </div>
 </div>
@@ -666,15 +897,12 @@
     <span class="notif-title">🔔 Notifications</span>
     <button class="notif-clear" onclick="clearNotifications()">Mark all read</button>
   </div>
-  <div class="notif-list" id="notif-list">
-    <div class="notif-empty">No notifications yet</div>
-  </div>
+  <div class="notif-list" id="notif-list"><div class="notif-empty">No notifications yet</div></div>
 </div>
 
-<!-- Toast container -->
 <div id="toast"></div>
 
-<!-- ══ MODAL 1: ASSIGN TASK ══ -->
+<!-- MODAL 1: Assign Task -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -682,16 +910,12 @@
         <span class="modal-title" id="modal-title">Assign Task</span>
         <div style="font-size:11px;color:var(--text-3);margin-top:3px;" id="modal-subtitle">New task · auto-starts as To Do</div>
       </div>
-      <button class="modal-close" onclick="closeModal()">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-      </button>
+      <button class="modal-close" onclick="closeModal()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
     </div>
-
     <div class="form-group">
       <label class="form-label">Task Name</label>
       <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS" />
     </div>
-
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Assigned To</label>
@@ -699,39 +923,31 @@
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Added By</label>
-        <div class="added-by-display" id="added-by-display" style="height:38px;">—</div>
+        <div class="added-by-display" id="added-by-display">—</div>
       </div>
     </div>
-
     <div class="form-row" style="margin-top:14px;">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Client</label>
-        <select class="form-select" id="f-client">
-          <option value="">— Select Client —</option>
-        </select>
+        <select class="form-select" id="f-client"><option value="">— Select Client —</option></select>
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Priority</label>
-        <select class="form-select" id="f-priority">
-          <option>High</option><option selected>Medium</option><option>Low</option>
-        </select>
+        <select class="form-select" id="f-priority"><option>High</option><option selected>Medium</option><option>Low</option></select>
       </div>
     </div>
-
     <div class="form-group" style="margin-top:14px;">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <input class="form-input" type="date" id="f-due" />
     </div>
-
     <div class="form-group">
       <label class="form-label">Notes / Brief <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
-      <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Context, links, or instructions for the assignee…"></textarea>
+      <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Context, links, or instructions…"></textarea>
     </div>
-
-    <!-- <div style="background:var(--indigo-lt);border:1px solid var(--indigo-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#3451d1;margin-bottom:6px;display:flex;align-items:center;gap:7px;">
+    <div style="background:var(--indigo-lt);border:1px solid var(--indigo-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#3451d1;margin-bottom:6px;display:flex;align-items:center;gap:7px;">
       <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </div> -->
-
+      Task starts as <strong style="margin:0 3px;">To Do · 0 hrs</strong> — the assignee logs work via <strong style="margin-left:3px;">Log Work</strong>.
+    </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary btn-save" id="btn-save" onclick="saveTask()">
@@ -742,7 +958,7 @@
   </div>
 </div>
 
-<!-- ══ MODAL 2: LOG WORK (Status + Hours) ══ -->
+<!-- MODAL 2: Log Work -->
 <div class="modal-overlay" id="modal-log" style="display:none" onclick="handleLogOverlayClick(event)">
   <div class="modal-box" style="max-width:420px;">
     <div class="modal-header">
@@ -750,11 +966,8 @@
         <span class="modal-title">Log Work</span>
         <div style="font-size:11px;color:var(--text-3);margin-top:3px;" id="log-task-name">—</div>
       </div>
-      <button class="modal-close" onclick="closeLogModal()">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-      </button>
+      <button class="modal-close" onclick="closeLogModal()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
     </div>
-
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Assigned To</div>
@@ -765,7 +978,6 @@
         <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:var(--teal);" id="log-current-hours">0</div>
       </div>
     </div>
-
     <div class="form-group">
       <label class="form-label">Update Status</label>
       <select class="form-select" id="lw-status" style="font-weight:600;">
@@ -774,20 +986,14 @@
         <option value="Done">✅ Done</option>
       </select>
     </div>
-
     <div class="form-group">
-      <label class="form-label">
-        Hours Worked
-        <span style="font-weight:400;text-transform:none;color:var(--text-3);margin-left:4px;">(enter total, not additional)</span>
-      </label>
+      <label class="form-label">Hours Worked <span style="font-weight:400;text-transform:none;color:var(--text-3);margin-left:4px;">(enter total)</span></label>
       <input class="form-input" type="number" id="lw-hours" min="0" step="0.5" placeholder="e.g. 3.5" style="font-size:16px;font-weight:700;color:var(--teal);" />
     </div>
-
     <div class="form-group">
       <label class="form-label">Work Note <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="lw-note" rows="2" placeholder="What did you work on? Any blockers?"></textarea>
     </div>
-
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeLogModal()">Cancel</button>
       <button class="btn-primary btn-save" onclick="saveLogWork()">
@@ -801,7 +1007,11 @@
 
 <!-- ══ JAVASCRIPT ══ -->
 <script>
-/* ─── Team Config ── */
+/* ─── Supabase client (Auth + DB) ── */
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ─── Team & Client Config ── */
 const TEAM = [
   { name: "Umesh",    role: "Manager" },
   { name: "Prabhu",   role: "Senior"  },
@@ -812,8 +1022,7 @@ const TEAM = [
   { name: "Hema",     role: "Junior"  },
 ];
 const MANAGER_NAME = "Umesh";
-
-const CLIENTS = ["YFS", "NAIK COLLEGE", "PFA", "SEVA IN ACTION", "Internal"];
+const CLIENTS      = ["YFS", "NAIK COLLEGE", "PFA", "SEVA IN ACTION", "Internal"];
 
 const CLIENT_SYNC = {
   "YFS":          "2025-04-18",
@@ -832,85 +1041,27 @@ const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","
 
 /* ─── localStorage config ── */
 const CONFIG_KEY = "sharvii_config";
-
 function loadConfig() {
-  try {
-    const raw = localStorage.getItem(CONFIG_KEY);
-    return raw ? JSON.parse(raw) : { extraTeam: [], extraClients: [] };
-  } catch(e) { return { extraTeam: [], extraClients: [] }; }
+  try { const r = localStorage.getItem(CONFIG_KEY); return r ? JSON.parse(r) : { extraTeam:[], extraClients:[] }; }
+  catch(e) { return { extraTeam:[], extraClients:[] }; }
 }
-
-function saveConfig(cfg) {
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
-}
-
+function saveConfig(cfg) { localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); }
 function applyConfig() {
   const cfg = loadConfig();
-  (cfg.extraTeam || []).forEach(m => {
-    if (!TEAM.find(x => x.name === m.name)) TEAM.push(m);
-  });
-  (cfg.extraClients || []).forEach(c => {
-    if (!CLIENTS.includes(c)) CLIENTS.push(c);
-  });
+  (cfg.extraTeam||[]).forEach(m => { if (!TEAM.find(x=>x.name===m.name)) TEAM.push(m); });
+  (cfg.extraClients||[]).forEach(c => { if (!CLIENTS.includes(c)) CLIENTS.push(c); });
 }
 
-function addTeamMember() {
-  const name = prompt("Enter new team member name:");
-  if (!name || !name.trim()) return;
-  const role = prompt("Enter their role (Manager / Senior / Junior):", "Junior") || "Junior";
-  const member = { name: name.trim(), role: role.trim() };
-  if (TEAM.find(m => m.name === member.name)) {
-    alert(`"${member.name}" is already in the team.`); return;
-  }
-  TEAM.push(member);
-  const cfg = loadConfig();
-  cfg.extraTeam = cfg.extraTeam || [];
-  cfg.extraTeam.push(member);
-  saveConfig(cfg);
-  buildSidebar();
-  buildCurrentUserSelect();
-  buildPersonDropdown();
-  renderCounts();
-  showToast(`${member.name} added to team ✓`, "success");
-}
+/* ─── App state ── */
+let tasks=[], editingId=null, activeTab="board", filterPerson="", filterPriority="",
+    filterStatus="", filterSearch="", filterDue="", activeClient=null,
+    pollTimer=null, lastTaskIds=new Set(), notifications=[];
 
-function addClient() {
-  const name = prompt("Enter new client name:");
-  if (!name || !name.trim()) return;
-  const clientName = name.trim().toUpperCase();
-  if (CLIENTS.includes(clientName)) {
-    alert(`"${clientName}" is already in the client list.`); return;
-  }
-  CLIENTS.push(clientName);
-  const cfg = loadConfig();
-  cfg.extraClients = cfg.extraClients || [];
-  cfg.extraClients.push(clientName);
-  saveConfig(cfg);
-  buildClientSidebar();
-  const opt = document.createElement("option");
-  opt.value = clientName; opt.textContent = clientName;
-  document.getElementById("f-client").appendChild(opt);
-  renderCounts();
-  showToast(`${clientName} added to clients ✓`, "success");
-}
+/* currentUser is now derived from Supabase Auth — NOT from localStorage */
+let currentUser = "";
+let currentUserEmail = "";
 
-let tasks          = [];
-let editingId      = null;
-let activeTab      = "board";
-let filterPerson   = "";
-let filterPriority = "";
-let filterStatus   = "";
-let filterSearch   = "";
-let filterDue      = "";
-let activeClient   = null;
-let pollTimer      = null;
-let lastTaskIds    = new Set();
-let notifications  = [];
-
-/* ─── FIX 4: Restore currentUser from localStorage ── */
-let currentUser = localStorage.getItem("sharvii_current_user") || TEAM[0].name;
-
-/* ─── REST helpers ── */
+/* ─── REST helpers (direct fetch — no SDK dependency for data) ── */
 const REST    = `${SUPABASE_URL}/rest/v1`;
 const HEADERS = {
   "Content-Type":  "application/json",
@@ -919,75 +1070,217 @@ const HEADERS = {
 };
 
 async function dbSelect() {
-  const res = await fetch(
-    `${REST}/tasks?select=*&order=created_at.desc`,
-    { headers: { ...HEADERS, "Accept": "application/json" } }
-  );
-  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  const res = await fetch(`${REST}/tasks?select=*&order=created_at.desc`, { headers:{...HEADERS,"Accept":"application/json"} });
+  if (!res.ok) { const t=await res.text(); throw new Error(t); }
   return res.json();
 }
-
 async function dbInsert(payload) {
-  const res = await fetch(`${REST}/tasks`, {
-    method:  "POST",
-    headers: { ...HEADERS, "Prefer": "return=representation" },
-    body:    JSON.stringify(payload),
-  });
-  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  const res = await fetch(`${REST}/tasks`, { method:"POST", headers:{...HEADERS,"Prefer":"return=representation"}, body:JSON.stringify(payload) });
+  if (!res.ok) { const t=await res.text(); throw new Error(t); }
   return res.json();
 }
-
 async function dbUpdate(id, payload) {
-  /* ═══════════════════════════════════════════════════════════════
-     FIX 1 — UUID null guard
-     Prevents the "invalid input syntax for type uuid: 'null'" error.
-     This fires when the template rendered t.id as the literal string
-     "null" (or "undefined"). We catch it here before the PATCH call.
-  ═══════════════════════════════════════════════════════════════ */
-  if (!id || id === 'null' || id === 'undefined') {
-    console.error('[dbUpdate] Invalid task id:', id);
-    showToast('Error: could not identify task. Please refresh and try again.', 'error');
-    return false;
-  }
-  const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
-    method:  "PATCH",
-    headers: { ...HEADERS, "Prefer": "return=minimal" },
-    body:    JSON.stringify(payload),
-  });
-  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  if (!id || id==="null" || id==="undefined") { showToast("Error: invalid task ID. Refresh and try again.","error"); return false; }
+  const res = await fetch(`${REST}/tasks?id=eq.${id}`, { method:"PATCH", headers:{...HEADERS,"Prefer":"return=minimal"}, body:JSON.stringify(payload) });
+  if (!res.ok) { const t=await res.text(); throw new Error(t); }
   return true;
 }
-
 async function dbDelete(id) {
-  const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
-    method:  "DELETE",
-    headers: HEADERS,
-  });
-  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  const res = await fetch(`${REST}/tasks?id=eq.${id}`, { method:"DELETE", headers:HEADERS });
+  if (!res.ok) { const t=await res.text(); throw new Error(t); }
   return true;
 }
 
-/* ─── Init ── */
-async function init() {
+/* ════════════════════════════════════════════════════════════
+   AUTH FUNCTIONS
+════════════════════════════════════════════════════════════ */
+
+/* Derive display name from email via EMAIL_TO_NAME map,
+   then fall back to capitalising the local part */
+function nameFromEmail(email) {
+  const lower = email.toLowerCase();
+  if (EMAIL_TO_NAME[lower]) return EMAIL_TO_NAME[lower];
+  // Fallback: capitalise the part before @
+  const local = email.split("@")[0];
+  return local.charAt(0).toUpperCase() + local.slice(1);
+}
+
+/* Check whether an email passes the access policy */
+function isEmailAllowed(email) {
+  const lower = email.toLowerCase();
+  if (ALLOWED_EMAILS.map(e=>e.toLowerCase()).includes(lower)) return true;
+  if (ALLOWED_DOMAIN && lower.endsWith(ALLOWED_DOMAIN.toLowerCase())) return true;
+  return false;
+}
+
+/* Step 1 — send OTP / magic link */
+async function sendOTP() {
+  const btn   = document.getElementById("login-send-btn");
+  const email = document.getElementById("login-email-input").value.trim().toLowerCase();
+  const errEl = document.getElementById("login-error");
+  const errMsg= document.getElementById("login-error-msg");
+
+  errEl.classList.remove("visible");
+
+  if (!email || !email.includes("@")) {
+    errMsg.textContent = "Please enter a valid email address.";
+    errEl.classList.add("visible"); return;
+  }
+
+  /* Domain / whitelist check BEFORE sending — prevents revealing
+     whether an email exists in Supabase */
+  if (!isEmailAllowed(email)) {
+    errMsg.textContent = "This email is not authorised to access the workspace. Contact your admin.";
+    errEl.classList.add("visible"); return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spin"></div> Sending…`;
+
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: {
+      shouldCreateUser: false,  /* Only allow pre-existing users — change to true if you want auto-signup */
+    }
+  });
+
+  if (error) {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send Sign-in Link`;
+    errMsg.textContent = error.message || "Failed to send email. Try again.";
+    errEl.classList.add("visible"); return;
+  }
+
+  /* Show OTP entry step */
+  document.getElementById("otp-email-display").textContent = email;
+  document.getElementById("login-step-email").style.display = "none";
+  document.getElementById("login-step-otp").style.display   = "block";
+  setTimeout(() => document.getElementById("login-otp-input").focus(), 80);
+}
+
+/* Step 2 — verify the 6-digit OTP */
+async function verifyOTP() {
+  const btn   = document.getElementById("otp-verify-btn");
+  const email = document.getElementById("login-email-input").value.trim().toLowerCase();
+  const token = document.getElementById("login-otp-input").value.trim();
+  const errEl = document.getElementById("otp-error");
+  const errMsg= document.getElementById("otp-error-msg");
+
+  errEl.classList.remove("visible");
+
+  if (token.length < 6) {
+    errMsg.textContent = "Please enter the full 6-digit code.";
+    errEl.classList.add("visible"); return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spin"></div> Verifying…`;
+
+  const { data, error } = await sb.auth.verifyOtp({ email, token, type: "email" });
+
+  if (error || !data.session) {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Verify & Sign In`;
+    errMsg.textContent = error?.message || "Invalid or expired code. Try requesting a new one.";
+    errEl.classList.add("visible"); return;
+  }
+
+  /* Auth succeeded — onAuthStateChange will handle the rest */
+}
+
+function backToEmail() {
+  document.getElementById("login-step-otp").style.display   = "none";
+  document.getElementById("login-step-email").style.display = "block";
+  document.getElementById("login-otp-input").value = "";
+  document.getElementById("otp-error").classList.remove("visible");
+  const btn = document.getElementById("login-send-btn");
+  btn.disabled = false;
+  btn.innerHTML = `<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send Sign-in Link`;
+}
+
+/* Sign out */
+async function signOut() {
+  if (!confirm("Sign out of Sharvii Task Manager?")) return;
+  if (pollTimer) clearInterval(pollTimer);
+  await sb.auth.signOut();
+  /* onAuthStateChange will show login screen */
+}
+
+/* Called once a valid session is confirmed.
+   Sets currentUser from auth email and boots the app. */
+function bootApp(session) {
+  currentUserEmail = session.user.email;
+  currentUser      = nameFromEmail(currentUserEmail);
+
+  /* Update auth UI */
+  document.getElementById("auth-avatar").textContent       = currentUser[0] || "?";
+  document.getElementById("auth-display-name").textContent = currentUser;
+  document.getElementById("auth-display-email").textContent= currentUserEmail;
+  document.getElementById("added-by-display").textContent  = currentUser;
+
+  /* Hide login shield, show app */
+  document.getElementById("session-check").style.display = "none";
+  document.getElementById("login-shield").style.display  = "none";
+  document.getElementById("app").style.display           = "flex";
+
+  /* Boot the rest of the app */
   applyConfig();
-  buildCurrentUserSelect();
   buildSidebar();
   buildClientSidebar();
   buildPersonDropdown();
   checkSetup();
   requestNotifPermission();
-  if (!isConfigured()) return;
-  await loadTasks();
-  startPolling();
+  if (isConfigured()) {
+    loadTasks();
+    startPolling();
+  }
 }
 
+/* ─── Auth state listener — single source of truth ── */
+sb.auth.onAuthStateChange((event, session) => {
+  document.getElementById("session-check").style.display = "none";
+
+  if (session && session.user) {
+    /* Verify domain again on the client side (belt + braces) */
+    if (!isEmailAllowed(session.user.email)) {
+      sb.auth.signOut();
+      showLoginShield("Access denied: your email is not on the approved list.");
+      return;
+    }
+    bootApp(session);
+  } else {
+    /* No session — show login */
+    document.getElementById("app").style.display = "none";
+    showLoginShield();
+  }
+});
+
+function showLoginShield(errorMessage) {
+  document.getElementById("login-shield").style.display = "flex";
+  document.getElementById("app").style.display          = "none";
+  if (pollTimer) clearInterval(pollTimer);
+
+  /* Reset to step 1 */
+  document.getElementById("login-step-email").style.display = "block";
+  document.getElementById("login-step-otp").style.display   = "none";
+  document.getElementById("login-email-input").value        = "";
+  document.getElementById("login-otp-input").value          = "";
+
+  if (errorMessage) {
+    document.getElementById("login-error-msg").textContent = errorMessage;
+    document.getElementById("login-error").classList.add("visible");
+  } else {
+    document.getElementById("login-error").classList.remove("visible");
+  }
+}
+
+/* ─── Init ── */
 function isConfigured() {
   return SUPABASE_URL !== "YOUR_SUPABASE_URL" && SUPABASE_KEY !== "YOUR_SUPABASE_ANON_KEY";
 }
-
 function checkSetup() {
   document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
-  if (!isConfigured()) setSyncStatus("error", "Not connected");
+  if (!isConfigured()) setSyncStatus("error","Not connected");
 }
 
 /* ─── Polling ── */
@@ -998,387 +1291,254 @@ function startPolling() {
       const fresh = await dbSelect();
       fresh.forEach(t => {
         if (!lastTaskIds.has(t.id) && t.person === currentUser && t.added_by !== currentUser) {
-          const msg = `📋 ${t.added_by || "Someone"} assigned you: "${t.name}"`;
+          const msg = `📋 ${t.added_by||"Someone"} assigned you: "${t.name}"`;
           pushNotification(msg, t.id);
-          showToast(`New task assigned to you by ${t.added_by || "a teammate"}!`, "info");
+          showToast(`New task assigned to you by ${t.added_by||"a teammate"}!`, "info");
           playNotifSound();
           fireBrowserNotif("New task assigned", msg);
         }
       });
-      lastTaskIds = new Set(fresh.map(t => t.id));
-      tasks = fresh;
-      render();
-      setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
-    } catch (e) {
-      setSyncStatus("error", "Sync error — retrying…");
-    }
+      lastTaskIds = new Set(fresh.map(t=>t.id));
+      tasks = fresh; render();
+      setSyncStatus("ok",`Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
+    } catch(e) { setSyncStatus("error","Sync error — retrying…"); }
   }, 8000);
 }
 
-/* ─── DB operations ── */
 async function loadTasks() {
-  setSyncStatus("syncing", "Loading tasks…");
+  setSyncStatus("syncing","Loading tasks…");
   try {
     const data = await dbSelect();
-    lastTaskIds = new Set(data.map(t => t.id));
-    tasks = data;
-    render();
-    setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
-  } catch (e) {
-    setSyncStatus("error", "Load failed: " + e.message);
-    showToast("Load failed: " + e.message, "error");
-  }
+    lastTaskIds = new Set(data.map(t=>t.id));
+    tasks = data; render();
+    setSyncStatus("ok",`Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
+  } catch(e) { setSyncStatus("error","Load failed: "+e.message); showToast("Load failed: "+e.message,"error"); }
 }
-
 async function insertTask(payload) {
-  try {
-    await dbInsert(payload);
-    await loadTasks();
-    return true;
-  } catch (e) {
-    showToast("Failed to add task: " + e.message, "error");
-    setSyncStatus("error", "Save failed");
-    return false;
-  }
+  try { await dbInsert(payload); await loadTasks(); return true; }
+  catch(e) { showToast("Failed to add task: "+e.message,"error"); setSyncStatus("error","Save failed"); return false; }
 }
-
 async function updateTaskDB(id, payload) {
-  try {
-    await dbUpdate(id, payload);
-    await loadTasks();
-    return true;
-  } catch (e) {
-    showToast("Failed to update: " + e.message, "error");
-    setSyncStatus("error", "Update failed");
-    return false;
-  }
+  try { await dbUpdate(id,payload); await loadTasks(); return true; }
+  catch(e) { showToast("Failed to update: "+e.message,"error"); setSyncStatus("error","Update failed"); return false; }
 }
-
 async function deleteTaskDB(id) {
-  try {
-    await dbDelete(id);
-    await loadTasks();
-    return true;
-  } catch (e) {
-    showToast("Failed to delete: " + e.message, "error");
-    return false;
-  }
+  try { await dbDelete(id); await loadTasks(); return true; }
+  catch(e) { showToast("Failed to delete: "+e.message,"error"); return false; }
 }
 
-/* ─── Current User ── */
-function buildCurrentUserSelect() {
-  const sel = document.getElementById("current-user-select");
-  sel.innerHTML = TEAM.map(m =>
-    `<option value="${m.name}" ${m.name === currentUser ? "selected" : ""}>${m.name} (${m.role})</option>`
-  ).join("");
-  updateAddedByDisplay();
-}
-
-function onCurrentUserChange() {
-  currentUser = document.getElementById("current-user-select").value;
-  localStorage.setItem("sharvii_current_user", currentUser);
-  updateAddedByDisplay();
-  /* Re-render so Log Work button visibility updates immediately on user switch */
-  render();
-}
-
-function updateAddedByDisplay() {
-  const el = document.getElementById("added-by-display");
-  if (el) el.textContent = currentUser;
-}
-
-/* ─── Notifications & Sound ── */
+/* ─── Notifications ── */
 function requestNotifPermission() {
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission();
-  }
+  if ("Notification" in window && Notification.permission==="default") Notification.requestPermission();
 }
-
-function fireBrowserNotif(title, body) {
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification(title, { body, icon: "" });
-  }
+function fireBrowserNotif(title,body) {
+  if ("Notification" in window && Notification.permission==="granted") new Notification(title,{body});
 }
-
 function playNotifSound() {
   try {
-    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
-    const osc  = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type      = "sine";
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
-    gain.gain.setValueAtTime(0.18, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.4);
-  } catch(e) { /* non-critical */ }
+    const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type="sine"; osc.frequency.setValueAtTime(880,ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440,ctx.currentTime+.3);
+    gain.gain.setValueAtTime(.18,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime+.4);
+  } catch(e){}
 }
-
-function pushNotification(msg, taskId) {
-  notifications.unshift({ id: Date.now() + Math.random(), msg, time: new Date(), unread: true, taskId });
-  renderNotifPanel();
-  updateNotifDot();
+function pushNotification(msg,taskId) {
+  notifications.unshift({id:Date.now()+Math.random(),msg,time:new Date(),unread:true,taskId});
+  renderNotifPanel(); updateNotifDot();
 }
-
 function renderNotifPanel() {
-  const list = document.getElementById("notif-list");
-  if (!notifications.length) {
-    list.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
-    return;
-  }
-  list.innerHTML = notifications.slice(0, 30).map(n => `
-    <div class="notif-item ${n.unread ? "unread" : ""}">
+  const list=document.getElementById("notif-list");
+  if (!notifications.length) { list.innerHTML=`<div class="notif-empty">No notifications yet</div>`; return; }
+  list.innerHTML=notifications.slice(0,30).map(n=>`
+    <div class="notif-item ${n.unread?"unread":""}">
       <div class="notif-msg">${esc(n.msg)}</div>
       <div class="notif-time">${timeAgo(n.time)}</div>
     </div>`).join("");
 }
-
-function updateNotifDot() {
-  document.getElementById("notif-dot").classList.toggle("visible", notifications.some(n => n.unread));
-}
-
-function toggleNotifPanel() {
-  document.getElementById("notif-panel").classList.toggle("open");
-}
-
-function clearNotifications() {
-  notifications.forEach(n => n.unread = false);
-  renderNotifPanel();
-  updateNotifDot();
-}
-
-document.addEventListener("click", e => {
-  const panel = document.getElementById("notif-panel");
-  const btn   = document.getElementById("notif-btn");
-  if (panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target))
-    panel.classList.remove("open");
+function updateNotifDot() { document.getElementById("notif-dot").classList.toggle("visible",notifications.some(n=>n.unread)); }
+function toggleNotifPanel() { document.getElementById("notif-panel").classList.toggle("open"); }
+function clearNotifications() { notifications.forEach(n=>n.unread=false); renderNotifPanel(); updateNotifDot(); }
+document.addEventListener("click",e=>{
+  const panel=document.getElementById("notif-panel"),btn=document.getElementById("notif-btn");
+  if (panel.classList.contains("open")&&!panel.contains(e.target)&&!btn.contains(e.target)) panel.classList.remove("open");
 });
-
 function timeAgo(date) {
-  const diff = Math.floor((Date.now() - new Date(date)) / 1000);
-  if (diff < 60)    return "just now";
-  if (diff < 3600)  return Math.floor(diff/60) + "m ago";
-  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-  return Math.floor(diff/86400) + "d ago";
+  const d=Math.floor((Date.now()-new Date(date))/1000);
+  if(d<60)return"just now"; if(d<3600)return Math.floor(d/60)+"m ago";
+  if(d<86400)return Math.floor(d/3600)+"h ago"; return Math.floor(d/86400)+"d ago";
 }
 
 /* ─── Build UI ── */
+function addTeamMember() {
+  const name=prompt("Enter new team member name:"); if(!name||!name.trim())return;
+  const role=prompt("Enter their role (Manager / Senior / Junior):","Junior")||"Junior";
+  const member={name:name.trim(),role:role.trim()};
+  if(TEAM.find(m=>m.name===member.name)){alert(`"${member.name}" already in team.`);return;}
+  TEAM.push(member);
+  const cfg=loadConfig(); cfg.extraTeam=cfg.extraTeam||[]; cfg.extraTeam.push(member); saveConfig(cfg);
+  buildSidebar(); buildPersonDropdown(); renderCounts();
+  showToast(`${member.name} added ✓`,"success");
+}
+function addClient() {
+  const name=prompt("Enter new client name:"); if(!name||!name.trim())return;
+  const cname=name.trim().toUpperCase();
+  if(CLIENTS.includes(cname)){alert(`"${cname}" already exists.`);return;}
+  CLIENTS.push(cname);
+  const cfg=loadConfig(); cfg.extraClients=cfg.extraClients||[]; cfg.extraClients.push(cname); saveConfig(cfg);
+  buildClientSidebar();
+  const opt=document.createElement("option"); opt.value=cname; opt.textContent=cname;
+  document.getElementById("f-client").appendChild(opt);
+  renderCounts(); showToast(`${cname} added ✓`,"success");
+}
+
 function buildSidebar() {
-  const list = document.getElementById("member-list");
-  list.innerHTML = TEAM.map((m, i) => {
-    const c  = AV_COLORS[i % AV_COLORS.length];
-    const rc = ROLE_COLOR[m.role] || ROLE_COLOR.Junior;
-    return `
-      <button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')">
-        <div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div>
-        <div class="member-info">
-          <div class="member-name">${m.name}</div>
-          <div class="member-role" style="color:${rc.text}">${m.role}</div>
-        </div>
-        <span class="member-count" id="count-${m.name}">0</span>
-      </button>`;
+  document.getElementById("member-list").innerHTML=TEAM.map((m,i)=>{
+    const c=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[m.role]||ROLE_COLOR.Junior;
+    return `<button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')">
+      <div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div>
+      <div class="member-info"><div class="member-name">${m.name}</div><div class="member-role" style="color:${rc.text}">${m.role}</div></div>
+      <span class="member-count" id="count-${m.name}">0</span>
+    </button>`;
   }).join("");
 }
-
 function buildPersonDropdown() {
-  document.getElementById("f-person").innerHTML =
-    TEAM.map(m => `<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");
+  document.getElementById("f-person").innerHTML=TEAM.map(m=>`<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");
 }
-
 function buildClientSidebar() {
-  const CLIENT_ICONS = { "YFS":"🏫", "NAIK COLLEGE":"🎓", "PFA":"🐾", "SEVA IN ACTION":"🤝", "Internal":"⚙️" };
-  const list = document.getElementById("client-list");
-  list.innerHTML = CLIENTS.map(c => `
+  const CI={"YFS":"🏫","NAIK COLLEGE":"🎓","PFA":"🐾","SEVA IN ACTION":"🤝","Internal":"⚙️"};
+  document.getElementById("client-list").innerHTML=CLIENTS.map(c=>`
     <button class="member-row" id="cl-${c.replace(/\s+/g,'-')}" onclick="showClientSnapshot('${c}')">
-      <div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${CLIENT_ICONS[c] || "🏢"}</div>
-      <div class="member-info">
-        <div class="member-name">${c}</div>
-        <div class="member-role">Client</div>
-      </div>
+      <div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${CI[c]||"🏢"}</div>
+      <div class="member-info"><div class="member-name">${c}</div><div class="member-role">Client</div></div>
       <span class="member-count" id="cl-count-${c.replace(/\s+/g,'-')}">0</span>
     </button>`).join("");
-
-  const sel = document.getElementById("f-client");
-  if (sel) {
-    sel.innerHTML = `<option value="">— Select Client —</option>` +
-      CLIENTS.map(c => `<option value="${c}">${c}</option>`).join("");
-  }
+  const sel=document.getElementById("f-client");
+  if(sel) sel.innerHTML=`<option value="">— Select Client —</option>`+CLIENTS.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
-
 function updateClientCounts() {
-  CLIENTS.forEach(c => {
-    const el = document.getElementById("cl-count-" + c.replace(/\s+/g,'-'));
-    if (el) el.textContent = tasks.filter(t => t.client === c && t.status !== "Done").length;
-  });
+  CLIENTS.forEach(c=>{const el=document.getElementById("cl-count-"+c.replace(/\s+/g,'-'));if(el)el.textContent=tasks.filter(t=>t.client===c&&t.status!=="Done").length;});
 }
 
-function showClientSnapshot(clientName) {
-  activeClient = clientName;
-  document.querySelectorAll(".member-row").forEach(el => el.classList.remove("active"));
-  const btn = document.getElementById("cl-" + clientName.replace(/\s+/g,'-'));
-  if (btn) btn.classList.add("active");
-
-  document.getElementById("page-title").textContent = clientName;
-  document.getElementById("page-sub").textContent   = "Client Snapshot";
-
-  document.getElementById("view-board").style.display   = "none";
-  document.getElementById("view-summary").style.display = "none";
-  document.getElementById("view-client").style.display  = "block";
-  document.getElementById("filterbar").style.display    = "none";
-  document.getElementById("kpi-strip").style.display    = "none";
-
-  renderClientSnapshot(clientName);
+/* ─── Client Snapshot ── */
+function showClientSnapshot(cn) {
+  activeClient=cn;
+  document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
+  const btn=document.getElementById("cl-"+cn.replace(/\s+/g,'-')); if(btn)btn.classList.add("active");
+  document.getElementById("page-title").textContent=cn;
+  document.getElementById("page-sub").textContent="Client Snapshot";
+  document.getElementById("view-board").style.display="none";
+  document.getElementById("view-summary").style.display="none";
+  document.getElementById("view-client").style.display="block";
+  document.getElementById("filterbar").style.display="none";
+  document.getElementById("kpi-strip").style.display="none";
+  renderClientSnapshot(cn);
 }
-
 function exitClientSnapshot() {
-  activeClient = null;
-  document.getElementById("view-client").style.display  = "none";
-  document.getElementById("kpi-strip").style.display    = "";
-  switchTab(activeTab === "client" ? "board" : activeTab);
+  activeClient=null;
+  document.getElementById("view-client").style.display="none";
+  document.getElementById("kpi-strip").style.display="";
+  switchTab(activeTab==="client"?"board":activeTab);
   filterByPerson("");
 }
-
-function renderClientSnapshot(clientName) {
-  const mine     = tasks.filter(t => t.client === clientName);
-  const pending  = mine.filter(t => t.status !== "Done").length;
-  const done     = mine.filter(t => t.status === "Done").length;
-  const total    = mine.length;
-  const hours    = mine.reduce((sum, t) => sum + (parseFloat(t.hours_worked) || 0), 0);
-  const syncDate = CLIENT_SYNC[clientName] || "TBD";
-  const syncFmt  = syncDate !== "TBD"
-    ? new Date(syncDate).toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'long' })
-    : "TBD";
-
-  const taskRows = mine.length ? mine.map(t => {
-    const statusCls = t.status === "Done" ? "status-done" : t.status === "In Progress" ? "status-prog" : "status-todo";
-    const pClass    = t.priority === "High" ? "badge-high" : t.priority === "Medium" ? "badge-medium" : "badge-low";
+function renderClientSnapshot(cn) {
+  const mine=tasks.filter(t=>t.client===cn),pending=mine.filter(t=>t.status!=="Done").length,
+        done=mine.filter(t=>t.status==="Done").length,total=mine.length,
+        hours=mine.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0),
+        syncDate=CLIENT_SYNC[cn]||"TBD",
+        syncFmt=syncDate!=="TBD"?new Date(syncDate).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'}):"TBD";
+  const taskRows=mine.length?mine.map(t=>{
+    const sc=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
+    const pc=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
     return `<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td>
-      <td style="padding:10px 12px;font-size:12px;"><span class="badge ${pClass}">${t.priority}</span></td>
-      <td style="padding:10px 12px;font-size:12px;"><span class="status-select ${statusCls}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td>
+      <td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td>
+      <td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td>
       <td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td>
       <td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td>
     </tr>`;
-  }).join("") : `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(clientName)}</td></tr>`;
+  }).join(""):`<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
 
-  document.getElementById("client-snapshot").innerHTML = `
+  document.getElementById("client-snapshot").innerHTML=`
     <div style="max-width:900px;">
       <button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-        Back to Board
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg> Back to Board
       </button>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px;">
-        <div class="kpi-card" style="border-left:3px solid var(--amber);">
-          <div class="kpi-icon" style="background:var(--amber-lt);">⏳</div>
-          <div class="kpi-body"><div class="kpi-num" style="color:var(--amber);">${pending}</div><div class="kpi-label">Tasks Pending</div></div>
-        </div>
-        <div class="kpi-card" style="border-left:3px solid var(--green);">
-          <div class="kpi-icon" style="background:var(--green-lt);">✅</div>
-          <div class="kpi-body"><div class="kpi-num" style="color:var(--green);">${done}</div><div class="kpi-label">Tasks Done</div></div>
-        </div>
-        <div class="kpi-card" style="border-left:3px solid var(--teal);">
-          <div class="kpi-icon" style="background:var(--teal-lt);">⏱</div>
-          <div class="kpi-body"><div class="kpi-num" style="color:var(--teal);">${hours.toFixed(1)}</div><div class="kpi-label">Total Hours Worked</div></div>
-        </div>
-        <div class="kpi-card" style="border-left:3px solid var(--indigo);">
-          <div class="kpi-icon" style="background:var(--indigo-lt);">📅</div>
-          <div class="kpi-body">
-            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);line-height:1.3;">${syncFmt}</div>
-            <div class="kpi-label">Next Weekly Call</div>
-          </div>
-        </div>
+        <div class="kpi-card" style="border-left:3px solid var(--amber);"><div class="kpi-icon" style="background:var(--amber-lt);">⏳</div><div class="kpi-body"><div class="kpi-num" style="color:var(--amber);">${pending}</div><div class="kpi-label">Pending</div></div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--green);"><div class="kpi-icon" style="background:var(--green-lt);">✅</div><div class="kpi-body"><div class="kpi-num" style="color:var(--green);">${done}</div><div class="kpi-label">Done</div></div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--teal);"><div class="kpi-icon" style="background:var(--teal-lt);">⏱</div><div class="kpi-body"><div class="kpi-num" style="color:var(--teal);">${hours.toFixed(1)}</div><div class="kpi-label">Hours</div></div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--indigo);"><div class="kpi-icon" style="background:var(--indigo-lt);">📅</div><div class="kpi-body"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);line-height:1.3;">${syncFmt}</div><div class="kpi-label">Next Call</div></div></div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);">
         <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(clientName)}</span>
+          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(cn)}</span>
           <span style="font-size:11px;color:var(--text-3);">${total} task${total!==1?"s":""}</span>
         </div>
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;">
-            <thead>
-              <tr style="background:var(--bg);">
-                <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th>
-                <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th>
-                <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th>
-                <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th>
-                <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);text-align:left;">Hours</th>
-              </tr>
-            </thead>
-            <tbody>${taskRows}</tbody>
-          </table>
-        </div>
+        <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--bg);">
+            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th>
+            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th>
+            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th>
+            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th>
+            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);text-align:left;">Hours</th>
+          </tr></thead>
+          <tbody>${taskRows}</tbody>
+        </table></div>
       </div>
     </div>`;
 }
 
 /* ─── Filtering ── */
 function filterByPerson(name) {
-  activeClient = null;
-  document.getElementById("view-client").style.display  = "none";
-  document.getElementById("kpi-strip").style.display    = "";
-  document.getElementById("filterbar").style.display    = activeTab === "board" ? "flex" : "none";
-  document.getElementById("view-board").style.display   = activeTab === "board"   ? "block" : "none";
-  document.getElementById("view-summary").style.display = activeTab === "summary" ? "block" : "none";
-
-  filterPerson = name;
-  document.querySelectorAll(".member-row").forEach(el => el.classList.remove("active"));
-  const target = name ? document.getElementById("mb-" + name) : document.getElementById("member-all");
-  if (target) target.classList.add("active");
-  document.getElementById("page-title").textContent = name || "Task Board";
-  document.getElementById("page-sub").textContent   = name
-    ? `Showing tasks for ${name} · ${TEAM.find(m => m.name === name)?.role}`
-    : "Showing all tasks";
+  activeClient=null;
+  document.getElementById("view-client").style.display="none";
+  document.getElementById("kpi-strip").style.display="";
+  document.getElementById("filterbar").style.display=activeTab==="board"?"flex":"none";
+  document.getElementById("view-board").style.display=activeTab==="board"?"block":"none";
+  document.getElementById("view-summary").style.display=activeTab==="summary"?"block":"none";
+  filterPerson=name;
+  document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
+  const target=name?document.getElementById("mb-"+name):document.getElementById("member-all");
+  if(target)target.classList.add("active");
+  document.getElementById("page-title").textContent=name||"Task Board";
+  document.getElementById("page-sub").textContent=name?`Showing tasks for ${name} · ${TEAM.find(m=>m.name===name)?.role}`:"Showing all tasks";
   render();
 }
-
 function applyFilters() {
-  filterPriority = document.getElementById("flt-priority").value;
-  filterStatus   = document.getElementById("flt-status").value;
-  filterSearch   = document.getElementById("flt-search").value.toLowerCase();
-  filterDue      = document.getElementById("flt-due").value;
+  filterPriority=document.getElementById("flt-priority").value;
+  filterStatus=document.getElementById("flt-status").value;
+  filterSearch=document.getElementById("flt-search").value.toLowerCase();
+  filterDue=document.getElementById("flt-due").value;
   render();
 }
-
 function clearFilters() {
-  filterPriority = ""; filterStatus = ""; filterSearch = ""; filterDue = "";
-  document.getElementById("flt-priority").value = "";
-  document.getElementById("flt-status").value   = "";
-  document.getElementById("flt-search").value   = "";
-  document.getElementById("flt-due").value       = "";
+  filterPriority=filterStatus=filterSearch=filterDue="";
+  ["flt-priority","flt-status","flt-search","flt-due"].forEach(id=>document.getElementById(id).value="");
   render();
 }
-
-function getDueState(dueDate) {
-  if (!dueDate) return null;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const due   = new Date(dueDate); due.setHours(0,0,0,0);
-  const diff  = Math.floor((due - today) / 86400000);
-  if (diff < 0)   return "overdue";
-  if (diff === 0) return "today";
-  if (diff <= 3)  return "soon";
-  return "normal";
+function getDueState(d) {
+  if(!d)return null;
+  const today=new Date();today.setHours(0,0,0,0);
+  const due=new Date(d);due.setHours(0,0,0,0);
+  const diff=Math.floor((due-today)/86400000);
+  if(diff<0)return"overdue"; if(diff===0)return"today"; if(diff<=3)return"soon"; return"normal";
 }
-
 function getFiltered() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  return tasks.filter(t => {
-    if (filterPerson   && t.person   !== filterPerson)   return false;
-    if (filterPriority && t.priority !== filterPriority) return false;
-    if (filterStatus   && t.status   !== filterStatus)   return false;
-    if (filterSearch) {
-      const hay = (t.name + " " + (t.notes||"") + " " + t.person + " " + (t.added_by||"")).toLowerCase();
-      if (!hay.includes(filterSearch)) return false;
-    }
-    if (filterDue) {
-      if (!t.due_date) return false;
-      const due  = new Date(t.due_date); due.setHours(0,0,0,0);
-      const diff = Math.floor((due - today) / 86400000);
-      if (filterDue === "overdue" && diff >= 0)            return false;
-      if (filterDue === "today"   && diff !== 0)           return false;
-      if (filterDue === "week"    && (diff < 0 || diff > 7)) return false;
+  const today=new Date();today.setHours(0,0,0,0);
+  return tasks.filter(t=>{
+    if(filterPerson&&t.person!==filterPerson)return false;
+    if(filterPriority&&t.priority!==filterPriority)return false;
+    if(filterStatus&&t.status!==filterStatus)return false;
+    if(filterSearch){const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")).toLowerCase();if(!h.includes(filterSearch))return false;}
+    if(filterDue){
+      if(!t.due_date)return false;
+      const due=new Date(t.due_date);due.setHours(0,0,0,0);
+      const diff=Math.floor((due-today)/86400000);
+      if(filterDue==="overdue"&&diff>=0)return false;
+      if(filterDue==="today"&&diff!==0)return false;
+      if(filterDue==="week"&&(diff<0||diff>7))return false;
     }
     return true;
   });
@@ -1387,474 +1547,275 @@ function getFiltered() {
 /* ─── Render ── */
 function render() {
   renderCounts();
-  if (activeClient) {
-    renderClientSnapshot(activeClient);
-    return;
-  }
+  if(activeClient){renderClientSnapshot(activeClient);return;}
   renderKPI();
-  if (activeTab === "board") renderBoard();
-  else renderSummary();
+  if(activeTab==="board")renderBoard(); else renderSummary();
 }
-
 function renderCounts() {
-  document.getElementById("count-all").textContent = tasks.length;
-  TEAM.forEach(m => {
-    const el = document.getElementById("count-" + m.name);
-    if (el) el.textContent = tasks.filter(t => t.person === m.name).length;
-  });
+  document.getElementById("count-all").textContent=tasks.length;
+  TEAM.forEach(m=>{const el=document.getElementById("count-"+m.name);if(el)el.textContent=tasks.filter(t=>t.person===m.name).length;});
   updateClientCounts();
 }
-
 function renderKPI() {
-  const f     = getFiltered();
-  const today = new Date(); today.setHours(0,0,0,0);
-  const overdue = f.filter(t => {
-    if (!t.due_date || t.status === "Done") return false;
-    const due = new Date(t.due_date); due.setHours(0,0,0,0);
-    return due < today;
-  }).length;
-  document.getElementById("kpi-total").textContent  = f.length;
-  document.getElementById("kpi-inprog").textContent = f.filter(t => t.status === "In Progress").length;
-  document.getElementById("kpi-done").textContent   = f.filter(t => t.status === "Done").length;
-  document.getElementById("kpi-high").textContent   = f.filter(t => t.priority === "High" && t.status !== "Done").length;
-  document.getElementById("kpi-overdue").textContent = overdue;
+  const f=getFiltered(),today=new Date();today.setHours(0,0,0,0);
+  const ov=f.filter(t=>{if(!t.due_date||t.status==="Done")return false;const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;
+  document.getElementById("kpi-total").textContent=f.length;
+  document.getElementById("kpi-inprog").textContent=f.filter(t=>t.status==="In Progress").length;
+  document.getElementById("kpi-done").textContent=f.filter(t=>t.status==="Done").length;
+  document.getElementById("kpi-high").textContent=f.filter(t=>t.priority==="High"&&t.status!=="Done").length;
+  document.getElementById("kpi-overdue").textContent=ov;
 }
-
 function hoursBadge(hours) {
-  if (!hours && hours !== 0) return "";
-  const h = parseFloat(hours) || 0;
-  if (h === 0) return "";
+  if(!hours&&hours!==0)return""; const h=parseFloat(hours)||0; if(h===0)return"";
   return `<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);">⏱ ${h.toFixed(1)}h</span>`;
 }
 
 function renderBoard() {
-  const filtered = getFiltered();
-  const grid  = document.getElementById("cards-grid");
-  const empty = document.getElementById("empty-state");
+  const filtered=getFiltered(),grid=document.getElementById("cards-grid"),empty=document.getElementById("empty-state");
+  if(!filtered.length){grid.innerHTML="";empty.style.display="flex";return;}
+  empty.style.display="none";
 
-  if (!filtered.length) { grid.innerHTML = ""; empty.style.display = "flex"; return; }
-  empty.style.display = "none";
-
-  grid.innerHTML = filtered.map((t, i) => {
-    const memberIdx = TEAM.findIndex(m => m.name === t.person);
-    const avColor   = AV_COLORS[memberIdx >= 0 ? memberIdx : 0];
-    const role      = TEAM.find(m => m.name === t.person)?.role || "";
-    const rc        = ROLE_COLOR[role] || ROLE_COLOR.Junior;
-    const pClass    = t.priority === "High" ? "badge-high" : t.priority === "Medium" ? "badge-medium" : "badge-low";
-    const statusCls = t.status === "Done" ? "status-done" : t.status === "In Progress" ? "status-prog" : "status-todo";
-    const notesHtml = t.notes ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
-
-    const dueState = getDueState(t.due_date);
-    let dueBadge = "";
-    if (t.due_date && t.status !== "Done") {
-      const labels = { overdue:"🔴 Overdue", today:"🟡 Due Today", soon:"⏰ Due Soon", normal:"" };
-      if (dueState !== "normal" && labels[dueState]) {
-        dueBadge = `<span class="due-chip ${dueState}">${labels[dueState]}</span>`;
-      } else if (dueState === "normal") {
-        const d = new Date(t.due_date);
-        dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
-      }
-    } else if (t.due_date && t.status === "Done") {
-      const d = new Date(t.due_date);
-      dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
+  grid.innerHTML=filtered.map((t,i)=>{
+    const mi=TEAM.findIndex(m=>m.name===t.person),avColor=AV_COLORS[mi>=0?mi:0];
+    const role=TEAM.find(m=>m.name===t.person)?.role||"",rc=ROLE_COLOR[role]||ROLE_COLOR.Junior;
+    const pClass=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
+    const statusCls=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
+    const notesHtml=t.notes?`<div class="card-notes">${esc(t.notes)}</div>`:"";
+    const ds=getDueState(t.due_date);
+    let dueBadge="";
+    if(t.due_date&&t.status!=="Done"){
+      const lbl={overdue:"🔴 Overdue",today:"🟡 Due Today",soon:"⏰ Due Soon",normal:""};
+      if(ds!=="normal"&&lbl[ds])dueBadge=`<span class="due-chip ${ds}">${lbl[ds]}</span>`;
+      else if(ds==="normal"){const d=new Date(t.due_date);dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;}
+    } else if(t.due_date&&t.status==="Done"){
+      const d=new Date(t.due_date);dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
     }
+    const isOverdue=ds==="overdue"&&t.status!=="Done";
+    const addedByHtml=t.added_by?`<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`:"";
 
-    const isOverdue   = dueState === "overdue" && t.status !== "Done";
-    const addedByHtml = t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
+    /* Access control: canEditDetails = Manager OR assignee; canLogWork = assignee ONLY */
+    const canEditDetails=(currentUser===t.person||currentUser===MANAGER_NAME);
+    const canLogWork=(currentUser===t.person);
 
-    /* ═══════════════════════════════════════════════════════════════
-       FIX 2 — Access control split into two separate checks:
+    const statusControl=canEditDetails
+      ?`<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}',this.value)">
+          <option ${t.status==="To Do"?"selected":""}>To Do</option>
+          <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+          <option ${t.status==="Done"?"selected":""}>Done</option>
+        </select>`
+      :`<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
 
-       canEditDetails → Manager OR assignee can edit task metadata
-                        (pencil icon, delete button, status dropdown)
-
-       canLogWork     → ONLY the assignee can log hours/update status
-                        via the Log Work modal. Manager is explicitly
-                        excluded — they must be logged in as the assignee.
-    ═══════════════════════════════════════════════════════════════ */
-    const canEditDetails = (currentUser === t.person || currentUser === MANAGER_NAME);
-    const canLogWork     = (currentUser === t.person); /* strict: assignee only */
-
-    /* Status control: manager or assignee can change via dropdown */
-    const statusControl = canEditDetails
-      ? `<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
-           <option ${t.status==="To Do"?"selected":""}>To Do</option>
-           <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
-           <option ${t.status==="Done"?"selected":""}>Done</option>
-         </select>`
-      : `<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
-
-    /* ═══════════════════════════════════════════════════════════════
-       FIX 2 + FIX 3 — Log Work button area:
-
-       • canLogWork  = true  → show teal "Log Work" button (assignee only)
-       • canLogWork  = false → show a soft "Assigned to [Name]" label
-                               so it's clear why the button isn't there.
-         The label uses a dashed border pill style to look intentional,
-         not like a missing element.
-
-       FIX 1 — The task ID is embedded via data-task-id attribute on
-       the button AND passed directly to openLogModal() as a JS string.
-       We also sanitise it in openLogModal() itself as a second layer
-       of defence against the uuid:"null" Supabase error.
-    ═══════════════════════════════════════════════════════════════ */
-    let logWorkRow = "";
-    if (canLogWork) {
-      /* Assignee sees the Log Work button */
-      logWorkRow = `
-        <div class="card-footer-row" style="margin-top:4px;">
-          <button
-            class="log-work-btn"
-            data-task-id="${esc(t.id)}"
-            onclick="openLogModal('${esc(t.id)}')"
-            title="Log work / update status"
-          >
-            <svg width="11" height="11" fill="none" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+    const logWorkRow=canLogWork
+      ?`<div class="card-footer-row" style="margin-top:4px;">
+          <button class="log-work-btn" data-task-id="${esc(t.id)}" onclick="openLogModal('${esc(t.id)}')" title="Log work / update status">
+            <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             Log Work
           </button>
-        </div>`;
-    } else {
-      /* FIX 3 — Non-assignee sees a clear "Assigned to [Name]" label */
-      logWorkRow = `
-        <div class="card-footer-row" style="margin-top:4px;">
-          <span class="log-work-restricted" title="Only ${esc(t.person)} can log hours on this task">
-            <svg width="11" height="11" fill="none" viewBox="0 0 24 24">
-              <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/>
-              <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+        </div>`
+      :`<div class="card-footer-row" style="margin-top:4px;">
+          <span class="log-work-restricted" title="Only ${esc(t.person)} can log hours">
+            <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             Assigned to ${esc(t.person)}
           </span>
         </div>`;
-    }
 
     return `
-      <div class="task-card pri-${t.priority} ${isOverdue ? "overdue" : ""}" style="animation-delay:${i*0.03}s">
+      <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
           <div class="card-actions">
-            ${canEditDetails ? `
-            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task details">
-              <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
-                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
+            ${canEditDetails?`
+            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit">
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete">
-              <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
-                <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </button>` : ""}
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>`:""}
           </div>
         </div>
         ${notesHtml}
         <div class="card-meta">
           <span class="badge ${pClass}">${t.priority}</span>
           ${hoursBadge(t.hours_worked)}
-          ${t.client ? `<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);font-size:10px;">🏢 ${esc(t.client)}</span>` : ""}
+          ${t.client?`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);font-size:10px;">🏢 ${esc(t.client)}</span>`:""}
           ${dueBadge}
         </div>
         <div class="card-footer">
           <div class="card-footer-row">
             <div class="card-assignee">
-              <div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person ? t.person[0] : "?"}</div>
-              <div>
-                <div class="assignee-name">${esc(t.person)}</div>
-                <div class="assignee-role" style="color:${rc.text}">${role}</div>
-              </div>
+              <div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person?t.person[0]:"?"}</div>
+              <div><div class="assignee-name">${esc(t.person)}</div><div class="assignee-role" style="color:${rc.text}">${role}</div></div>
             </div>
             ${statusControl}
           </div>
           ${logWorkRow}
-          ${addedByHtml ? `<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>` : ""}
+          ${addedByHtml?`<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>`:""}
         </div>
       </div>`;
   }).join("");
 }
 
 function renderSummary() {
-  const grid    = document.getElementById("summary-grid");
-  const maxLoad = Math.max(...TEAM.map(m => tasks.filter(t => t.person === m.name).length), 1);
-
-  grid.innerHTML = TEAM.map((member, i) => {
-    const mine  = tasks.filter(t => t.person === member.name);
-    const total = mine.length;
-    const doneC = mine.filter(t => t.status === "Done").length;
-    const inpC  = mine.filter(t => t.status === "In Progress").length;
-    const todoC = mine.filter(t => t.status === "To Do").length;
-    const highC = mine.filter(t => t.priority === "High" && t.status !== "Done").length;
-    const pct   = total ? Math.round(doneC/total*100) : 0;
-    const barW  = total ? Math.round(total/maxLoad*100) : 0;
-    const color = AV_COLORS[i % AV_COLORS.length];
-    const rc    = ROLE_COLOR[member.role] || ROLE_COLOR.Junior;
-    const loaded= total >= 5;
-    const overdueC = mine.filter(t => {
-      if (!t.due_date || t.status === "Done") return false;
-      const today = new Date(); today.setHours(0,0,0,0);
-      const due   = new Date(t.due_date); due.setHours(0,0,0,0);
-      return due < today;
-    }).length;
-
+  const grid=document.getElementById("summary-grid"),maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
+  grid.innerHTML=TEAM.map((member,i)=>{
+    const mine=tasks.filter(t=>t.person===member.name),total=mine.length,
+          doneC=mine.filter(t=>t.status==="Done").length,inpC=mine.filter(t=>t.status==="In Progress").length,
+          todoC=mine.filter(t=>t.status==="To Do").length,highC=mine.filter(t=>t.priority==="High"&&t.status!=="Done").length,
+          pct=total?Math.round(doneC/total*100):0,barW=total?Math.round(total/maxLoad*100):0,
+          color=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[member.role]||ROLE_COLOR.Junior,loaded=total>=5;
+    const ovC=mine.filter(t=>{if(!t.due_date||t.status==="Done")return false;const today=new Date();today.setHours(0,0,0,0);const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;
     return `
-      <div class="summary-card ${loaded ? "overloaded" : ""}">
+      <div class="summary-card ${loaded?"overloaded":""}">
         <div class="sc-header">
           <div class="sc-person">
             <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px;border-radius:10px;">${member.name[0]}</div>
-            <div>
-              <div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div>
-              <div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div>
-            </div>
+            <div><div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div><div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div></div>
           </div>
-          <div class="sc-total">
-            <div class="sc-total-num">${total}</div>
-            <div class="sc-total-lbl">tasks</div>
-          </div>
+          <div class="sc-total"><div class="sc-total-num">${total}</div><div class="sc-total-lbl">tasks</div></div>
         </div>
-        <div class="sc-bar-wrap">
-          <div class="sc-bar" style="width:${barW}%;background:${color}"></div>
-        </div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:${barW}%;background:${color}"></div></div>
         <div class="sc-stats">
-          <div class="sc-stat">
-            <div class="sc-stat-num todo-num">${todoC}</div>
-            <div class="sc-stat-lbl">To Do</div>
-          </div>
-          <div class="sc-stat">
-            <div class="sc-stat-num prog-num">${inpC}</div>
-            <div class="sc-stat-lbl">In Progress</div>
-          </div>
-          <div class="sc-stat">
-            <div class="sc-stat-num done-num">${doneC}</div>
-            <div class="sc-stat-lbl">Done</div>
-          </div>
+          <div class="sc-stat"><div class="sc-stat-num todo-num">${todoC}</div><div class="sc-stat-lbl">To Do</div></div>
+          <div class="sc-stat"><div class="sc-stat-num prog-num">${inpC}</div><div class="sc-stat-lbl">In Progress</div></div>
+          <div class="sc-stat"><div class="sc-stat-num done-num">${doneC}</div><div class="sc-stat-lbl">Done</div></div>
         </div>
         <div class="sc-foot">
           <span style="color:var(--text-3)">${pct}% complete</span>
-          ${highC > 0 ? `<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>` : `<span style="color:var(--green)">✓ No high priority</span>`}
+          ${highC>0?`<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>`:`<span style="color:var(--green)">✓ No high priority</span>`}
         </div>
-        ${overdueC > 0 ? `<div class="sc-warn">🔴 ${overdueC} overdue task${overdueC > 1 ? "s" : ""}</div>` : ""}
-        ${loaded ? `<div class="sc-warn" style="background:var(--amber-lt);border-color:var(--amber-bd);color:var(--amber)">⚠ High load — ${total} tasks</div>` : ""}
+        ${ovC>0?`<div class="sc-warn">🔴 ${ovC} overdue task${ovC>1?"s":""}</div>`:""}
+        ${loaded?`<div class="sc-warn" style="background:var(--amber-lt);border-color:var(--amber-bd);color:var(--amber)">⚠ High load — ${total} tasks</div>`:""}
       </div>`;
   }).join("");
 }
 
-/* ─── Tab switching ── */
 function switchTab(tab) {
-  activeClient = null;
-  activeTab = tab;
-  document.getElementById("view-board").style.display   = tab === "board"   ? "block" : "none";
-  document.getElementById("view-summary").style.display = tab === "summary" ? "block" : "none";
-  document.getElementById("view-client").style.display  = "none";
-  document.getElementById("filterbar").style.display    = tab === "board"   ? "flex"  : "none";
-  document.getElementById("kpi-strip").style.display    = "";
-  document.getElementById("tab-board").classList.toggle("active",   tab === "board");
-  document.getElementById("tab-summary").classList.toggle("active", tab === "summary");
+  activeClient=null; activeTab=tab;
+  document.getElementById("view-board").style.display=tab==="board"?"block":"none";
+  document.getElementById("view-summary").style.display=tab==="summary"?"block":"none";
+  document.getElementById("view-client").style.display="none";
+  document.getElementById("filterbar").style.display=tab==="board"?"flex":"none";
+  document.getElementById("kpi-strip").style.display="";
+  document.getElementById("tab-board").classList.toggle("active",tab==="board");
+  document.getElementById("tab-summary").classList.toggle("active",tab==="summary");
   render();
 }
 
-/* ─── MODAL 1: Assign Task ── */
+/* ─── Modals ── */
 function openModal() {
-  editingId = null;
-  document.getElementById("modal-title").textContent    = "Assign Task";
-  document.getElementById("modal-subtitle").textContent = "New task · auto-starts as To Do";
-  document.getElementById("btn-save").textContent       = "Assign Task";
-  document.getElementById("f-name").value     = "";
-  document.getElementById("f-person").value   = TEAM[0].name;
-  document.getElementById("f-priority").value = "Medium";
-  document.getElementById("f-client").value   = activeClient || "";
-  document.getElementById("f-notes").value    = "";
-  document.getElementById("f-due").value      = "";
-  updateAddedByDisplay();
-  document.getElementById("modal").style.display = "flex";
-  setTimeout(() => document.getElementById("f-name").focus(), 60);
+  editingId=null;
+  document.getElementById("modal-title").textContent="Assign Task";
+  document.getElementById("modal-subtitle").textContent="New task · auto-starts as To Do";
+  document.getElementById("btn-save").textContent="Assign Task";
+  document.getElementById("f-name").value="";
+  document.getElementById("f-person").value=TEAM[0].name;
+  document.getElementById("f-priority").value="Medium";
+  document.getElementById("f-client").value=activeClient||"";
+  document.getElementById("f-notes").value="";
+  document.getElementById("f-due").value="";
+  document.getElementById("added-by-display").textContent=currentUser;
+  document.getElementById("modal").style.display="flex";
+  setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
-
 function openEdit(id) {
-  const t = tasks.find(x => x.id === id);
-  if (!t) return;
-  editingId = id;
-  document.getElementById("modal-title").textContent    = "Edit Task Details";
-  document.getElementById("modal-subtitle").textContent = `Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
-  document.getElementById("btn-save").textContent       = "Save Changes";
-  document.getElementById("f-name").value     = t.name;
-  document.getElementById("f-person").value   = t.person;
-  document.getElementById("f-priority").value = t.priority;
-  document.getElementById("f-client").value   = t.client || "";
-  document.getElementById("f-notes").value    = t.notes || "";
-  document.getElementById("f-due").value      = t.due_date || "";
-  document.getElementById("added-by-display").textContent = t.added_by || currentUser;
-  document.getElementById("modal").style.display = "flex";
-  setTimeout(() => document.getElementById("f-name").focus(), 60);
+  const t=tasks.find(x=>x.id===id); if(!t)return;
+  editingId=id;
+  document.getElementById("modal-title").textContent="Edit Task Details";
+  document.getElementById("modal-subtitle").textContent=`Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
+  document.getElementById("btn-save").textContent="Save Changes";
+  document.getElementById("f-name").value=t.name;
+  document.getElementById("f-person").value=t.person;
+  document.getElementById("f-priority").value=t.priority;
+  document.getElementById("f-client").value=t.client||"";
+  document.getElementById("f-notes").value=t.notes||"";
+  document.getElementById("f-due").value=t.due_date||"";
+  document.getElementById("added-by-display").textContent=t.added_by||currentUser;
+  document.getElementById("modal").style.display="flex";
+  setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
-
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-  editingId = null;
-}
-
-function handleOverlayClick(e) {
-  if (e.target.id === "modal") closeModal();
-}
+function closeModal() { document.getElementById("modal").style.display="none"; editingId=null; }
+function handleOverlayClick(e) { if(e.target.id==="modal")closeModal(); }
 
 async function saveTask() {
-  const name = document.getElementById("f-name").value.trim();
-  if (!name) { document.getElementById("f-name").focus(); return; }
-  if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
-
-  const payload = {
-    name,
-    person:       document.getElementById("f-person").value,
-    priority:     document.getElementById("f-priority").value,
-    client:       document.getElementById("f-client").value || null,
-    notes:        document.getElementById("f-notes").value.trim(),
-    due_date:     document.getElementById("f-due").value || null,
+  const name=document.getElementById("f-name").value.trim();
+  if(!name){document.getElementById("f-name").focus();return;}
+  if(!isConfigured()){showToast("Configure Supabase first","error");return;}
+  const payload={
+    name, person:document.getElementById("f-person").value,
+    priority:document.getElementById("f-priority").value,
+    client:document.getElementById("f-client").value||null,
+    notes:document.getElementById("f-notes").value.trim(),
+    due_date:document.getElementById("f-due").value||null,
   };
-
-  if (!editingId) {
-    payload.status       = "To Do";
-    payload.hours_worked = 0;
-    payload.added_by     = currentUser;
-  }
-
-  closeModal();
-  setSyncStatus("syncing", "Saving…");
-
-  if (editingId) {
-    const ok = await updateTaskDB(editingId, payload);
-    if (ok) showToast("Task updated ✓", "success");
-  } else {
-    const ok = await insertTask(payload);
-    if (ok) showToast("Task assigned ✓", "success");
-  }
+  if(!editingId){payload.status="To Do";payload.hours_worked=0;payload.added_by=currentUser;}
+  closeModal(); setSyncStatus("syncing","Saving…");
+  if(editingId){const ok=await updateTaskDB(editingId,payload);if(ok)showToast("Task updated ✓","success");}
+  else{const ok=await insertTask(payload);if(ok)showToast("Task assigned ✓","success");}
 }
 
-/* ─── MODAL 2: Log Work ── */
-let logWorkId = null;
-
+let logWorkId=null;
 function openLogModal(id) {
-  /* ═══════════════════════════════════════════════════════════════
-     FIX 1 — Second-layer null guard.
-     If the template somehow rendered id as the literal string "null"
-     or "undefined" (e.g. t.id was falsy at render time), we catch it
-     here before anything hits Supabase, preventing the
-     "invalid input syntax for type uuid: 'null'" error.
-  ═══════════════════════════════════════════════════════════════ */
-  if (!id || id === 'null' || id === 'undefined') {
-    showToast('Error: could not read task ID. Please refresh and try again.', 'error');
-    console.error('[openLogModal] Received invalid task id:', id);
-    return;
-  }
-
-  const t = tasks.find(x => x.id === id);
-  if (!t) {
-    showToast('Task not found. It may have been deleted.', 'error');
-    return;
-  }
-
-  logWorkId = id;
-  document.getElementById("log-task-name").textContent    = t.name;
-  document.getElementById("log-assignee").textContent     = t.person + (TEAM.find(m=>m.name===t.person)?.role ? ` · ${TEAM.find(m=>m.name===t.person).role}` : "");
-  document.getElementById("log-current-hours").textContent = (parseFloat(t.hours_worked)||0).toFixed(1) + "h";
-  document.getElementById("lw-status").value  = t.status;
-  document.getElementById("lw-hours").value   = t.hours_worked || "";
-  document.getElementById("lw-note").value    = "";
-  document.getElementById("modal-log").style.display = "flex";
-  setTimeout(() => document.getElementById("lw-hours").focus(), 60);
+  if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID. Refresh and try again.","error");return;}
+  const t=tasks.find(x=>x.id===id); if(!t){showToast("Task not found.","error");return;}
+  logWorkId=id;
+  document.getElementById("log-task-name").textContent=t.name;
+  document.getElementById("log-assignee").textContent=t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
+  document.getElementById("log-current-hours").textContent=(parseFloat(t.hours_worked)||0).toFixed(1)+"h";
+  document.getElementById("lw-status").value=t.status;
+  document.getElementById("lw-hours").value=t.hours_worked||"";
+  document.getElementById("lw-note").value="";
+  document.getElementById("modal-log").style.display="flex";
+  setTimeout(()=>document.getElementById("lw-hours").focus(),60);
 }
-
-function closeLogModal() {
-  document.getElementById("modal-log").style.display = "none";
-  logWorkId = null;
-}
-
-function handleLogOverlayClick(e) {
-  if (e.target.id === "modal-log") closeLogModal();
-}
+function closeLogModal(){document.getElementById("modal-log").style.display="none";logWorkId=null;}
+function handleLogOverlayClick(e){if(e.target.id==="modal-log")closeLogModal();}
 
 async function saveLogWork() {
-  /* ═══════════════════════════════════════════════════════════════
-     FIX 1 — Final guard before the PATCH hits Supabase.
-     logWorkId must be a non-null, non-"null" string at this point.
-  ═══════════════════════════════════════════════════════════════ */
-  if (!logWorkId || logWorkId === 'null' || logWorkId === 'undefined') {
-    showToast('Error: missing task ID. Please close and try again.', 'error');
-    closeLogModal();
-    return;
-  }
-  if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
-
-  const newStatus = document.getElementById("lw-status").value;
-  const newHours  = parseFloat(document.getElementById("lw-hours").value) || 0;
-  const workNote  = document.getElementById("lw-note").value.trim();
-
-  const t = tasks.find(x => x.id === logWorkId);
-  let updatedNotes = t?.notes || "";
-  if (workNote) {
-    const stamp = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short' });
-    updatedNotes = updatedNotes
-      ? updatedNotes + `\n[${stamp}] ${workNote}`
-      : `[${stamp}] ${workNote}`;
-  }
-
-  const payload = {
-    status:       newStatus,
-    hours_worked: newHours,
-  };
-  if (workNote) payload.notes = updatedNotes;
-
-  closeLogModal();
-  setSyncStatus("syncing", "Saving…");
-  const ok = await updateTaskDB(logWorkId, payload);
-  if (ok) showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`, "success");
+  if(!logWorkId||logWorkId==="null"){showToast("Error: missing task ID.","error");closeLogModal();return;}
+  if(!isConfigured()){showToast("Configure Supabase first","error");return;}
+  const newStatus=document.getElementById("lw-status").value,
+        newHours=parseFloat(document.getElementById("lw-hours").value)||0,
+        workNote=document.getElementById("lw-note").value.trim();
+  const t=tasks.find(x=>x.id===logWorkId);
+  let updatedNotes=t?.notes||"";
+  if(workNote){const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});updatedNotes=updatedNotes?updatedNotes+`\n[${stamp}] ${workNote}`:`[${stamp}] ${workNote}`;}
+  const payload={status:newStatus,hours_worked:newHours};
+  if(workNote)payload.notes=updatedNotes;
+  closeLogModal(); setSyncStatus("syncing","Saving…");
+  const ok=await updateTaskDB(logWorkId,payload);
+  if(ok)showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`,"success");
 }
 
-async function quickStatus(id, status) {
-  if (!isConfigured()) return;
-  if (!id || id === 'null') { showToast('Error: invalid task ID', 'error'); return; }
-  await updateTaskDB(id, { status });
+async function quickStatus(id,status) {
+  if(!isConfigured())return;
+  if(!id||id==="null"){showToast("Error: invalid task ID","error");return;}
+  await updateTaskDB(id,{status});
 }
-
 async function deleteTask(id) {
-  if (!confirm("Delete this task?")) return;
-  if (!isConfigured()) return;
-  const ok = await deleteTaskDB(id);
-  if (ok) showToast("Task deleted", "success");
+  if(!confirm("Delete this task?"))return;
+  if(!isConfigured())return;
+  const ok=await deleteTaskDB(id);
+  if(ok)showToast("Task deleted","success");
 }
 
-/* ─── Sync Status ── */
-function setSyncStatus(state, msg) {
-  const dot   = document.getElementById("sync-dot");
-  const label = document.getElementById("sync-label");
-  dot.className   = "sync-dot" + (state === "syncing" ? " syncing" : state === "error" ? " error" : "");
-  label.textContent = msg;
+function setSyncStatus(state,msg) {
+  const dot=document.getElementById("sync-dot"),label=document.getElementById("sync-label");
+  dot.className="sync-dot"+(state==="syncing"?" syncing":state==="error"?" error":"");
+  label.textContent=msg;
 }
-
-/* ─── Toast ── */
-function showToast(msg, type = "") {
-  const c  = document.getElementById("toast");
-  const el = document.createElement("div");
-  el.className = "toast-item " + type;
-  el.innerHTML = `<span>${esc(msg)}</span>`;
-  c.appendChild(el);
-  setTimeout(() => el.remove(), 3500);
+function showToast(msg,type="") {
+  const c=document.getElementById("toast"),el=document.createElement("div");
+  el.className="toast-item "+type; el.innerHTML=`<span>${esc(msg)}</span>`;
+  c.appendChild(el); setTimeout(()=>el.remove(),3500);
 }
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-/* ─── Utils ── */
-function esc(s) {
-  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-
-/* ─── Keyboard shortcuts ── */
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { closeModal(); closeLogModal(); }
-  if (e.key === "n" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) openModal();
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){closeModal();closeLogModal();}
+  if(e.key==="n"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))openModal();
 });
 
-/* ─── Start ── */
-init();
+/* onAuthStateChange handles the actual boot — no manual init() needed */
 </script>
-
 </body>
 </html>
