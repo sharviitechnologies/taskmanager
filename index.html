@@ -5,78 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TeamFlow — Task Manager</title>
 
-  <!-- ═══════════════════════════════════════════════════════════════════════
-       SUPABASE SETUP — Replace the two values below with your own.
-       ─────────────────────────────────────────────────────────────────────
-       HOW TO GET THEM FOR FREE (2 minutes):
-       1. Go to https://supabase.com → "Start your project" → sign in with GitHub.
-       2. Click "New project", choose a name, set a DB password, pick a free region.
-       3. Once the project loads, go to Settings → API.
-          • "Project URL"  → paste as SUPABASE_URL below.
-          • "anon / public" key → paste as SUPABASE_KEY below.
-       4. Go to the SQL Editor (left sidebar) and run the SQL block in the
-          <script id="setup-sql"> comment at the bottom of this file to
-          create the tasks table.
-       ═══════════════════════════════════════════════════════════════════════ -->
   <script>
-    const SUPABASE_URL = "https://aagztfgkthgpysrlyksa.supabase.co";      // ← paste here
-    const SUPABASE_KEY = "sb_publishable_dCYu2aNVBG2DIIeIC_hwdw_p18eQsa5"; // ← paste here
+    const SUPABASE_URL = "https://aagztfgkthgpysrlyksa.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_dCYu2aNVBG2DIIeIC_hwdw_p18eQsa5";
   </script>
 
-  <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
-  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet"/>
 
   <style>
-    /* ── Reset & Base ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg:        #f1f5f9;
-      --surface:   #ffffff;
-      --border:    #e2e8f0;
-      --border-md: #cbd5e1;
-      --text:      #0f172a;
-      --text-2:    #475569;
-      --text-3:    #94a3b8;
-      --indigo:    #4f46e5;
-      --indigo-dk: #4338ca;
-      --indigo-lt: #eef2ff;
-      --indigo-bd: #c7d2fe;
-      --green:     #16a34a;
-      --green-lt:  #f0fdf4;
-      --green-bd:  #bbf7d0;
-      --amber:     #d97706;
-      --amber-lt:  #fffbeb;
-      --amber-bd:  #fde68a;
-      --red:       #dc2626;
-      --red-lt:    #fef2f2;
-      --red-bd:    #fecaca;
-      --blue:      #2563eb;
-      --blue-lt:   #eff6ff;
-      --blue-bd:   #bfdbfe;
-      --sidebar-w: 260px;
-      --header-h:  60px;
-      --radius:    10px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-      --shadow:    0 4px 12px rgba(0,0,0,.07), 0 1px 3px rgba(0,0,0,.05);
-      --shadow-lg: 0 10px 28px rgba(0,0,0,.1), 0 4px 8px rgba(0,0,0,.06);
+      --bg:         #f4f6fb;
+      --surface:    #ffffff;
+      --surface-2:  #f8fafd;
+      --border:     #e4e9f2;
+      --border-md:  #cdd5e4;
+      --text:       #0d1b2e;
+      --text-2:     #4a5568;
+      --text-3:     #8f9ab5;
+      --indigo:     #4361ee;
+      --indigo-dk:  #3451d1;
+      --indigo-lt:  #eef1fd;
+      --indigo-bd:  #b8c5f8;
+      --violet:     #7c3aed;
+      --teal:       #0d9488;
+      --green:      #059669;
+      --green-lt:   #ecfdf5;
+      --green-bd:   #a7f3d0;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --amber-bd:   #fde68a;
+      --red:        #dc2626;
+      --red-lt:     #fef2f2;
+      --red-bd:     #fecaca;
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --blue-bd:    #bfdbfe;
+      --orange:     #ea580c;
+      --orange-lt:  #fff7ed;
+      --orange-bd:  #fed7aa;
+      --sidebar-w:  270px;
+      --header-h:   62px;
+      --radius:     12px;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow:     0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.05);
+      --shadow-lg:  0 12px 32px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
     }
-    html, body { height: 100%; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+    html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
     button { font-family: inherit; cursor: pointer; }
     input, select, textarea { font-family: inherit; font-size: 13px; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
-    select option { background: #fff; }
 
-    /* ── Layout ─────────────────────────────────────────────────────────── */
+    /* ── Layout ── */
     #app { display: flex; height: 100vh; overflow: hidden; }
 
-    /* ── Sidebar ─────────────────────────────────────────────────────────── */
+    /* ── Sidebar ── */
     #sidebar {
       width: var(--sidebar-w); flex-shrink: 0;
       background: var(--surface); border-right: 1px solid var(--border);
@@ -84,25 +75,43 @@
     }
     .sidebar-logo {
       height: var(--header-h); display: flex; align-items: center; gap: 10px;
-      padding: 0 18px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+      padding: 0 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
     .logo-icon {
-      width: 30px; height: 30px; border-radius: 8px; background: var(--indigo);
+      width: 32px; height: 32px; border-radius: 9px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(67,97,238,.35);
     }
-    .logo-text { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -.02em; }
-    .logo-badge { font-size: 10px; font-weight: 600; color: var(--text-3); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; margin-left: 2px; }
+    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--text); letter-spacing: -.02em; }
+    .logo-badge {
+      font-size: 9px; font-weight: 700; color: var(--indigo);
+      background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
+      border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em;
+    }
+
+    /* ── Current user selector ── */
+    .current-user-bar {
+      padding: 12px 16px 0; flex-shrink: 0;
+    }
+    .current-user-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
+    .current-user-select {
+      width: 100%; background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
+      border-radius: 9px; padding: 8px 10px; font-size: 13px; font-weight: 600;
+      color: var(--indigo); outline: none; cursor: pointer; transition: border-color .15s;
+    }
+    .current-user-select:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); }
 
     .sidebar-section-title {
       font-size: 10px; font-weight: 700; color: var(--text-3);
       text-transform: uppercase; letter-spacing: .07em;
-      padding: 16px 18px 8px;
+      padding: 16px 20px 8px;
     }
     .sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 16px; }
 
     .member-row {
       display: flex; align-items: center; gap: 10px;
-      padding: 8px 18px; cursor: pointer; transition: background .12s; border-radius: 0;
+      padding: 8px 16px; cursor: pointer; transition: background .12s;
       background: none; border: none; width: 100%; text-align: left;
     }
     .member-row:hover { background: var(--bg); }
@@ -111,7 +120,7 @@
     .member-avatar {
       width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 12px; letter-spacing: 0;
+      font-weight: 700; font-size: 12px;
     }
     .member-info { flex: 1; min-width: 0; }
     .member-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -124,21 +133,19 @@
     }
     .member-row.active .member-count { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 
-    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 18px; }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
 
-    .sidebar-footer {
-      border-top: 1px solid var(--border); padding: 14px 18px; flex-shrink: 0;
-    }
+    .sidebar-footer { border-top: 1px solid var(--border); padding: 14px 20px; flex-shrink: 0; }
     .sync-status { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-3); }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
     .sync-dot.syncing { background: #f59e0b; animation: pulse 1.2s infinite; }
     .sync-dot.error   { background: #ef4444; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    /* ── Main Area ─────────────────────────────────────────────────────── */
+    /* ── Main Area ── */
     #main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; overflow: hidden; }
 
-    /* ── Top Bar ─────────────────────────────────────────────────────── */
+    /* ── Top Bar ── */
     #topbar {
       height: var(--header-h); background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -146,25 +153,42 @@
       padding: 0 24px; gap: 12px; flex-shrink: 0;
     }
     .topbar-left { display: flex; align-items: center; gap: 8px; }
-    #page-title { font-size: 15px; font-weight: 600; color: var(--text); }
-    #page-sub   { font-size: 12px; color: var(--text-3); }
+    #page-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+    #page-sub   { font-size: 11px; color: var(--text-3); margin-top: 1px; }
 
-    .tabs { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+    .tabs { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
     .tab-btn {
-      padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+      padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500;
       border: none; background: none; color: var(--text-2); transition: all .12s; cursor: pointer;
     }
-    .tab-btn.active { background: var(--surface); color: var(--indigo); font-weight: 600; box-shadow: var(--shadow-sm); }
+    .tab-btn.active { background: var(--surface); color: var(--indigo); font-weight: 700; box-shadow: var(--shadow-sm); }
 
     .btn-primary {
       display: flex; align-items: center; gap: 6px;
-      background: var(--indigo); color: #fff; border: none;
-      border-radius: var(--radius); padding: 8px 16px; font-size: 13px; font-weight: 600;
-      transition: background .15s; box-shadow: 0 1px 2px rgba(79,70,229,.25);
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      color: #fff; border: none; border-radius: var(--radius);
+      padding: 9px 18px; font-size: 13px; font-weight: 600;
+      transition: opacity .15s, transform .1s;
+      box-shadow: 0 2px 8px rgba(67,97,238,.32);
     }
-    .btn-primary:hover { background: var(--indigo-dk); }
+    .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
 
-    /* ── Filter Bar ─────────────────────────────────────────────────── */
+    /* ── Dashboard KPI strip ── */
+    #kpi-strip {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 14px 24px; display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .kpi-card {
+      flex: 1; min-width: 100px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    }
+    .kpi-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .kpi-body {}
+    .kpi-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+    .kpi-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+    /* ── Filter Bar ── */
     #filterbar {
       background: var(--surface); border-bottom: 1px solid var(--border);
       padding: 10px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0;
@@ -184,36 +208,36 @@
     .filter-clear:hover { color: var(--text); border-color: var(--border-md); }
     .filter-spacer { flex: 1; }
 
-    /* Stats chips */
-    .stat-chip {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 99px; padding: 4px 12px; font-size: 12px; color: var(--text-2);
-    }
-    .stat-chip strong { color: var(--text); font-weight: 700; }
-    .stat-dot { width: 7px; height: 7px; border-radius: 50%; }
-
-    /* ── Content Area ─────────────────────────────────────────────────── */
+    /* ── Content Area ── */
     #content { flex: 1; overflow-y: auto; padding: 22px 24px; }
 
-    /* ── Task Cards Grid ─────────────────────────────────────────────── */
+    /* ── Task Cards Grid ── */
     #cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
       gap: 14px;
     }
 
     .task-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: var(--shadow-sm);
+      border-radius: 14px; box-shadow: var(--shadow-sm);
       padding: 16px 18px; display: flex; flex-direction: column; gap: 11px;
       transition: box-shadow .15s, transform .15s; animation: fadeUp .2s ease both;
+      position: relative; overflow: hidden;
     }
-    .task-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .task-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; border-radius: 14px 0 0 14px;
+    }
+    .task-card.pri-High::before    { background: var(--red); }
+    .task-card.pri-Medium::before  { background: var(--amber); }
+    .task-card.pri-Low::before     { background: var(--green); }
+    .task-card.overdue             { border-color: var(--red-bd); }
+    .task-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-    .card-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; flex: 1; }
+    .card-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; flex: 1; }
     .card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s; flex-shrink: 0; }
     .task-card:hover .card-actions { opacity: 1; }
     .icon-btn {
@@ -224,61 +248,81 @@
     .icon-btn:hover { background: var(--bg); color: var(--text); }
     .icon-btn.danger:hover { background: var(--red-lt); color: var(--red); }
 
-    .card-notes { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+    .card-notes { font-size: 12px; color: var(--text-2); line-height: 1.5; padding: 8px 10px; background: var(--bg); border-radius: 8px; }
 
-    .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
     .badge {
       display: inline-flex; align-items: center; gap: 4px;
       border-radius: 5px; padding: 3px 8px; font-size: 11px; font-weight: 600; border: 1px solid;
     }
-    .badge-high   { background: var(--red-lt);   color: var(--red);   border-color: var(--red-bd); }
-    .badge-medium { background: var(--amber-lt);  color: var(--amber); border-color: var(--amber-bd); }
-    .badge-low    { background: var(--green-lt);  color: var(--green); border-color: var(--green-bd); }
-    .badge-todo   { background: var(--bg);        color: var(--text-2);border-color: var(--border-md);}
-    .badge-prog   { background: var(--blue-lt);   color: var(--blue);  border-color: var(--blue-bd); }
-    .badge-done   { background: var(--green-lt);  color: var(--green); border-color: var(--green-bd); }
+    .badge-high   { background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
+    .badge-medium { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
+    .badge-low    { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
+    .badge-todo   { background: var(--bg);         color: var(--text-2); border-color: var(--border-md); }
+    .badge-prog   { background: var(--blue-lt);   color: var(--blue);   border-color: var(--blue-bd); }
+    .badge-done   { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
+    .badge-overdue{ background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
+    .badge-due    { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
 
-    .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 4px; border-top: 1px solid var(--border); }
+    .card-footer { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
     .card-assignee { display: flex; align-items: center; gap: 7px; }
-    .assignee-avatar { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
-    .assignee-name { font-size: 12px; font-weight: 500; color: var(--text-2); }
+    .assignee-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .assignee-name { font-size: 12px; font-weight: 600; color: var(--text); }
     .assignee-role { font-size: 10px; color: var(--text-3); }
+    .added-by-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: var(--text-3); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px;
+    }
+    .added-by-pill strong { color: var(--text-2); font-weight: 600; }
 
     .status-select {
       background: transparent; border: 1px solid var(--border-md); border-radius: 7px;
-      padding: 3px 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+      padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;
       outline: none; color: var(--text-2); transition: border-color .12s;
     }
     .status-select:focus { border-color: var(--indigo); box-shadow: 0 0 0 2px var(--indigo-bd); }
     .status-select.status-todo { color: var(--text-2); }
-    .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd); background: var(--blue-lt); }
+    .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
     .status-select.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
 
-    /* ── Empty State ─────────────────────────────────────────────────── */
+    /* ── Due date display ── */
+    .due-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600; border-radius: 99px; padding: 2px 8px; border: 1px solid;
+    }
+    .due-chip.overdue { background: var(--red-lt); color: var(--red); border-color: var(--red-bd); }
+    .due-chip.today   { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
+    .due-chip.soon    { background: var(--amber-lt); color: var(--amber); border-color: var(--amber-bd); }
+    .due-chip.normal  { background: var(--bg); color: var(--text-3); border-color: var(--border); }
+
+    /* ── Empty State ── */
     #empty-state {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 12px; padding: 80px 20px; color: var(--text-3); text-align: center;
+      gap: 14px; padding: 80px 20px; color: var(--text-3); text-align: center;
     }
-    #empty-state p { font-size: 13px; }
+    #empty-state p { font-size: 13px; line-height: 1.6; }
     #empty-state strong { color: var(--indigo); }
 
-    /* ── Summary Grid ─────────────────────────────────────────────────── */
+    /* ── Summary Grid ── */
     #summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 14px;
     }
     .summary-card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: var(--shadow-sm); padding: 18px 20px;
+      border-radius: 14px; box-shadow: var(--shadow-sm); padding: 20px;
       animation: fadeUp .2s ease both;
     }
     .summary-card.overloaded { border-color: var(--red-bd); box-shadow: 0 0 0 1px var(--red-bd), var(--shadow-sm); }
     .sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .sc-person { display: flex; align-items: center; gap: 10px; }
     .sc-total { text-align: right; }
-    .sc-total-num { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
+    .sc-total-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; }
     .sc-total-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
     .sc-bar-wrap { height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .sc-bar { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
@@ -289,60 +333,80 @@
     .sc-foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
     .sc-warn { margin-top: 8px; background: var(--red-lt); border: 1px solid var(--red-bd); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--red); font-weight: 500; }
 
-    /* ── Modal ─────────────────────────────────────────────────────────── */
+    /* ── Modal ── */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(15,23,42,.35);
-      backdrop-filter: blur(3px); z-index: 100;
+      position: fixed; inset: 0; background: rgba(13,27,46,.4);
+      backdrop-filter: blur(4px); z-index: 100;
       display: flex; align-items: center; justify-content: center; padding: 16px;
     }
     .modal-box {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; box-shadow: var(--shadow-lg);
-      width: 100%; max-width: 440px; padding: 26px;
+      border-radius: 18px; box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 460px; padding: 28px;
       animation: fadeUp .18s ease;
     }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-    .modal-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .modal-close { width: 28px; height: 28px; border: none; background: none; font-size: 20px; color: var(--text-3); cursor: pointer; border-radius: 6px; transition: background .12s; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .modal-close {
+      width: 30px; height: 30px; border: none; background: none;
+      font-size: 20px; color: var(--text-3); cursor: pointer;
+      border-radius: 7px; transition: background .12s; display: flex; align-items: center; justify-content: center;
+    }
     .modal-close:hover { background: var(--bg); color: var(--text); }
 
     .form-group { margin-bottom: 14px; }
-    .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
     .form-input, .form-select, .form-textarea {
-      width: 100%; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; padding: 9px 11px; font-size: 13px; color: var(--text);
-      outline: none; transition: border-color .12s;
+      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
+      outline: none; transition: border-color .12s, background .12s;
     }
     .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--indigo); box-shadow: 0 0 0 3px var(--indigo-bd); background: #fff;
+      border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); background: #fff;
     }
-    .form-textarea { resize: none; }
+    .form-textarea { resize: none; line-height: 1.5; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+    /* Added by display in modal */
+    .added-by-display {
+      background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
+      border-radius: 9px; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--indigo);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .modal-footer { display: flex; gap: 10px; margin-top: 22px; }
     .btn-ghost {
-      flex: 1; padding: 10px; border: 1px solid var(--border); background: none;
-      border-radius: var(--radius); font-size: 13px; font-weight: 500; color: var(--text-2);
+      flex: 1; padding: 11px; border: 1.5px solid var(--border); background: none;
+      border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--text-2);
       transition: all .12s;
     }
     .btn-ghost:hover { background: var(--bg); border-color: var(--border-md); color: var(--text); }
-    .btn-save { flex: 1; padding: 10px; }
+    .btn-save { flex: 1; padding: 11px; }
 
-    /* ── Toast ─────────────────────────────────────────────────────────── */
+    /* ── Toast ── */
     #toast {
       position: fixed; bottom: 22px; right: 22px; z-index: 200;
       display: flex; flex-direction: column; gap: 8px;
     }
     .toast-item {
-      background: var(--text); color: #fff; border-radius: 9px;
-      padding: 10px 16px; font-size: 12px; font-weight: 500;
+      background: var(--text); color: #fff; border-radius: 10px;
+      padding: 11px 16px; font-size: 12px; font-weight: 500;
       box-shadow: var(--shadow-lg); animation: fadeUp .18s ease;
-      max-width: 300px;
+      max-width: 320px; display: flex; align-items: center; gap: 8px;
     }
-    .toast-item.success { background: #15803d; }
-    .toast-item.error   { background: #dc2626; }
+    .toast-item.success { background: #065f46; }
+    .toast-item.error   { background: #991b1b; }
+    .toast-item.info    { background: var(--indigo); }
 
-    /* ── Setup Banner ─────────────────────────────────────────────────── */
+    /* ── Notification bell dot ── */
+    .notif-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--red);
+      position: absolute; top: -2px; right: -2px; display: none;
+    }
+    .notif-dot.visible { display: block; }
+    .notif-btn { position: relative; }
+
+    /* ── Setup Banner ── */
     #setup-banner {
       background: #fef3c7; border: 1px solid #fcd34d;
       border-radius: var(--radius); padding: 12px 16px; margin-bottom: 18px;
@@ -351,20 +415,44 @@
     #setup-banner strong { color: #78350f; }
     #setup-banner code { background: #fde68a; border-radius: 4px; padding: 1px 5px; font-size: 11px; }
 
-    /* ── Responsive ─────────────────────────────────────────────────────── */
+    /* ── Responsive ── */
     @media (max-width: 768px) {
       :root { --sidebar-w: 0px; }
       #sidebar { display: none; }
     }
+
+    /* ── Notification Panel ── */
+    #notif-panel {
+      position: fixed; top: var(--header-h); right: 16px; z-index: 150;
+      width: 340px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: var(--shadow-lg);
+      display: none; flex-direction: column; overflow: hidden;
+      animation: fadeUp .18s ease;
+    }
+    #notif-panel.open { display: flex; }
+    .notif-header {
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .notif-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); }
+    .notif-clear { font-size: 11px; color: var(--indigo); background: none; border: none; cursor: pointer; font-weight: 600; }
+    .notif-list { max-height: 340px; overflow-y: auto; }
+    .notif-item {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 4px; cursor: default;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item.unread { background: var(--indigo-lt); }
+    .notif-msg { font-size: 12px; color: var(--text); line-height: 1.5; }
+    .notif-time { font-size: 10px; color: var(--text-3); }
+    .notif-empty { padding: 32px 16px; text-align: center; color: var(--text-3); font-size: 12px; }
   </style>
 </head>
 <body>
 
 <div id="app">
 
-  <!-- ══════════════════════════════════════
-       SIDEBAR
-  ══════════════════════════════════════ -->
+  <!-- ══ SIDEBAR ══ -->
   <aside id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">
@@ -374,14 +462,21 @@
         </svg>
       </div>
       <span class="logo-text">TeamFlow</span>
-      <span class="logo-badge">v2</span>
+      <span class="logo-badge">PRO</span>
+    </div>
+
+    <!-- Who am I -->
+    <div class="current-user-bar">
+      <div class="current-user-label">Logged in as</div>
+      <select class="current-user-select" id="current-user-select" onchange="onCurrentUserChange()">
+      </select>
     </div>
 
     <div class="sidebar-scroll">
       <div class="sidebar-section-title">Team Members</div>
 
       <button class="member-row active" onclick="filterByPerson('')" id="member-all">
-        <div class="member-avatar" style="background:#eef2ff;color:#4f46e5;">
+        <div class="member-avatar" style="background:#eef1fd;color:var(--indigo);">
           <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
@@ -407,9 +502,7 @@
     </div>
   </aside>
 
-  <!-- ══════════════════════════════════════
-       MAIN CONTENT
-  ══════════════════════════════════════ -->
+  <!-- ══ MAIN ══ -->
   <div id="main">
 
     <!-- Top Bar -->
@@ -422,9 +515,19 @@
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('board')" id="tab-board">Board</button>
-          <button class="tab-btn" onclick="switchTab('summary')" id="tab-summary">Summary</button>
+          <button class="tab-btn active" onclick="switchTab('board')"   id="tab-board">Board</button>
+          <button class="tab-btn"        onclick="switchTab('summary')" id="tab-summary">Summary</button>
         </div>
+
+        <!-- Notification bell -->
+        <button class="icon-btn notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications" style="width:36px;height:36px;border:1px solid var(--border);background:var(--bg);">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="notif-dot" id="notif-dot"></span>
+        </button>
+
         <button class="btn-primary" onclick="openModal()">
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
             <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
@@ -434,7 +537,74 @@
       </div>
     </div>
 
-    <!-- Filter Bar (Board only) -->
+    <!-- KPI Dashboard Strip -->
+    <div id="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#eef1fd;">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--indigo)" stroke-width="2"/>
+            <path d="M9 12h6M9 8h6M9 16h3" stroke="var(--indigo)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-num" id="kpi-total">0</div>
+          <div class="kpi-label">Total Tasks</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--blue-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="2"/>
+            <path d="M12 7v5l3 3" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-num" id="kpi-inprog">0</div>
+          <div class="kpi-label">In Progress</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--green-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="22 4 12 14.01 9 11.01" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-num" id="kpi-done">0</div>
+          <div class="kpi-label">Completed</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--red-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="var(--red)" stroke-width="2"/>
+            <line x1="12" y1="8" x2="12" y2="12" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-num" id="kpi-high">0</div>
+          <div class="kpi-label">High Priority Open</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--orange-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="var(--orange)" stroke-width="2"/>
+            <line x1="16" y1="2" x2="16" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="8" y1="2" x2="8" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="10" x2="21" y2="10" stroke="var(--orange)" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-num" id="kpi-overdue">0</div>
+          <div class="kpi-label">Overdue</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
     <div id="filterbar">
       <select class="filter-select" id="flt-priority" onchange="applyFilters()">
         <option value="">All Priorities</option>
@@ -448,35 +618,34 @@
         <option value="In Progress">In Progress</option>
         <option value="Done">Done</option>
       </select>
-      <input class="filter-input" id="flt-search" placeholder="Search by name or notes…" oninput="applyFilters()"/>
-      <button class="filter-clear" onclick="clearFilters()">Clear filters</button>
+      <select class="filter-select" id="flt-due" onchange="applyFilters()">
+        <option value="">All Due Dates</option>
+        <option value="overdue">Overdue</option>
+        <option value="today">Due Today</option>
+        <option value="week">Due This Week</option>
+      </select>
+      <input class="filter-input" id="flt-search" placeholder="Search tasks, notes, people…" oninput="applyFilters()"/>
+      <button class="filter-clear" onclick="clearFilters()">Clear</button>
       <div class="filter-spacer"></div>
-      <!-- Stats chips -->
-      <div class="stat-chip"><span class="stat-dot" style="background:#94a3b8"></span>Total <strong id="stat-total">0</strong></div>
-      <div class="stat-chip"><span class="stat-dot" style="background:#16a34a"></span>Done <strong id="stat-done">0</strong></div>
-      <div class="stat-chip"><span class="stat-dot" style="background:#dc2626"></span>High Open <strong id="stat-high">0</strong></div>
     </div>
 
     <!-- Content -->
     <div id="content">
-      <!-- Setup banner (shown when Supabase not configured) -->
       <div id="setup-banner" style="display:none">
-        ⚙️ <strong>Supabase not configured yet.</strong>
-        Open this file in a text editor and replace <code>YOUR_SUPABASE_URL</code> and
-        <code>YOUR_SUPABASE_ANON_KEY</code> at the top. Then run the SQL from the comment
-        at the bottom of the file to create the <code>tasks</code> table.
-        See the instructions inside the file for a step-by-step guide.
+        ⚙️ <strong>Supabase not configured.</strong> Open this file and replace
+        <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>.
+        Then run the SQL at the bottom to create the <code>tasks</code> table.
       </div>
 
       <!-- Board view -->
       <div id="view-board">
         <div id="cards-grid"></div>
         <div id="empty-state" style="display:none">
-          <svg width="44" height="44" fill="none" viewBox="0 0 24 24">
+          <svg width="48" height="48" fill="none" viewBox="0 0 24 24">
             <rect x="3" y="3" width="18" height="18" rx="3" stroke="#cbd5e1" stroke-width="1.5"/>
             <path d="M9 12h6M9 8h6M9 16h3" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <p>No tasks here yet.<br/>Hit <strong>Add Task</strong> to create the first one.</p>
+          <p>No tasks match your filters.<br/>Hit <strong>Add Task</strong> to create the first one.</p>
         </div>
       </div>
 
@@ -488,17 +657,30 @@
   </div>
 </div>
 
+<!-- Notification Panel -->
+<div id="notif-panel">
+  <div class="notif-header">
+    <span class="notif-title">🔔 Notifications</span>
+    <button class="notif-clear" onclick="clearNotifications()">Mark all read</button>
+  </div>
+  <div class="notif-list" id="notif-list">
+    <div class="notif-empty">No notifications yet</div>
+  </div>
+</div>
+
 <!-- Toast container -->
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════
-     MODAL (Add / Edit Task)
-══════════════════════════════════════ -->
+<!-- ══ MODAL (Add / Edit Task) ══ -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">Add New Task</span>
-      <button class="modal-close" onclick="closeModal()">×</button>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
     </div>
     <div class="form-group">
       <label class="form-label">Task Name</label>
@@ -507,6 +689,10 @@
     <div class="form-group">
       <label class="form-label">Assigned To</label>
       <select class="form-select" id="f-person"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Added By</label>
+      <div class="added-by-display" id="added-by-display">—</div>
     </div>
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
@@ -523,6 +709,10 @@
       </div>
     </div>
     <div class="form-group" style="margin-top:14px">
+      <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
+      <input class="form-input" type="date" id="f-due" />
+    </div>
+    <div class="form-group">
       <label class="form-label">Notes <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Any extra context or links…"></textarea>
     </div>
@@ -534,11 +724,9 @@
 </div>
 
 
-<!-- ══════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════ -->
+<!-- ══ JAVASCRIPT ══ -->
 <script>
-/* ─── Team Config ─────────────────────────────────────────────────────── */
+/* ─── Team Config ── */
 const TEAM = [
   { name: "Umesh",    role: "Manager" },
   { name: "Prabhu",   role: "Senior"  },
@@ -551,30 +739,32 @@ const TEAM = [
 
 const ROLE_COLOR = {
   Manager: { bg: "#fef3c7", text: "#d97706" },
-  Senior:  { bg: "#eef2ff", text: "#4f46e5" },
-  Junior:  { bg: "#f0fdf4", text: "#16a34a" },
+  Senior:  { bg: "#eef1fd", text: "#4361ee" },
+  Junior:  { bg: "#f0fdf4", text: "#059669" },
 };
+const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
 
-const AV_COLORS = [
-  "#4f46e5","#7c3aed","#0891b2","#0d9488","#16a34a","#ca8a04","#dc2626"
-];
-
-/* ─── State ───────────────────────────────────────────────────────────── */
-let supabase = null;
-let tasks      = [];
-let editingId  = null;
-let activeTab  = "board";
+/* ─── State ── */
+let supabase       = null;
+let tasks          = [];
+let editingId      = null;
+let activeTab      = "board";
 let filterPerson   = "";
 let filterPriority = "";
 let filterStatus   = "";
 let filterSearch   = "";
+let filterDue      = "";
 let realtimeSub    = null;
+let currentUser    = TEAM[0].name;
+let notifications  = []; // { id, msg, time, unread, taskId }
 
-/* ─── Init ────────────────────────────────────────────────────────────── */
+/* ─── Init ── */
 async function init() {
+  buildCurrentUserSelect();
   buildSidebar();
   buildPersonDropdown();
   checkSetup();
+  requestNotifPermission();
 
   if (!isConfigured()) return;
 
@@ -589,12 +779,95 @@ function isConfigured() {
 
 function checkSetup() {
   document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
-  if (!isConfigured()) {
-    setSyncStatus("error", "Not connected — see setup instructions above");
+  if (!isConfigured()) setSyncStatus("error", "Not connected — see setup instructions");
+}
+
+/* ─── Current User ── */
+function buildCurrentUserSelect() {
+  const sel = document.getElementById("current-user-select");
+  sel.innerHTML = TEAM.map(m => `<option value="${m.name}">${m.name} (${m.role})</option>`).join("");
+  // default to first
+  currentUser = TEAM[0].name;
+  updateAddedByDisplay();
+}
+
+function onCurrentUserChange() {
+  currentUser = document.getElementById("current-user-select").value;
+  updateAddedByDisplay();
+}
+
+function updateAddedByDisplay() {
+  document.getElementById("added-by-display").textContent = currentUser;
+}
+
+/* ─── Notifications ── */
+function requestNotifPermission() {
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
   }
 }
 
-/* ─── Supabase ────────────────────────────────────────────────────────── */
+function pushNotification(msg, taskId) {
+  const notif = { id: Date.now() + Math.random(), msg, time: new Date(), unread: true, taskId };
+  notifications.unshift(notif);
+  renderNotifPanel();
+  updateNotifDot();
+
+  // Browser notification
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification("TeamFlow", { body: msg, icon: "" });
+  }
+}
+
+function renderNotifPanel() {
+  const list = document.getElementById("notif-list");
+  if (!notifications.length) {
+    list.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
+    return;
+  }
+  list.innerHTML = notifications.slice(0, 30).map(n => `
+    <div class="notif-item ${n.unread ? "unread" : ""}">
+      <div class="notif-msg">${esc(n.msg)}</div>
+      <div class="notif-time">${timeAgo(n.time)}</div>
+    </div>
+  `).join("");
+}
+
+function updateNotifDot() {
+  const dot = document.getElementById("notif-dot");
+  const hasUnread = notifications.some(n => n.unread);
+  dot.classList.toggle("visible", hasUnread);
+}
+
+function toggleNotifPanel() {
+  const panel = document.getElementById("notif-panel");
+  panel.classList.toggle("open");
+}
+
+function clearNotifications() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifPanel();
+  updateNotifDot();
+}
+
+// Close panel when clicking outside
+document.addEventListener("click", e => {
+  const panel = document.getElementById("notif-panel");
+  const btn   = document.getElementById("notif-btn");
+  if (panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target)) {
+    panel.classList.remove("open");
+  }
+});
+
+function timeAgo(date) {
+  const diff = Math.floor((Date.now() - new Date(date)) / 1000);
+  if (diff < 60) return "just now";
+  if (diff < 3600) return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  return Math.floor(diff/86400) + "d ago";
+}
+
+/* ─── Supabase ── */
 async function loadTasks() {
   setSyncStatus("syncing", "Loading tasks…");
   const { data, error } = await supabase
@@ -611,7 +884,20 @@ function subscribeRealtime() {
   if (realtimeSub) supabase.removeChannel(realtimeSub);
   realtimeSub = supabase
     .channel("tasks-channel")
-    .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, () => {
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "tasks" }, payload => {
+      const newTask = payload.new;
+      // Notify if assigned to current user and not added by them
+      if (newTask.person === currentUser && newTask.added_by !== currentUser) {
+        const msg = `📋 ${newTask.added_by || "Someone"} assigned you a new task: "${newTask.name}"`;
+        pushNotification(msg, newTask.id);
+        showToast(`New task assigned to you by ${newTask.added_by || "a teammate"}!`, "info");
+      }
+      loadTasks();
+    })
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "tasks" }, payload => {
+      loadTasks();
+    })
+    .on("postgres_changes", { event: "DELETE", schema: "public", table: "tasks" }, payload => {
       loadTasks();
     })
     .subscribe();
@@ -635,11 +921,11 @@ async function deleteTaskDB(id) {
   return true;
 }
 
-/* ─── Build UI shell ─────────────────────────────────────────────────── */
+/* ─── Build UI ── */
 function buildSidebar() {
   const list = document.getElementById("member-list");
   list.innerHTML = TEAM.map((m, i) => {
-    const c = AV_COLORS[i % AV_COLORS.length];
+    const c  = AV_COLORS[i % AV_COLORS.length];
     const rc = ROLE_COLOR[m.role] || ROLE_COLOR.Junior;
     return `
       <button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')">
@@ -655,19 +941,18 @@ function buildSidebar() {
 
 function buildPersonDropdown() {
   document.getElementById("f-person").innerHTML =
-    TEAM.map(m => `<option value="${m.name}">${m.name} (${m.role})</option>`).join("");
+    TEAM.map(m => `<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");
 }
 
-/* ─── Filtering ──────────────────────────────────────────────────────── */
+/* ─── Filtering ── */
 function filterByPerson(name) {
   filterPerson = name;
-  // Sidebar highlight
   document.querySelectorAll(".member-row").forEach(el => el.classList.remove("active"));
   const target = name ? document.getElementById("mb-" + name) : document.getElementById("member-all");
   if (target) target.classList.add("active");
   document.getElementById("page-title").textContent = name || "Task Board";
   document.getElementById("page-sub").textContent = name
-    ? `Showing tasks for ${name} · ${TEAM.find(m=>m.name===name)?.role}`
+    ? `Showing tasks for ${name} · ${TEAM.find(m => m.name === name)?.role}`
     : "Showing all tasks";
   render();
 }
@@ -676,31 +961,56 @@ function applyFilters() {
   filterPriority = document.getElementById("flt-priority").value;
   filterStatus   = document.getElementById("flt-status").value;
   filterSearch   = document.getElementById("flt-search").value.toLowerCase();
+  filterDue      = document.getElementById("flt-due").value;
   render();
 }
 
 function clearFilters() {
-  filterPriority = ""; filterStatus = ""; filterSearch = "";
+  filterPriority = ""; filterStatus = ""; filterSearch = ""; filterDue = "";
   document.getElementById("flt-priority").value = "";
   document.getElementById("flt-status").value   = "";
   document.getElementById("flt-search").value   = "";
+  document.getElementById("flt-due").value       = "";
   render();
 }
 
-function getFiltered() {
-  return tasks.filter(t =>
-    (!filterPerson   || t.person   === filterPerson) &&
-    (!filterPriority || t.priority === filterPriority) &&
-    (!filterStatus   || t.status   === filterStatus) &&
-    (!filterSearch   || t.name.toLowerCase().includes(filterSearch) ||
-                       (t.notes||"").toLowerCase().includes(filterSearch))
-  );
+function getDueState(dueDate) {
+  if (!dueDate) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due   = new Date(dueDate); due.setHours(0,0,0,0);
+  const diff  = Math.floor((due - today) / 86400000);
+  if (diff < 0)  return "overdue";
+  if (diff === 0) return "today";
+  if (diff <= 3) return "soon";
+  return "normal";
 }
 
-/* ─── Render ─────────────────────────────────────────────────────────── */
+function getFiltered() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return tasks.filter(t => {
+    if (filterPerson   && t.person   !== filterPerson)   return false;
+    if (filterPriority && t.priority !== filterPriority) return false;
+    if (filterStatus   && t.status   !== filterStatus)   return false;
+    if (filterSearch) {
+      const hay = (t.name + " " + (t.notes||"") + " " + t.person + " " + (t.added_by||"")).toLowerCase();
+      if (!hay.includes(filterSearch)) return false;
+    }
+    if (filterDue) {
+      if (!t.due_date) return false;
+      const due  = new Date(t.due_date); due.setHours(0,0,0,0);
+      const diff = Math.floor((due - today) / 86400000);
+      if (filterDue === "overdue" && diff >= 0) return false;
+      if (filterDue === "today"   && diff !== 0) return false;
+      if (filterDue === "week"    && (diff < 0 || diff > 7)) return false;
+    }
+    return true;
+  });
+}
+
+/* ─── Render ── */
 function render() {
   renderCounts();
-  renderStats();
+  renderKPI();
   if (activeTab === "board") renderBoard();
   else renderSummary();
 }
@@ -713,17 +1023,26 @@ function renderCounts() {
   });
 }
 
-function renderStats() {
+function renderKPI() {
   const f = getFiltered();
-  document.getElementById("stat-total").textContent = f.length;
-  document.getElementById("stat-done").textContent  = f.filter(t=>t.status==="Done").length;
-  document.getElementById("stat-high").textContent  = f.filter(t=>t.priority==="High"&&t.status!=="Done").length;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const overdue = f.filter(t => {
+    if (!t.due_date || t.status === "Done") return false;
+    const due = new Date(t.due_date); due.setHours(0,0,0,0);
+    return due < today;
+  }).length;
+  document.getElementById("kpi-total").textContent  = f.length;
+  document.getElementById("kpi-inprog").textContent = f.filter(t => t.status === "In Progress").length;
+  document.getElementById("kpi-done").textContent   = f.filter(t => t.status === "Done").length;
+  document.getElementById("kpi-high").textContent   = f.filter(t => t.priority === "High" && t.status !== "Done").length;
+  document.getElementById("kpi-overdue").textContent = overdue;
 }
 
 function renderBoard() {
   const filtered = getFiltered();
   const grid  = document.getElementById("cards-grid");
   const empty = document.getElementById("empty-state");
+  const today = new Date(); today.setHours(0,0,0,0);
 
   if (!filtered.length) {
     grid.innerHTML = "";
@@ -734,15 +1053,35 @@ function renderBoard() {
 
   grid.innerHTML = filtered.map((t, i) => {
     const memberIdx = TEAM.findIndex(m => m.name === t.person);
-    const avColor = AV_COLORS[memberIdx >= 0 ? memberIdx : 0];
-    const role = TEAM.find(m => m.name === t.person)?.role || "";
-    const rc = ROLE_COLOR[role] || ROLE_COLOR.Junior;
-    const pClass = t.priority === "High" ? "badge-high" : t.priority === "Medium" ? "badge-medium" : "badge-low";
+    const avColor   = AV_COLORS[memberIdx >= 0 ? memberIdx : 0];
+    const role      = TEAM.find(m => m.name === t.person)?.role || "";
+    const rc        = ROLE_COLOR[role] || ROLE_COLOR.Junior;
+    const pClass    = t.priority === "High" ? "badge-high" : t.priority === "Medium" ? "badge-medium" : "badge-low";
     const statusCls = t.status === "Done" ? "status-done" : t.status === "In Progress" ? "status-prog" : "status-todo";
-    const notesHtml = t.notes
-      ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
+    const notesHtml = t.notes ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
+
+    const dueState  = getDueState(t.due_date);
+    let dueBadge    = "";
+    if (t.due_date && t.status !== "Done") {
+      const labels = { overdue: "🔴 Overdue", today: "🟡 Due Today", soon: "⏰ Due Soon", normal: "" };
+      if (dueState !== "normal" && labels[dueState]) {
+        dueBadge = `<span class="due-chip ${dueState}">${labels[dueState]}</span>`;
+      } else if (dueState === "normal") {
+        const d = new Date(t.due_date);
+        dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN', {day:'numeric',month:'short'})}</span>`;
+      }
+    } else if (t.due_date && t.status === "Done") {
+      const d = new Date(t.due_date);
+      dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN', {day:'numeric',month:'short'})}</span>`;
+    }
+
+    const isOverdue = dueState === "overdue" && t.status !== "Done";
+    const addedByHtml = t.added_by
+      ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`
+      : "";
+
     return `
-      <div class="task-card" style="animation-delay:${i*0.03}s">
+      <div class="task-card pri-${t.priority} ${isOverdue ? "overdue" : ""}" style="animation-delay:${i*0.03}s">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
           <div class="card-actions">
@@ -763,48 +1102,58 @@ function renderBoard() {
         ${notesHtml}
         <div class="card-meta">
           <span class="badge ${pClass}">${t.priority}</span>
+          ${dueBadge}
         </div>
         <div class="card-footer">
-          <div class="card-assignee">
-            <div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person[0]}</div>
-            <div>
-              <div class="assignee-name">${esc(t.person)}</div>
-              <div class="assignee-role" style="color:${rc.text}">${role}</div>
+          <div class="card-footer-row">
+            <div class="card-assignee">
+              <div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person ? t.person[0] : "?"}</div>
+              <div>
+                <div class="assignee-name">${esc(t.person)}</div>
+                <div class="assignee-role" style="color:${rc.text}">${role}</div>
+              </div>
             </div>
+            <select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
+              <option ${t.status==="To Do"?"selected":""}>To Do</option>
+              <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+              <option ${t.status==="Done"?"selected":""}>Done</option>
+            </select>
           </div>
-          <select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
-            <option ${t.status==="To Do"?"selected":""}>To Do</option>
-            <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
-            <option ${t.status==="Done"?"selected":""}>Done</option>
-          </select>
+          ${addedByHtml ? `<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>` : ""}
         </div>
       </div>`;
   }).join("");
 }
 
 function renderSummary() {
-  const grid = document.getElementById("summary-grid");
+  const grid    = document.getElementById("summary-grid");
   const maxLoad = Math.max(...TEAM.map(m => tasks.filter(t => t.person === m.name).length), 1);
 
   grid.innerHTML = TEAM.map((member, i) => {
-    const mine   = tasks.filter(t => t.person === member.name);
-    const total  = mine.length;
-    const doneC  = mine.filter(t=>t.status==="Done").length;
-    const inpC   = mine.filter(t=>t.status==="In Progress").length;
-    const todoC  = mine.filter(t=>t.status==="To Do").length;
-    const highC  = mine.filter(t=>t.priority==="High"&&t.status!=="Done").length;
-    const pct    = total ? Math.round(doneC/total*100) : 0;
-    const barW   = total ? Math.round(total/maxLoad*100) : 0;
-    const color  = AV_COLORS[i % AV_COLORS.length];
-    const rc     = ROLE_COLOR[member.role] || ROLE_COLOR.Junior;
-    const loaded = total >= 5;
+    const mine  = tasks.filter(t => t.person === member.name);
+    const total = mine.length;
+    const doneC = mine.filter(t => t.status === "Done").length;
+    const inpC  = mine.filter(t => t.status === "In Progress").length;
+    const todoC = mine.filter(t => t.status === "To Do").length;
+    const highC = mine.filter(t => t.priority === "High" && t.status !== "Done").length;
+    const pct   = total ? Math.round(doneC/total*100) : 0;
+    const barW  = total ? Math.round(total/maxLoad*100) : 0;
+    const color = AV_COLORS[i % AV_COLORS.length];
+    const rc    = ROLE_COLOR[member.role] || ROLE_COLOR.Junior;
+    const loaded= total >= 5;
+    const overdueC = mine.filter(t => {
+      if (!t.due_date || t.status === "Done") return false;
+      const today = new Date(); today.setHours(0,0,0,0);
+      const due   = new Date(t.due_date); due.setHours(0,0,0,0);
+      return due < today;
+    }).length;
     return `
-      <div class="summary-card ${loaded?"overloaded":""}">
+      <div class="summary-card ${loaded ? "overloaded" : ""}">
         <div class="sc-header">
           <div class="sc-person">
-            <div class="member-avatar" style="background:${color}22;color:${color};width:38px;height:38px;font-size:14px">${member.name[0]}</div>
+            <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px">${member.name[0]}</div>
             <div>
-              <div style="font-weight:600;font-size:14px;color:var(--text)">${member.name}</div>
+              <div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div>
               <div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div>
             </div>
           </div>
@@ -823,16 +1172,15 @@ function renderSummary() {
         </div>
         <div class="sc-foot">
           <span style="color:var(--text-3)">${pct}% complete</span>
-          ${highC > 0
-            ? `<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>`
-            : `<span style="color:var(--green)">✓ No high priority</span>`}
+          ${highC > 0 ? `<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>` : `<span style="color:var(--green)">✓ No high priority</span>`}
         </div>
-        ${loaded ? `<div class="sc-warn">⚠ Overloaded — ${total} tasks assigned</div>` : ""}
+        ${overdueC > 0 ? `<div class="sc-warn">🔴 ${overdueC} overdue task${overdueC > 1 ? "s" : ""}</div>` : ""}
+        ${loaded ? `<div class="sc-warn" style="background:var(--amber-lt);border-color:var(--amber-bd);color:var(--amber)">⚠ High load — ${total} tasks</div>` : ""}
       </div>`;
   }).join("");
 }
 
-/* ─── Tab switching ──────────────────────────────────────────────────── */
+/* ─── Tab switching ── */
 function switchTab(tab) {
   activeTab = tab;
   document.getElementById("view-board").style.display   = tab === "board"   ? "block" : "none";
@@ -843,7 +1191,7 @@ function switchTab(tab) {
   render();
 }
 
-/* ─── Modal ──────────────────────────────────────────────────────────── */
+/* ─── Modal ── */
 function openModal() {
   editingId = null;
   document.getElementById("modal-title").textContent = "Add New Task";
@@ -853,6 +1201,8 @@ function openModal() {
   document.getElementById("f-priority").value = "Medium";
   document.getElementById("f-status").value   = "To Do";
   document.getElementById("f-notes").value    = "";
+  document.getElementById("f-due").value      = "";
+  updateAddedByDisplay();
   document.getElementById("modal").style.display = "flex";
   setTimeout(() => document.getElementById("f-name").focus(), 60);
 }
@@ -868,6 +1218,8 @@ function openEdit(id) {
   document.getElementById("f-priority").value = t.priority;
   document.getElementById("f-status").value   = t.status;
   document.getElementById("f-notes").value    = t.notes || "";
+  document.getElementById("f-due").value      = t.due_date || "";
+  document.getElementById("added-by-display").textContent = t.added_by || currentUser;
   document.getElementById("modal").style.display = "flex";
   setTimeout(() => document.getElementById("f-name").focus(), 60);
 }
@@ -884,7 +1236,7 @@ function handleOverlayClick(e) {
 async function saveTask() {
   const name = document.getElementById("f-name").value.trim();
   if (!name) { document.getElementById("f-name").focus(); return; }
-  if (!isConfigured()) { showToast("Configure Supabase first (see banner above)", "error"); return; }
+  if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
 
   const payload = {
     name,
@@ -892,7 +1244,12 @@ async function saveTask() {
     priority: document.getElementById("f-priority").value,
     status:   document.getElementById("f-status").value,
     notes:    document.getElementById("f-notes").value.trim(),
+    due_date: document.getElementById("f-due").value || null,
   };
+
+  if (!editingId) {
+    payload.added_by = currentUser;
+  }
 
   closeModal();
   setSyncStatus("syncing", "Saving…");
@@ -918,42 +1275,42 @@ async function deleteTask(id) {
   if (ok) showToast("Task deleted", "success");
 }
 
-/* ─── Sync Status ────────────────────────────────────────────────────── */
+/* ─── Sync Status ── */
 function setSyncStatus(state, msg) {
   const dot   = document.getElementById("sync-dot");
   const label = document.getElementById("sync-label");
-  dot.className   = "sync-dot" + (state === "syncing" ? " syncing" : state === "error" ? " error" : "");
+  dot.className = "sync-dot" + (state === "syncing" ? " syncing" : state === "error" ? " error" : "");
   label.textContent = msg;
 }
 
-/* ─── Toast ──────────────────────────────────────────────────────────── */
+/* ─── Toast ── */
 function showToast(msg, type = "") {
   const c = document.getElementById("toast");
   const el = document.createElement("div");
   el.className = "toast-item " + type;
-  el.textContent = msg;
+  el.innerHTML = `<span>${esc(msg)}</span>`;
   c.appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
 
-/* ─── Utils ──────────────────────────────────────────────────────────── */
+/* ─── Utils ── */
 function esc(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
-/* ─── Keyboard shortcuts ──────────────────────────────────────────────── */
+/* ─── Keyboard shortcuts ── */
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeModal();
-  if (e.key === "n" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") openModal();
+  if (e.key === "n" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA" && document.activeElement.tagName !== "SELECT") openModal();
 });
 
-/* ─── Start ──────────────────────────────────────────────────────────── */
+/* ─── Start ── */
 init();
 </script>
 
 <!--
 ═══════════════════════════════════════════════════════════════════════════
-  SUPABASE TABLE SETUP — Run this SQL once in your Supabase SQL Editor
+  SUPABASE TABLE SETUP — Run this SQL once in the SQL Editor
   (Left sidebar → SQL Editor → New query → paste → Run)
 ═══════════════════════════════════════════════════════════════════════════
 
@@ -961,14 +1318,14 @@ create table if not exists tasks (
   id          uuid primary key default gen_random_uuid(),
   name        text not null,
   person      text not null,
+  added_by    text default '',
   priority    text not null default 'Medium',
   status      text not null default 'To Do',
   notes       text default '',
+  due_date    date default null,
   created_at  timestamptz default now()
 );
 
--- Allow public read/write (suitable for a private team tool).
--- If you want login-based access, replace this with proper auth policies.
 alter table tasks enable row level security;
 
 create policy "Team open access"
@@ -976,8 +1333,11 @@ create policy "Team open access"
   using (true)
   with check (true);
 
--- Enable real-time so every team member's browser auto-updates instantly.
 alter publication supabase_realtime add table tasks;
+
+-- If you already have the tasks table and need to add the new columns:
+-- alter table tasks add column if not exists added_by text default '';
+-- alter table tasks add column if not exists due_date date default null;
 
 ═══════════════════════════════════════════════════════════════════════════
 -->
