@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TeamFlow — Task Manager</title>
+  <title>Sharvii Technologies — Task Manager</title>
 
   <script>
     const SUPABASE_URL = "https://aagztfgkthgpysrlyksa.supabase.co";
     const SUPABASE_KEY = "sb_publishable_dCYu2aNVBG2DIIeIC_hwdw_p18eQsa5";
   </script>
 
-  <!-- No Supabase library: all DB calls use plain fetch() against the REST API -->
+  <!-- No Supabase JS library — all DB calls use plain fetch() against the REST API -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -22,7 +22,6 @@
     :root {
       --bg:         #f4f6fb;
       --surface:    #ffffff;
-      --surface-2:  #f8fafd;
       --border:     #e4e9f2;
       --border-md:  #cdd5e4;
       --text:       #0d1b2e;
@@ -33,7 +32,6 @@
       --indigo-lt:  #eef1fd;
       --indigo-bd:  #b8c5f8;
       --violet:     #7c3aed;
-      --teal:       #0d9488;
       --green:      #059669;
       --green-lt:   #ecfdf5;
       --green-bd:   #a7f3d0;
@@ -49,6 +47,9 @@
       --orange:     #ea580c;
       --orange-lt:  #fff7ed;
       --orange-bd:  #fed7aa;
+      --teal:       #0d9488;
+      --teal-lt:    #f0fdfa;
+      --teal-bd:    #99f6e4;
       --sidebar-w:  270px;
       --header-h:   62px;
       --radius:     12px;
@@ -75,25 +76,27 @@
     }
     .sidebar-logo {
       height: var(--header-h); display: flex; align-items: center; gap: 10px;
-      padding: 0 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+      padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
     .logo-icon {
-      width: 32px; height: 32px; border-radius: 9px;
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
       background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
       box-shadow: 0 2px 8px rgba(67,97,238,.35);
     }
-    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--text); letter-spacing: -.02em; }
+    /* ── Branding: Sharvii Technologies ── */
+    .logo-text {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+      color: var(--text); letter-spacing: -.01em; line-height: 1.2;
+    }
     .logo-badge {
       font-size: 9px; font-weight: 700; color: var(--indigo);
       background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
-      border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em;
+      border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em; flex-shrink: 0;
     }
 
     /* ── Current user selector ── */
-    .current-user-bar {
-      padding: 12px 16px 0; flex-shrink: 0;
-    }
+    .current-user-bar { padding: 12px 16px 0; flex-shrink: 0; }
     .current-user-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
     .current-user-select {
       width: 100%; background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
@@ -104,8 +107,7 @@
 
     .sidebar-section-title {
       font-size: 10px; font-weight: 700; color: var(--text-3);
-      text-transform: uppercase; letter-spacing: .07em;
-      padding: 16px 20px 8px;
+      text-transform: uppercase; letter-spacing: .07em; padding: 16px 20px 8px;
     }
     .sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 16px; }
 
@@ -117,24 +119,29 @@
     .member-row:hover { background: var(--bg); }
     .member-row.active { background: var(--indigo-lt); }
     .member-row.active .member-name { color: var(--indigo); font-weight: 600; }
+
+    /* ── FIX 1: Member avatar — always perfectly circular, centered ── */
     .member-avatar {
       width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 12px;
+      font-weight: 700; font-size: 13px; line-height: 1;
+      text-align: center; overflow: hidden;
     }
     .member-info { flex: 1; min-width: 0; }
     .member-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .member-role { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+    /* ── FIX 1: Count badge — fixed square size, perfectly circular pill ── */
     .member-count {
-      min-width: 20px; height: 20px; border-radius: 99px;
+      width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0;
       background: var(--bg); border: 1px solid var(--border);
-      font-size: 11px; font-weight: 600; color: var(--text-2);
-      display: flex; align-items: center; justify-content: center; padding: 0 5px;
+      font-size: 11px; font-weight: 700; color: var(--text-2);
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1; text-align: center;
     }
     .member-row.active .member-count { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 
     .sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
-
     .sidebar-footer { border-top: 1px solid var(--border); padding: 14px 20px; flex-shrink: 0; }
     .sync-status { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-3); }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
@@ -147,8 +154,7 @@
 
     /* ── Top Bar ── */
     #topbar {
-      height: var(--header-h); background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px; gap: 12px; flex-shrink: 0;
     }
@@ -168,13 +174,12 @@
       background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
       color: #fff; border: none; border-radius: var(--radius);
       padding: 9px 18px; font-size: 13px; font-weight: 600;
-      transition: opacity .15s, transform .1s;
-      box-shadow: 0 2px 8px rgba(67,97,238,.32);
+      transition: opacity .15s, transform .1s; box-shadow: 0 2px 8px rgba(67,97,238,.32);
     }
     .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
 
-    /* ── Dashboard KPI strip ── */
+    /* ── KPI Strip ── */
     #kpi-strip {
       background: var(--surface); border-bottom: 1px solid var(--border);
       padding: 14px 24px; display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0;
@@ -184,7 +189,6 @@
       border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px;
     }
     .kpi-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .kpi-body {}
     .kpi-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
     .kpi-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
 
@@ -202,22 +206,20 @@
     .filter-input { min-width: 180px; flex: 1; max-width: 260px; }
     .filter-clear {
       font-size: 12px; color: var(--text-3); background: none;
-      border: 1px solid var(--border); border-radius: 8px; padding: 6px 11px;
-      transition: all .12s;
+      border: 1px solid var(--border); border-radius: 8px; padding: 6px 11px; transition: all .12s;
     }
     .filter-clear:hover { color: var(--text); border-color: var(--border-md); }
     .filter-spacer { flex: 1; }
 
-    /* ── Content Area ── */
+    /* ── Content ── */
     #content { flex: 1; overflow-y: auto; padding: 22px 24px; }
 
-    /* ── Task Cards Grid ── */
+    /* ── Task Cards ── */
     #cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
       gap: 14px;
     }
-
     .task-card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 14px; box-shadow: var(--shadow-sm);
@@ -229,10 +231,10 @@
       content: ''; position: absolute; left: 0; top: 0; bottom: 0;
       width: 3px; border-radius: 14px 0 0 14px;
     }
-    .task-card.pri-High::before    { background: var(--red); }
-    .task-card.pri-Medium::before  { background: var(--amber); }
-    .task-card.pri-Low::before     { background: var(--green); }
-    .task-card.overdue             { border-color: var(--red-bd); }
+    .task-card.pri-High::before   { background: var(--red); }
+    .task-card.pri-Medium::before { background: var(--amber); }
+    .task-card.pri-Low::before    { background: var(--green); }
+    .task-card.overdue            { border-color: var(--red-bd); }
     .task-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
@@ -256,28 +258,35 @@
       display: inline-flex; align-items: center; gap: 4px;
       border-radius: 5px; padding: 3px 8px; font-size: 11px; font-weight: 600; border: 1px solid;
     }
-    .badge-high   { background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
-    .badge-medium { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
-    .badge-low    { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
-    .badge-todo   { background: var(--bg);         color: var(--text-2); border-color: var(--border-md); }
-    .badge-prog   { background: var(--blue-lt);   color: var(--blue);   border-color: var(--blue-bd); }
-    .badge-done   { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
-    .badge-overdue{ background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
-    .badge-due    { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
+    .badge-high    { background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
+    .badge-medium  { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
+    .badge-low     { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
+
+    /* ── FIX 3: Effort level badge ── */
+    .badge-effort-high   { background: #fdf2f8; color: #9d174d; border-color: #f9a8d4; }
+    .badge-effort-medium { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+    .badge-effort-low    { background: var(--teal-lt); color: var(--teal); border-color: var(--teal-bd); }
 
     .card-footer { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
     .card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 
     .card-assignee { display: flex; align-items: center; gap: 7px; }
-    .assignee-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+    .assignee-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; line-height: 1; }
     .assignee-name { font-size: 12px; font-weight: 600; color: var(--text); }
     .assignee-role { font-size: 10px; color: var(--text-3); }
+
     .added-by-pill {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 10px; color: var(--text-3); background: var(--bg);
       border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px;
     }
     .added-by-pill strong { color: var(--text-2); font-weight: 600; }
+
+    /* ── FIX 6: Status lock hint ── */
+    .status-lock-hint {
+      font-size: 10px; color: var(--text-3); font-style: italic;
+      display: flex; align-items: center; gap: 4px;
+    }
 
     .status-select {
       background: transparent; border: 1px solid var(--border-md); border-radius: 7px;
@@ -289,15 +298,15 @@
     .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
     .status-select.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
 
-    /* ── Due date display ── */
+    /* ── Due date chips ── */
     .due-chip {
       display: inline-flex; align-items: center; gap: 4px;
       font-size: 10px; font-weight: 600; border-radius: 99px; padding: 2px 8px; border: 1px solid;
     }
-    .due-chip.overdue { background: var(--red-lt); color: var(--red); border-color: var(--red-bd); }
+    .due-chip.overdue { background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
     .due-chip.today   { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
-    .due-chip.soon    { background: var(--amber-lt); color: var(--amber); border-color: var(--amber-bd); }
-    .due-chip.normal  { background: var(--bg); color: var(--text-3); border-color: var(--border); }
+    .due-chip.soon    { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
+    .due-chip.normal  { background: var(--bg);        color: var(--text-3); border-color: var(--border); }
 
     /* ── Empty State ── */
     #empty-state {
@@ -326,10 +335,24 @@
     .sc-total-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
     .sc-bar-wrap { height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .sc-bar { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+    /* ── FIX 1: Summary stats — fixed square cells so numbers don't stretch ── */
     .sc-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .sc-stat { background: var(--bg); border-radius: 8px; padding: 8px 6px; text-align: center; }
-    .sc-stat-num { font-size: 16px; font-weight: 700; line-height: 1; }
-    .sc-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+    .sc-stat {
+      background: var(--bg); border-radius: 8px; padding: 10px 6px;
+      text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .sc-stat-num {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+      line-height: 1; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; margin: 0 auto 4px;
+    }
+    .sc-stat-num.todo-num  { background: var(--bg);       color: var(--text-2); border: 1.5px solid var(--border-md); }
+    .sc-stat-num.prog-num  { background: var(--blue-lt);  color: var(--blue);   border: 1.5px solid var(--blue-bd); }
+    .sc-stat-num.done-num  { background: var(--green-lt); color: var(--green);  border: 1.5px solid var(--green-bd); }
+    .sc-stat-lbl { font-size: 10px; color: var(--text-3); }
+
     .sc-foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
     .sc-warn { margin-top: 8px; background: var(--red-lt); border: 1px solid var(--red-bd); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--red); font-weight: 500; }
 
@@ -342,15 +365,15 @@
     .modal-box {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 18px; box-shadow: var(--shadow-lg);
-      width: 100%; max-width: 460px; padding: 28px;
-      animation: fadeUp .18s ease;
+      width: 100%; max-width: 480px; padding: 28px;
+      animation: fadeUp .18s ease; max-height: 90vh; overflow-y: auto;
     }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
     .modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
     .modal-close {
-      width: 30px; height: 30px; border: none; background: none;
-      font-size: 20px; color: var(--text-3); cursor: pointer;
-      border-radius: 7px; transition: background .12s; display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border: none; background: none; font-size: 20px;
+      color: var(--text-3); cursor: pointer; border-radius: 7px; transition: background .12s;
+      display: flex; align-items: center; justify-content: center;
     }
     .modal-close:hover { background: var(--bg); color: var(--text); }
 
@@ -366,8 +389,8 @@
     }
     .form-textarea { resize: none; line-height: 1.5; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-    /* Added by display in modal */
     .added-by-display {
       background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
       border-radius: 9px; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--indigo);
@@ -377,17 +400,13 @@
     .modal-footer { display: flex; gap: 10px; margin-top: 22px; }
     .btn-ghost {
       flex: 1; padding: 11px; border: 1.5px solid var(--border); background: none;
-      border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--text-2);
-      transition: all .12s;
+      border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--text-2); transition: all .12s;
     }
     .btn-ghost:hover { background: var(--bg); border-color: var(--border-md); color: var(--text); }
     .btn-save { flex: 1; padding: 11px; }
 
     /* ── Toast ── */
-    #toast {
-      position: fixed; bottom: 22px; right: 22px; z-index: 200;
-      display: flex; flex-direction: column; gap: 8px;
-    }
+    #toast { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
     .toast-item {
       background: var(--text); color: #fff; border-radius: 10px;
       padding: 11px 16px; font-size: 12px; font-weight: 500;
@@ -398,19 +417,15 @@
     .toast-item.error   { background: #991b1b; }
     .toast-item.info    { background: var(--indigo); }
 
-    /* ── Notification bell dot ── */
-    .notif-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--red);
-      position: absolute; top: -2px; right: -2px; display: none;
-    }
+    /* ── Notification bell ── */
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); position: absolute; top: -2px; right: -2px; display: none; }
     .notif-dot.visible { display: block; }
     .notif-btn { position: relative; }
 
     /* ── Setup Banner ── */
     #setup-banner {
-      background: #fef3c7; border: 1px solid #fcd34d;
-      border-radius: var(--radius); padding: 12px 16px; margin-bottom: 18px;
-      font-size: 12px; color: #92400e; line-height: 1.6;
+      background: #fef3c7; border: 1px solid #fcd34d; border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 18px; font-size: 12px; color: #92400e; line-height: 1.6;
     }
     #setup-banner strong { color: #78350f; }
     #setup-banner code { background: #fde68a; border-radius: 4px; padding: 1px 5px; font-size: 11px; }
@@ -426,21 +441,14 @@
       position: fixed; top: var(--header-h); right: 16px; z-index: 150;
       width: 340px; background: var(--surface); border: 1px solid var(--border);
       border-radius: 14px; box-shadow: var(--shadow-lg);
-      display: none; flex-direction: column; overflow: hidden;
-      animation: fadeUp .18s ease;
+      display: none; flex-direction: column; overflow: hidden; animation: fadeUp .18s ease;
     }
     #notif-panel.open { display: flex; }
-    .notif-header {
-      padding: 14px 16px; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .notif-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .notif-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); }
     .notif-clear { font-size: 11px; color: var(--indigo); background: none; border: none; cursor: pointer; font-weight: 600; }
     .notif-list { max-height: 340px; overflow-y: auto; }
-    .notif-item {
-      padding: 12px 16px; border-bottom: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 4px; cursor: default;
-    }
+    .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
     .notif-item:last-child { border-bottom: none; }
     .notif-item.unread { background: var(--indigo-lt); }
     .notif-msg { font-size: 12px; color: var(--text); line-height: 1.5; }
@@ -456,20 +464,19 @@
   <aside id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-          <path d="M9 11l3 3L22 4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- FIX 2: Sharvii Technologies logo — building/office icon -->
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+          <path d="M3 21h18M3 7l9-4 9 4M4 7v14M20 7v14M9 21v-4a3 3 0 016 0v4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <span class="logo-text">TeamFlow</span>
+      <span class="logo-text">Sharvii<br>Technologies</span>
       <span class="logo-badge">PRO</span>
     </div>
 
-    <!-- Who am I -->
+    <!-- Who am I — FIX 4: restored from localStorage -->
     <div class="current-user-bar">
       <div class="current-user-label">Logged in as</div>
-      <select class="current-user-select" id="current-user-select" onchange="onCurrentUserChange()">
-      </select>
+      <select class="current-user-select" id="current-user-select" onchange="onCurrentUserChange()"></select>
     </div>
 
     <div class="sidebar-scroll">
@@ -518,8 +525,7 @@
           <button class="tab-btn active" onclick="switchTab('board')"   id="tab-board">Board</button>
           <button class="tab-btn"        onclick="switchTab('summary')" id="tab-summary">Summary</button>
         </div>
-
-        <!-- Notification bell -->
+        <!-- Bell -->
         <button class="icon-btn notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications" style="width:36px;height:36px;border:1px solid var(--border);background:var(--bg);">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -527,80 +533,44 @@
           </svg>
           <span class="notif-dot" id="notif-dot"></span>
         </button>
-
         <button class="btn-primary" onclick="openModal()">
-          <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
-            <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-          </svg>
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
           Add Task
         </button>
       </div>
     </div>
 
-    <!-- KPI Dashboard Strip -->
+    <!-- KPI Strip -->
     <div id="kpi-strip">
       <div class="kpi-card">
         <div class="kpi-icon" style="background:#eef1fd;">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--indigo)" stroke-width="2"/>
-            <path d="M9 12h6M9 8h6M9 16h3" stroke="var(--indigo)" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--indigo)" stroke-width="2"/><path d="M9 12h6M9 8h6M9 16h3" stroke="var(--indigo)" stroke-width="1.5" stroke-linecap="round"/></svg>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-num" id="kpi-total">0</div>
-          <div class="kpi-label">Total Tasks</div>
-        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-total">0</div><div class="kpi-label">Total Tasks</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon" style="background:var(--blue-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="2"/>
-            <path d="M12 7v5l3 3" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="2"/><path d="M12 7v5l3 3" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-num" id="kpi-inprog">0</div>
-          <div class="kpi-label">In Progress</div>
-        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-inprog">0</div><div class="kpi-label">In Progress</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon" style="background:var(--green-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="22 4 12 14.01 9 11.01" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-num" id="kpi-done">0</div>
-          <div class="kpi-label">Completed</div>
-        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-done">0</div><div class="kpi-label">Completed</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon" style="background:var(--red-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="var(--red)" stroke-width="2"/>
-            <line x1="12" y1="8" x2="12" y2="12" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="var(--red)" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-num" id="kpi-high">0</div>
-          <div class="kpi-label">High Priority Open</div>
-        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-high">0</div><div class="kpi-label">High Priority Open</div></div>
       </div>
       <div class="kpi-card">
         <div class="kpi-icon" style="background:var(--orange-lt);">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="var(--orange)" stroke-width="2"/>
-            <line x1="16" y1="2" x2="16" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="8" y1="2" x2="8" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="3" y1="10" x2="21" y2="10" stroke="var(--orange)" stroke-width="2"/>
-          </svg>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--orange)" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="var(--orange)" stroke-width="2"/></svg>
         </div>
-        <div class="kpi-body">
-          <div class="kpi-num" id="kpi-overdue">0</div>
-          <div class="kpi-label">Overdue</div>
-        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-overdue">0</div><div class="kpi-label">Overdue</div></div>
       </div>
     </div>
 
@@ -632,19 +602,14 @@
     <!-- Content -->
     <div id="content">
       <div id="setup-banner" style="display:none">
-        ⚙️ <strong>Supabase not configured.</strong> Open this file and replace
-        <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>.
-        Then run the SQL at the bottom to create the <code>tasks</code> table.
+        ⚙️ <strong>Supabase not configured.</strong> Replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>, then run the SQL below.
       </div>
 
       <!-- Board view -->
       <div id="view-board">
         <div id="cards-grid"></div>
         <div id="empty-state" style="display:none">
-          <svg width="48" height="48" fill="none" viewBox="0 0 24 24">
-            <rect x="3" y="3" width="18" height="18" rx="3" stroke="#cbd5e1" stroke-width="1.5"/>
-            <path d="M9 12h6M9 8h6M9 16h3" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+          <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#cbd5e1" stroke-width="1.5"/><path d="M9 12h6M9 8h6M9 16h3" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/></svg>
           <p>No tasks match your filters.<br/>Hit <strong>Add Task</strong> to create the first one.</p>
         </div>
       </div>
@@ -671,15 +636,13 @@
 <!-- Toast container -->
 <div id="toast"></div>
 
-<!-- ══ MODAL (Add / Edit Task) ══ -->
+<!-- ══ MODAL ══ -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
       <span class="modal-title" id="modal-title">Add New Task</span>
       <button class="modal-close" onclick="closeModal()">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       </button>
     </div>
     <div class="form-group">
@@ -694,7 +657,8 @@
       <label class="form-label">Added By</label>
       <div class="added-by-display" id="added-by-display">—</div>
     </div>
-    <div class="form-row">
+    <!-- Priority + Status + Effort in one row -->
+    <div class="form-row-3">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Priority</label>
         <select class="form-select" id="f-priority">
@@ -707,6 +671,15 @@
           <option>To Do</option><option>In Progress</option><option>Done</option>
         </select>
       </div>
+      <!-- FIX 3: Effort Level field -->
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Effort</label>
+        <select class="form-select" id="f-effort">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
     </div>
     <div class="form-group" style="margin-top:14px">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
@@ -715,6 +688,10 @@
     <div class="form-group">
       <label class="form-label">Notes <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Any extra context or links…"></textarea>
+    </div>
+    <!-- FIX 6: Status lock notice in modal -->
+    <div style="background:var(--amber-lt);border:1px solid var(--amber-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#92400e;margin-bottom:6px;">
+      🔒 <strong>Note:</strong> Only the task assignee or Manager (Umesh) should update the task status.
     </div>
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
@@ -736,6 +713,7 @@ const TEAM = [
   { name: "Divya",    role: "Junior"  },
   { name: "Hema",     role: "Junior"  },
 ];
+const MANAGER_NAME = "Umesh";
 
 const ROLE_COLOR = {
   Manager: { bg: "#fef3c7", text: "#d97706" },
@@ -755,11 +733,13 @@ let filterSearch   = "";
 let filterDue      = "";
 let pollTimer      = null;
 let lastTaskIds    = new Set();
-let currentUser    = TEAM[0].name;
 let notifications  = [];
 
-/* ─── REST helpers — zero dependencies, plain fetch() ── */
-const REST = `${SUPABASE_URL}/rest/v1`;
+/* FIX 4: Restore currentUser from localStorage */
+let currentUser = localStorage.getItem("sharvii_current_user") || TEAM[0].name;
+
+/* ─── REST helpers — zero dependencies ── */
+const REST    = `${SUPABASE_URL}/rest/v1`;
 const HEADERS = {
   "Content-Type":  "application/json",
   "apikey":        SUPABASE_KEY,
@@ -811,9 +791,7 @@ async function init() {
   buildPersonDropdown();
   checkSetup();
   requestNotifPermission();
-
   if (!isConfigured()) return;
-
   await loadTasks();
   startPolling();
 }
@@ -824,7 +802,7 @@ function isConfigured() {
 
 function checkSetup() {
   document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
-  if (!isConfigured()) setSyncStatus("error", "Not connected — see setup instructions");
+  if (!isConfigured()) setSyncStatus("error", "Not connected");
 }
 
 /* ─── Polling (replaces Realtime WebSocket) ── */
@@ -833,12 +811,14 @@ function startPolling() {
   pollTimer = setInterval(async () => {
     try {
       const fresh = await dbSelect();
-      // Detect new tasks assigned to current user
+      // FIX 5: detect new tasks assigned to me
       fresh.forEach(t => {
         if (!lastTaskIds.has(t.id) && t.person === currentUser && t.added_by !== currentUser) {
           const msg = `📋 ${t.added_by || "Someone"} assigned you: "${t.name}"`;
           pushNotification(msg, t.id);
           showToast(`New task assigned to you by ${t.added_by || "a teammate"}!`, "info");
+          playNotifSound();
+          fireBrowserNotif("New task assigned", msg);
         }
       });
       lastTaskIds = new Set(fresh.map(t => t.id));
@@ -848,95 +828,10 @@ function startPolling() {
     } catch (e) {
       setSyncStatus("error", "Sync error — retrying…");
     }
-  }, 8000); // poll every 8 seconds
+  }, 8000);
 }
 
-/* ─── Current User ── */
-function buildCurrentUserSelect() {
-  const sel = document.getElementById("current-user-select");
-  sel.innerHTML = TEAM.map(m => `<option value="${m.name}">${m.name} (${m.role})</option>`).join("");
-  // default to first
-  currentUser = TEAM[0].name;
-  updateAddedByDisplay();
-}
-
-function onCurrentUserChange() {
-  currentUser = document.getElementById("current-user-select").value;
-  updateAddedByDisplay();
-}
-
-function updateAddedByDisplay() {
-  document.getElementById("added-by-display").textContent = currentUser;
-}
-
-/* ─── Notifications ── */
-function requestNotifPermission() {
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission();
-  }
-}
-
-function pushNotification(msg, taskId) {
-  const notif = { id: Date.now() + Math.random(), msg, time: new Date(), unread: true, taskId };
-  notifications.unshift(notif);
-  renderNotifPanel();
-  updateNotifDot();
-
-  // Browser notification
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("TeamFlow", { body: msg, icon: "" });
-  }
-}
-
-function renderNotifPanel() {
-  const list = document.getElementById("notif-list");
-  if (!notifications.length) {
-    list.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
-    return;
-  }
-  list.innerHTML = notifications.slice(0, 30).map(n => `
-    <div class="notif-item ${n.unread ? "unread" : ""}">
-      <div class="notif-msg">${esc(n.msg)}</div>
-      <div class="notif-time">${timeAgo(n.time)}</div>
-    </div>
-  `).join("");
-}
-
-function updateNotifDot() {
-  const dot = document.getElementById("notif-dot");
-  const hasUnread = notifications.some(n => n.unread);
-  dot.classList.toggle("visible", hasUnread);
-}
-
-function toggleNotifPanel() {
-  const panel = document.getElementById("notif-panel");
-  panel.classList.toggle("open");
-}
-
-function clearNotifications() {
-  notifications.forEach(n => n.unread = false);
-  renderNotifPanel();
-  updateNotifDot();
-}
-
-// Close panel when clicking outside
-document.addEventListener("click", e => {
-  const panel = document.getElementById("notif-panel");
-  const btn   = document.getElementById("notif-btn");
-  if (panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target)) {
-    panel.classList.remove("open");
-  }
-});
-
-function timeAgo(date) {
-  const diff = Math.floor((Date.now() - new Date(date)) / 1000);
-  if (diff < 60) return "just now";
-  if (diff < 3600) return Math.floor(diff/60) + "m ago";
-  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
-  return Math.floor(diff/86400) + "d ago";
-}
-
-/* ─── DB operations (plain fetch — no Supabase library) ── */
+/* ─── DB operations ── */
 async function loadTasks() {
   setSyncStatus("syncing", "Loading tasks…");
   try {
@@ -986,6 +881,106 @@ async function deleteTaskDB(id) {
   }
 }
 
+/* ─── Current User ── */
+function buildCurrentUserSelect() {
+  const sel = document.getElementById("current-user-select");
+  sel.innerHTML = TEAM.map(m =>
+    `<option value="${m.name}" ${m.name === currentUser ? "selected" : ""}>${m.name} (${m.role})</option>`
+  ).join("");
+  updateAddedByDisplay();
+}
+
+function onCurrentUserChange() {
+  currentUser = document.getElementById("current-user-select").value;
+  /* FIX 4: Persist to localStorage */
+  localStorage.setItem("sharvii_current_user", currentUser);
+  updateAddedByDisplay();
+}
+
+function updateAddedByDisplay() {
+  const el = document.getElementById("added-by-display");
+  if (el) el.textContent = currentUser;
+}
+
+/* ─── FIX 5: Notifications & Sound ── */
+function requestNotifPermission() {
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+}
+
+function fireBrowserNotif(title, body) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification(title, { body, icon: "" });
+  }
+}
+
+/* FIX 5: Play subtle notification sound using Web Audio API — no file needed */
+function playNotifSound() {
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type      = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch(e) { /* ignore — sound is non-critical */ }
+}
+
+function pushNotification(msg, taskId) {
+  notifications.unshift({ id: Date.now() + Math.random(), msg, time: new Date(), unread: true, taskId });
+  renderNotifPanel();
+  updateNotifDot();
+}
+
+function renderNotifPanel() {
+  const list = document.getElementById("notif-list");
+  if (!notifications.length) {
+    list.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
+    return;
+  }
+  list.innerHTML = notifications.slice(0, 30).map(n => `
+    <div class="notif-item ${n.unread ? "unread" : ""}">
+      <div class="notif-msg">${esc(n.msg)}</div>
+      <div class="notif-time">${timeAgo(n.time)}</div>
+    </div>`).join("");
+}
+
+function updateNotifDot() {
+  document.getElementById("notif-dot").classList.toggle("visible", notifications.some(n => n.unread));
+}
+
+function toggleNotifPanel() {
+  document.getElementById("notif-panel").classList.toggle("open");
+}
+
+function clearNotifications() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifPanel();
+  updateNotifDot();
+}
+
+document.addEventListener("click", e => {
+  const panel = document.getElementById("notif-panel");
+  const btn   = document.getElementById("notif-btn");
+  if (panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target))
+    panel.classList.remove("open");
+});
+
+function timeAgo(date) {
+  const diff = Math.floor((Date.now() - new Date(date)) / 1000);
+  if (diff < 60)    return "just now";
+  if (diff < 3600)  return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  return Math.floor(diff/86400) + "d ago";
+}
+
 /* ─── Build UI ── */
 function buildSidebar() {
   const list = document.getElementById("member-list");
@@ -1016,7 +1011,7 @@ function filterByPerson(name) {
   const target = name ? document.getElementById("mb-" + name) : document.getElementById("member-all");
   if (target) target.classList.add("active");
   document.getElementById("page-title").textContent = name || "Task Board";
-  document.getElementById("page-sub").textContent = name
+  document.getElementById("page-sub").textContent   = name
     ? `Showing tasks for ${name} · ${TEAM.find(m => m.name === name)?.role}`
     : "Showing all tasks";
   render();
@@ -1044,9 +1039,9 @@ function getDueState(dueDate) {
   const today = new Date(); today.setHours(0,0,0,0);
   const due   = new Date(dueDate); due.setHours(0,0,0,0);
   const diff  = Math.floor((due - today) / 86400000);
-  if (diff < 0)  return "overdue";
+  if (diff < 0)   return "overdue";
   if (diff === 0) return "today";
-  if (diff <= 3) return "soon";
+  if (diff <= 3)  return "soon";
   return "normal";
 }
 
@@ -1064,8 +1059,8 @@ function getFiltered() {
       if (!t.due_date) return false;
       const due  = new Date(t.due_date); due.setHours(0,0,0,0);
       const diff = Math.floor((due - today) / 86400000);
-      if (filterDue === "overdue" && diff >= 0) return false;
-      if (filterDue === "today"   && diff !== 0) return false;
+      if (filterDue === "overdue" && diff >= 0)            return false;
+      if (filterDue === "today"   && diff !== 0)           return false;
       if (filterDue === "week"    && (diff < 0 || diff > 7)) return false;
     }
     return true;
@@ -1089,7 +1084,7 @@ function renderCounts() {
 }
 
 function renderKPI() {
-  const f = getFiltered();
+  const f     = getFiltered();
   const today = new Date(); today.setHours(0,0,0,0);
   const overdue = f.filter(t => {
     if (!t.due_date || t.status === "Done") return false;
@@ -1103,17 +1098,22 @@ function renderKPI() {
   document.getElementById("kpi-overdue").textContent = overdue;
 }
 
+/* FIX 3: Effort badge helper */
+function effortBadge(effort) {
+  if (!effort) return "";
+  const cls = effort === "High"   ? "badge-effort-high"
+            : effort === "Medium" ? "badge-effort-medium"
+            :                       "badge-effort-low";
+  const icon = effort === "High" ? "🔥" : effort === "Medium" ? "⚡" : "🍃";
+  return `<span class="badge ${cls}">${icon} ${effort} Effort</span>`;
+}
+
 function renderBoard() {
   const filtered = getFiltered();
   const grid  = document.getElementById("cards-grid");
   const empty = document.getElementById("empty-state");
-  const today = new Date(); today.setHours(0,0,0,0);
 
-  if (!filtered.length) {
-    grid.innerHTML = "";
-    empty.style.display = "flex";
-    return;
-  }
+  if (!filtered.length) { grid.innerHTML = ""; empty.style.display = "flex"; return; }
   empty.style.display = "none";
 
   grid.innerHTML = filtered.map((t, i) => {
@@ -1125,25 +1125,33 @@ function renderBoard() {
     const statusCls = t.status === "Done" ? "status-done" : t.status === "In Progress" ? "status-prog" : "status-todo";
     const notesHtml = t.notes ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
 
-    const dueState  = getDueState(t.due_date);
-    let dueBadge    = "";
+    const dueState = getDueState(t.due_date);
+    let dueBadge = "";
     if (t.due_date && t.status !== "Done") {
-      const labels = { overdue: "🔴 Overdue", today: "🟡 Due Today", soon: "⏰ Due Soon", normal: "" };
+      const labels = { overdue:"🔴 Overdue", today:"🟡 Due Today", soon:"⏰ Due Soon", normal:"" };
       if (dueState !== "normal" && labels[dueState]) {
         dueBadge = `<span class="due-chip ${dueState}">${labels[dueState]}</span>`;
       } else if (dueState === "normal") {
         const d = new Date(t.due_date);
-        dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN', {day:'numeric',month:'short'})}</span>`;
+        dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
       }
     } else if (t.due_date && t.status === "Done") {
       const d = new Date(t.due_date);
-      dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN', {day:'numeric',month:'short'})}</span>`;
+      dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
     }
 
-    const isOverdue = dueState === "overdue" && t.status !== "Done";
-    const addedByHtml = t.added_by
-      ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`
-      : "";
+    const isOverdue   = dueState === "overdue" && t.status !== "Done";
+    const addedByHtml = t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
+
+    /* FIX 6: Status is editable by assignee or Manager only */
+    const canEdit = (currentUser === t.person || currentUser === MANAGER_NAME);
+    const statusControl = canEdit
+      ? `<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
+           <option ${t.status==="To Do"?"selected":""}>To Do</option>
+           <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+           <option ${t.status==="Done"?"selected":""}>Done</option>
+         </select>`
+      : `<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
 
     return `
       <div class="task-card pri-${t.priority} ${isOverdue ? "overdue" : ""}" style="animation-delay:${i*0.03}s">
@@ -1167,6 +1175,7 @@ function renderBoard() {
         ${notesHtml}
         <div class="card-meta">
           <span class="badge ${pClass}">${t.priority}</span>
+          ${effortBadge(t.effort_level)}
           ${dueBadge}
         </div>
         <div class="card-footer">
@@ -1178,11 +1187,7 @@ function renderBoard() {
                 <div class="assignee-role" style="color:${rc.text}">${role}</div>
               </div>
             </div>
-            <select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
-              <option ${t.status==="To Do"?"selected":""}>To Do</option>
-              <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
-              <option ${t.status==="Done"?"selected":""}>Done</option>
-            </select>
+            ${statusControl}
           </div>
           ${addedByHtml ? `<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>` : ""}
         </div>
@@ -1212,11 +1217,12 @@ function renderSummary() {
       const due   = new Date(t.due_date); due.setHours(0,0,0,0);
       return due < today;
     }).length;
+
     return `
       <div class="summary-card ${loaded ? "overloaded" : ""}">
         <div class="sc-header">
           <div class="sc-person">
-            <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px">${member.name[0]}</div>
+            <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px;border-radius:10px;">${member.name[0]}</div>
             <div>
               <div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div>
               <div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div>
@@ -1231,9 +1237,18 @@ function renderSummary() {
           <div class="sc-bar" style="width:${barW}%;background:${color}"></div>
         </div>
         <div class="sc-stats">
-          <div class="sc-stat"><div class="sc-stat-num" style="color:var(--text-2)">${todoC}</div><div class="sc-stat-lbl">To Do</div></div>
-          <div class="sc-stat"><div class="sc-stat-num" style="color:var(--blue)">${inpC}</div><div class="sc-stat-lbl">In Progress</div></div>
-          <div class="sc-stat"><div class="sc-stat-num" style="color:var(--green)">${doneC}</div><div class="sc-stat-lbl">Done</div></div>
+          <div class="sc-stat">
+            <div class="sc-stat-num todo-num">${todoC}</div>
+            <div class="sc-stat-lbl">To Do</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-num prog-num">${inpC}</div>
+            <div class="sc-stat-lbl">In Progress</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-num done-num">${doneC}</div>
+            <div class="sc-stat-lbl">Done</div>
+          </div>
         </div>
         <div class="sc-foot">
           <span style="color:var(--text-3)">${pct}% complete</span>
@@ -1261,12 +1276,13 @@ function openModal() {
   editingId = null;
   document.getElementById("modal-title").textContent = "Add New Task";
   document.getElementById("btn-save").textContent    = "Add Task";
-  document.getElementById("f-name").value     = "";
-  document.getElementById("f-person").value   = TEAM[0].name;
-  document.getElementById("f-priority").value = "Medium";
-  document.getElementById("f-status").value   = "To Do";
-  document.getElementById("f-notes").value    = "";
-  document.getElementById("f-due").value      = "";
+  document.getElementById("f-name").value       = "";
+  document.getElementById("f-person").value     = TEAM[0].name;
+  document.getElementById("f-priority").value   = "Medium";
+  document.getElementById("f-status").value     = "To Do";
+  document.getElementById("f-effort").value     = "Medium";
+  document.getElementById("f-notes").value      = "";
+  document.getElementById("f-due").value        = "";
   updateAddedByDisplay();
   document.getElementById("modal").style.display = "flex";
   setTimeout(() => document.getElementById("f-name").focus(), 60);
@@ -1278,12 +1294,13 @@ function openEdit(id) {
   editingId = id;
   document.getElementById("modal-title").textContent = "Edit Task";
   document.getElementById("btn-save").textContent    = "Save Changes";
-  document.getElementById("f-name").value     = t.name;
-  document.getElementById("f-person").value   = t.person;
-  document.getElementById("f-priority").value = t.priority;
-  document.getElementById("f-status").value   = t.status;
-  document.getElementById("f-notes").value    = t.notes || "";
-  document.getElementById("f-due").value      = t.due_date || "";
+  document.getElementById("f-name").value       = t.name;
+  document.getElementById("f-person").value     = t.person;
+  document.getElementById("f-priority").value   = t.priority;
+  document.getElementById("f-status").value     = t.status;
+  document.getElementById("f-effort").value     = t.effort_level || "Medium";
+  document.getElementById("f-notes").value      = t.notes || "";
+  document.getElementById("f-due").value        = t.due_date || "";
   document.getElementById("added-by-display").textContent = t.added_by || currentUser;
   document.getElementById("modal").style.display = "flex";
   setTimeout(() => document.getElementById("f-name").focus(), 60);
@@ -1303,18 +1320,18 @@ async function saveTask() {
   if (!name) { document.getElementById("f-name").focus(); return; }
   if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
 
+  /* FIX 3: include effort_level in payload */
   const payload = {
     name,
-    person:   document.getElementById("f-person").value,
-    priority: document.getElementById("f-priority").value,
-    status:   document.getElementById("f-status").value,
-    notes:    document.getElementById("f-notes").value.trim(),
-    due_date: document.getElementById("f-due").value || null,
+    person:       document.getElementById("f-person").value,
+    priority:     document.getElementById("f-priority").value,
+    status:       document.getElementById("f-status").value,
+    effort_level: document.getElementById("f-effort").value,
+    notes:        document.getElementById("f-notes").value.trim(),
+    due_date:     document.getElementById("f-due").value || null,
   };
 
-  if (!editingId) {
-    payload.added_by = currentUser;
-  }
+  if (!editingId) payload.added_by = currentUser;
 
   closeModal();
   setSyncStatus("syncing", "Saving…");
@@ -1344,13 +1361,13 @@ async function deleteTask(id) {
 function setSyncStatus(state, msg) {
   const dot   = document.getElementById("sync-dot");
   const label = document.getElementById("sync-label");
-  dot.className = "sync-dot" + (state === "syncing" ? " syncing" : state === "error" ? " error" : "");
+  dot.className   = "sync-dot" + (state === "syncing" ? " syncing" : state === "error" ? " error" : "");
   label.textContent = msg;
 }
 
 /* ─── Toast ── */
 function showToast(msg, type = "") {
-  const c = document.getElementById("toast");
+  const c  = document.getElementById("toast");
   const el = document.createElement("div");
   el.className = "toast-item " + type;
   el.innerHTML = `<span>${esc(msg)}</span>`;
@@ -1366,7 +1383,7 @@ function esc(s) {
 /* ─── Keyboard shortcuts ── */
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeModal();
-  if (e.key === "n" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA" && document.activeElement.tagName !== "SELECT") openModal();
+  if (e.key === "n" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) openModal();
 });
 
 /* ─── Start ── */
@@ -1375,34 +1392,28 @@ init();
 
 <!--
 ═══════════════════════════════════════════════════════════════════════════
-  SUPABASE TABLE SETUP — Run this SQL once in the SQL Editor
-  (Left sidebar → SQL Editor → New query → paste → Run)
+  SUPABASE TABLE — Run this SQL once in SQL Editor → New query → Run
 ═══════════════════════════════════════════════════════════════════════════
 
+-- Fresh table (run if starting from scratch):
 create table if not exists tasks (
-  id          uuid primary key default gen_random_uuid(),
-  name        text not null,
-  person      text not null,
-  added_by    text default '',
-  priority    text not null default 'Medium',
-  status      text not null default 'To Do',
-  notes       text default '',
-  due_date    date default null,
-  created_at  timestamptz default now()
+  id           uuid primary key default gen_random_uuid(),
+  name         text not null,
+  person       text not null,
+  added_by     text default '',
+  priority     text not null default 'Medium',
+  status       text not null default 'To Do',
+  effort_level text not null default 'Medium',
+  notes        text default '',
+  due_date     date default null,
+  created_at   timestamptz default now()
 );
 
 alter table tasks enable row level security;
+create policy "Team open access" on tasks for all using (true) with check (true);
 
-create policy "Team open access"
-  on tasks for all
-  using (true)
-  with check (true);
-
-alter publication supabase_realtime add table tasks;
-
--- If you already have the tasks table and need to add the new columns:
--- alter table tasks add column if not exists added_by text default '';
--- alter table tasks add column if not exists due_date date default null;
+-- If your table already exists, add only the new column:
+-- alter table tasks add column if not exists effort_level text not null default 'Medium';
 
 ═══════════════════════════════════════════════════════════════════════════
 -->
