@@ -10,7 +10,7 @@
     const SUPABASE_KEY = "sb_publishable_dCYu2aNVBG2DIIeIC_hwdw_p18eQsa5";
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- No Supabase library: all DB calls use plain fetch() against the REST API -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -745,7 +745,6 @@ const ROLE_COLOR = {
 const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
 
 /* ─── State ── */
-let supabase       = null;
 let tasks          = [];
 let editingId      = null;
 let activeTab      = "board";
@@ -754,9 +753,56 @@ let filterPriority = "";
 let filterStatus   = "";
 let filterSearch   = "";
 let filterDue      = "";
-let realtimeSub    = null;
+let pollTimer      = null;
+let lastTaskIds    = new Set();
 let currentUser    = TEAM[0].name;
-let notifications  = []; // { id, msg, time, unread, taskId }
+let notifications  = [];
+
+/* ─── REST helpers — zero dependencies, plain fetch() ── */
+const REST = `${SUPABASE_URL}/rest/v1`;
+const HEADERS = {
+  "Content-Type":  "application/json",
+  "apikey":        SUPABASE_KEY,
+  "Authorization": `Bearer ${SUPABASE_KEY}`,
+};
+
+async function dbSelect() {
+  const res = await fetch(
+    `${REST}/tasks?select=*&order=created_at.desc`,
+    { headers: { ...HEADERS, "Accept": "application/json" } }
+  );
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return res.json();
+}
+
+async function dbInsert(payload) {
+  const res = await fetch(`${REST}/tasks`, {
+    method:  "POST",
+    headers: { ...HEADERS, "Prefer": "return=representation" },
+    body:    JSON.stringify(payload),
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return res.json();
+}
+
+async function dbUpdate(id, payload) {
+  const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
+    method:  "PATCH",
+    headers: { ...HEADERS, "Prefer": "return=minimal" },
+    body:    JSON.stringify(payload),
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return true;
+}
+
+async function dbDelete(id) {
+  const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
+    method:  "DELETE",
+    headers: HEADERS,
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return true;
+}
 
 /* ─── Init ── */
 async function init() {
@@ -768,9 +814,8 @@ async function init() {
 
   if (!isConfigured()) return;
 
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadTasks();
-  subscribeRealtime();
+  startPolling();
 }
 
 function isConfigured() {
@@ -780,6 +825,30 @@ function isConfigured() {
 function checkSetup() {
   document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
   if (!isConfigured()) setSyncStatus("error", "Not connected — see setup instructions");
+}
+
+/* ─── Polling (replaces Realtime WebSocket) ── */
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    try {
+      const fresh = await dbSelect();
+      // Detect new tasks assigned to current user
+      fresh.forEach(t => {
+        if (!lastTaskIds.has(t.id) && t.person === currentUser && t.added_by !== currentUser) {
+          const msg = `📋 ${t.added_by || "Someone"} assigned you: "${t.name}"`;
+          pushNotification(msg, t.id);
+          showToast(`New task assigned to you by ${t.added_by || "a teammate"}!`, "info");
+        }
+      });
+      lastTaskIds = new Set(fresh.map(t => t.id));
+      tasks = fresh;
+      render();
+      setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
+    } catch (e) {
+      setSyncStatus("error", "Sync error — retrying…");
+    }
+  }, 8000); // poll every 8 seconds
 }
 
 /* ─── Current User ── */
@@ -867,58 +936,54 @@ function timeAgo(date) {
   return Math.floor(diff/86400) + "d ago";
 }
 
-/* ─── Supabase ── */
+/* ─── DB operations (plain fetch — no Supabase library) ── */
 async function loadTasks() {
   setSyncStatus("syncing", "Loading tasks…");
-  const { data, error } = await supabase
-    .from("tasks")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (error) { setSyncStatus("error", "Load failed: " + error.message); showToast(error.message, "error"); return; }
-  tasks = data || [];
-  render();
-  setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
-}
-
-function subscribeRealtime() {
-  if (realtimeSub) supabase.removeChannel(realtimeSub);
-  realtimeSub = supabase
-    .channel("tasks-channel")
-    .on("postgres_changes", { event: "INSERT", schema: "public", table: "tasks" }, payload => {
-      const newTask = payload.new;
-      // Notify if assigned to current user and not added by them
-      if (newTask.person === currentUser && newTask.added_by !== currentUser) {
-        const msg = `📋 ${newTask.added_by || "Someone"} assigned you a new task: "${newTask.name}"`;
-        pushNotification(msg, newTask.id);
-        showToast(`New task assigned to you by ${newTask.added_by || "a teammate"}!`, "info");
-      }
-      loadTasks();
-    })
-    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "tasks" }, payload => {
-      loadTasks();
-    })
-    .on("postgres_changes", { event: "DELETE", schema: "public", table: "tasks" }, payload => {
-      loadTasks();
-    })
-    .subscribe();
+  try {
+    const data = await dbSelect();
+    lastTaskIds = new Set(data.map(t => t.id));
+    tasks = data;
+    render();
+    setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
+  } catch (e) {
+    setSyncStatus("error", "Load failed: " + e.message);
+    showToast("Load failed: " + e.message, "error");
+  }
 }
 
 async function insertTask(payload) {
-  const { error } = await supabase.from("tasks").insert([payload]);
-  if (error) { showToast("Failed to add task: " + error.message, "error"); return false; }
-  return true;
+  try {
+    await dbInsert(payload);
+    await loadTasks();
+    return true;
+  } catch (e) {
+    showToast("Failed to add task: " + e.message, "error");
+    setSyncStatus("error", "Save failed");
+    return false;
+  }
 }
 
 async function updateTaskDB(id, payload) {
-  const { error } = await supabase.from("tasks").update(payload).eq("id", id);
-  if (error) { showToast("Failed to update: " + error.message, "error"); return false; }
-  return true;
+  try {
+    await dbUpdate(id, payload);
+    await loadTasks();
+    return true;
+  } catch (e) {
+    showToast("Failed to update: " + e.message, "error");
+    setSyncStatus("error", "Update failed");
+    return false;
+  }
 }
 
 async function deleteTaskDB(id) {
-  const { error } = await supabase.from("tasks").delete().eq("id", id);
-  if (error) { showToast("Failed to delete: " + error.message, "error"); return false; }
-  return true;
+  try {
+    await dbDelete(id);
+    await loadTasks();
+    return true;
+  } catch (e) {
+    showToast("Failed to delete: " + e.message, "error");
+    return false;
+  }
 }
 
 /* ─── Build UI ── */
