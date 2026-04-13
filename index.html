@@ -84,7 +84,6 @@
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 2px 8px rgba(67,97,238,.35);
     }
-    /* ── Branding: Sharvii Technologies ── */
     .logo-text {
       font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
       color: var(--text); letter-spacing: -.01em; line-height: 1.2;
@@ -120,7 +119,6 @@
     .member-row.active { background: var(--indigo-lt); }
     .member-row.active .member-name { color: var(--indigo); font-weight: 600; }
 
-    /* ── FIX 1: Member avatar — always perfectly circular, centered ── */
     .member-avatar {
       width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
@@ -131,7 +129,6 @@
     .member-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .member-role { font-size: 11px; color: var(--text-3); margin-top: 1px; }
 
-    /* ── FIX 1: Count badge — fixed square size, perfectly circular pill ── */
     .member-count {
       width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0;
       background: var(--bg); border: 1px solid var(--border);
@@ -262,7 +259,6 @@
     .badge-medium  { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
     .badge-low     { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
 
-    /* ── FIX 3: Effort level badge ── */
     .badge-effort-high   { background: #fdf2f8; color: #9d174d; border-color: #f9a8d4; }
     .badge-effort-medium { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
     .badge-effort-low    { background: var(--teal-lt); color: var(--teal); border-color: var(--teal-bd); }
@@ -282,11 +278,21 @@
     }
     .added-by-pill strong { color: var(--text-2); font-weight: 600; }
 
-    /* ── FIX 6: Status lock hint ── */
     .status-lock-hint {
       font-size: 10px; color: var(--text-3); font-style: italic;
       display: flex; align-items: center; gap: 4px;
     }
+
+    /* ── FIX 3: "Assigned to [Name]" label shown when Log Work button is hidden ── */
+    .log-work-restricted {
+      display: inline-flex; align-items: center; gap: 6px;
+      width: 100%; justify-content: center;
+      background: var(--bg); border: 1.5px dashed var(--border-md);
+      color: var(--text-3); border-radius: 7px; padding: 5px 11px;
+      font-size: 11px; font-weight: 500; cursor: default;
+      font-style: italic;
+    }
+    .log-work-restricted svg { opacity: 0.5; flex-shrink: 0; }
 
     .status-select {
       background: transparent; border: 1px solid var(--border-md); border-radius: 7px;
@@ -336,7 +342,6 @@
     .sc-bar-wrap { height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .sc-bar { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
 
-    /* ── FIX 1: Summary stats — fixed square cells so numbers don't stretch ── */
     .sc-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .sc-stat {
       background: var(--bg); border-radius: 8px; padding: 10px 6px;
@@ -491,7 +496,7 @@
       <span class="logo-badge" style="margin-left:auto;">PRO</span>
     </div>
 
-    <!-- Who am I — FIX 4: restored from localStorage -->
+    <!-- Who am I -->
     <div class="current-user-bar">
       <div class="current-user-label">Logged in as</div>
       <select class="current-user-select" id="current-user-select" onchange="onCurrentUserChange()"></select>
@@ -526,9 +531,7 @@
         <span>Clients</span>
         <button class="sidebar-add-btn" onclick="addClient()" title="Add client">+</button>
       </div>
-      <div id="client-list">
-        <!-- built by buildClientSidebar() -->
-      </div>
+      <div id="client-list"></div>
     </div>
 
     <div class="sidebar-footer">
@@ -684,13 +687,11 @@
       </button>
     </div>
 
-    <!-- Task Name -->
     <div class="form-group">
       <label class="form-label">Task Name</label>
       <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS" />
     </div>
 
-    <!-- Assigned To + Added By -->
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Assigned To</label>
@@ -702,7 +703,6 @@
       </div>
     </div>
 
-    <!-- Client + Priority -->
     <div class="form-row" style="margin-top:14px;">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Client</label>
@@ -718,19 +718,16 @@
       </div>
     </div>
 
-    <!-- Due Date -->
     <div class="form-group" style="margin-top:14px;">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <input class="form-input" type="date" id="f-due" />
     </div>
 
-    <!-- Notes -->
     <div class="form-group">
       <label class="form-label">Notes / Brief <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Context, links, or instructions for the assignee…"></textarea>
     </div>
 
-    <!-- Info strip -->
     <div style="background:var(--indigo-lt);border:1px solid var(--indigo-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#3451d1;margin-bottom:6px;display:flex;align-items:center;gap:7px;">
       <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       Task starts as <strong style="margin:0 3px;">To Do · 0 hrs</strong> — the assignee logs work via <strong style="margin-left:3px;">Log Work</strong> on the card.
@@ -759,7 +756,6 @@
       </button>
     </div>
 
-    <!-- Current status display -->
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Assigned To</div>
@@ -771,7 +767,6 @@
       </div>
     </div>
 
-    <!-- New Status -->
     <div class="form-group">
       <label class="form-label">Update Status</label>
       <select class="form-select" id="lw-status" style="font-weight:600;">
@@ -781,7 +776,6 @@
       </select>
     </div>
 
-    <!-- Hours to add -->
     <div class="form-group">
       <label class="form-label">
         Hours Worked
@@ -790,7 +784,6 @@
       <input class="form-input" type="number" id="lw-hours" min="0" step="0.5" placeholder="e.g. 3.5" style="font-size:16px;font-weight:700;color:var(--teal);" />
     </div>
 
-    <!-- Work note (optional) -->
     <div class="form-group">
       <label class="form-label">Work Note <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="lw-note" rows="2" placeholder="What did you work on? Any blockers?"></textarea>
@@ -823,7 +816,6 @@ const MANAGER_NAME = "Umesh";
 
 const CLIENTS = ["YFS", "NAIK COLLEGE", "PFA", "SEVA IN ACTION", "Internal"];
 
-/* Weekly call schedule — next sync dates (edit as needed) */
 const CLIENT_SYNC = {
   "YFS":          "2025-04-18",
   "NAIK COLLEGE": "2025-04-21",
@@ -839,7 +831,7 @@ const ROLE_COLOR = {
 };
 const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
 
-/* ─── localStorage config — persists custom team members & clients ── */
+/* ─── localStorage config ── */
 const CONFIG_KEY = "sharvii_config";
 
 function loadConfig() {
@@ -853,7 +845,6 @@ function saveConfig(cfg) {
   localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
 }
 
-/* Merge saved config into runtime arrays at startup */
 function applyConfig() {
   const cfg = loadConfig();
   (cfg.extraTeam || []).forEach(m => {
@@ -897,13 +888,13 @@ function addClient() {
   cfg.extraClients.push(clientName);
   saveConfig(cfg);
   buildClientSidebar();
-  /* Also add to modal dropdown */
   const opt = document.createElement("option");
   opt.value = clientName; opt.textContent = clientName;
   document.getElementById("f-client").appendChild(opt);
   renderCounts();
   showToast(`${clientName} added to clients ✓`, "success");
 }
+
 let tasks          = [];
 let editingId      = null;
 let activeTab      = "board";
@@ -912,15 +903,15 @@ let filterPriority = "";
 let filterStatus   = "";
 let filterSearch   = "";
 let filterDue      = "";
-let activeClient   = null;   /* null = normal view, string = client snapshot */
+let activeClient   = null;
 let pollTimer      = null;
 let lastTaskIds    = new Set();
 let notifications  = [];
 
-/* FIX 4: Restore currentUser from localStorage */
+/* ─── FIX 4: Restore currentUser from localStorage ── */
 let currentUser = localStorage.getItem("sharvii_current_user") || TEAM[0].name;
 
-/* ─── REST helpers — zero dependencies ── */
+/* ─── REST helpers ── */
 const REST    = `${SUPABASE_URL}/rest/v1`;
 const HEADERS = {
   "Content-Type":  "application/json",
@@ -948,6 +939,17 @@ async function dbInsert(payload) {
 }
 
 async function dbUpdate(id, payload) {
+  /* ═══════════════════════════════════════════════════════════════
+     FIX 1 — UUID null guard
+     Prevents the "invalid input syntax for type uuid: 'null'" error.
+     This fires when the template rendered t.id as the literal string
+     "null" (or "undefined"). We catch it here before the PATCH call.
+  ═══════════════════════════════════════════════════════════════ */
+  if (!id || id === 'null' || id === 'undefined') {
+    console.error('[dbUpdate] Invalid task id:', id);
+    showToast('Error: could not identify task. Please refresh and try again.', 'error');
+    return false;
+  }
   const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
     method:  "PATCH",
     headers: { ...HEADERS, "Prefer": "return=minimal" },
@@ -968,7 +970,7 @@ async function dbDelete(id) {
 
 /* ─── Init ── */
 async function init() {
-  applyConfig();           /* load saved team members + clients from localStorage */
+  applyConfig();
   buildCurrentUserSelect();
   buildSidebar();
   buildClientSidebar();
@@ -989,13 +991,12 @@ function checkSetup() {
   if (!isConfigured()) setSyncStatus("error", "Not connected");
 }
 
-/* ─── Polling (replaces Realtime WebSocket) ── */
+/* ─── Polling ── */
 function startPolling() {
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(async () => {
     try {
       const fresh = await dbSelect();
-      // FIX 5: detect new tasks assigned to me
       fresh.forEach(t => {
         if (!lastTaskIds.has(t.id) && t.person === currentUser && t.added_by !== currentUser) {
           const msg = `📋 ${t.added_by || "Someone"} assigned you: "${t.name}"`;
@@ -1076,9 +1077,10 @@ function buildCurrentUserSelect() {
 
 function onCurrentUserChange() {
   currentUser = document.getElementById("current-user-select").value;
-  /* FIX 4: Persist to localStorage */
   localStorage.setItem("sharvii_current_user", currentUser);
   updateAddedByDisplay();
+  /* Re-render so Log Work button visibility updates immediately on user switch */
+  render();
 }
 
 function updateAddedByDisplay() {
@@ -1086,7 +1088,7 @@ function updateAddedByDisplay() {
   if (el) el.textContent = currentUser;
 }
 
-/* ─── FIX 5: Notifications & Sound ── */
+/* ─── Notifications & Sound ── */
 function requestNotifPermission() {
   if ("Notification" in window && Notification.permission === "default") {
     Notification.requestPermission();
@@ -1099,7 +1101,6 @@ function fireBrowserNotif(title, body) {
   }
 }
 
-/* FIX 5: Play subtle notification sound using Web Audio API — no file needed */
 function playNotifSound() {
   try {
     const ctx  = new (window.AudioContext || window.webkitAudioContext)();
@@ -1114,7 +1115,7 @@ function playNotifSound() {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.4);
-  } catch(e) { /* ignore — sound is non-critical */ }
+  } catch(e) { /* non-critical */ }
 }
 
 function pushNotification(msg, taskId) {
@@ -1201,7 +1202,6 @@ function buildClientSidebar() {
       <span class="member-count" id="cl-count-${c.replace(/\s+/g,'-')}">0</span>
     </button>`).join("");
 
-  /* Keep modal dropdown in sync */
   const sel = document.getElementById("f-client");
   if (sel) {
     sel.innerHTML = `<option value="">— Select Client —</option>` +
@@ -1218,7 +1218,6 @@ function updateClientCounts() {
 
 function showClientSnapshot(clientName) {
   activeClient = clientName;
-  /* Deactivate member rows, activate client row */
   document.querySelectorAll(".member-row").forEach(el => el.classList.remove("active"));
   const btn = document.getElementById("cl-" + clientName.replace(/\s+/g,'-'));
   if (btn) btn.classList.add("active");
@@ -1226,7 +1225,6 @@ function showClientSnapshot(clientName) {
   document.getElementById("page-title").textContent = clientName;
   document.getElementById("page-sub").textContent   = "Client Snapshot";
 
-  /* Hide board/summary, show client view */
   document.getElementById("view-board").style.display   = "none";
   document.getElementById("view-summary").style.display = "none";
   document.getElementById("view-client").style.display  = "block";
@@ -1269,13 +1267,10 @@ function renderClientSnapshot(clientName) {
 
   document.getElementById("client-snapshot").innerHTML = `
     <div style="max-width:900px;">
-      <!-- Back button -->
       <button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;">
         <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
         Back to Board
       </button>
-
-      <!-- KPI row -->
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px;">
         <div class="kpi-card" style="border-left:3px solid var(--amber);">
           <div class="kpi-icon" style="background:var(--amber-lt);">⏳</div>
@@ -1297,8 +1292,6 @@ function renderClientSnapshot(clientName) {
           </div>
         </div>
       </div>
-
-      <!-- Task table -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);">
         <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
           <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(clientName)}</span>
@@ -1428,7 +1421,6 @@ function renderKPI() {
   document.getElementById("kpi-overdue").textContent = overdue;
 }
 
-/* Hours worked badge */
 function hoursBadge(hours) {
   if (!hours && hours !== 0) return "";
   const h = parseFloat(hours) || 0;
@@ -1471,9 +1463,21 @@ function renderBoard() {
     const isOverdue   = dueState === "overdue" && t.status !== "Done";
     const addedByHtml = t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
 
-    /* FIX 6: Status is editable by assignee or Manager only */
-    const canEdit = (currentUser === t.person || currentUser === MANAGER_NAME);
-    const statusControl = canEdit
+    /* ═══════════════════════════════════════════════════════════════
+       FIX 2 — Access control split into two separate checks:
+
+       canEditDetails → Manager OR assignee can edit task metadata
+                        (pencil icon, delete button, status dropdown)
+
+       canLogWork     → ONLY the assignee can log hours/update status
+                        via the Log Work modal. Manager is explicitly
+                        excluded — they must be logged in as the assignee.
+    ═══════════════════════════════════════════════════════════════ */
+    const canEditDetails = (currentUser === t.person || currentUser === MANAGER_NAME);
+    const canLogWork     = (currentUser === t.person); /* strict: assignee only */
+
+    /* Status control: manager or assignee can change via dropdown */
+    const statusControl = canEditDetails
       ? `<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
            <option ${t.status==="To Do"?"selected":""}>To Do</option>
            <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
@@ -1481,19 +1485,58 @@ function renderBoard() {
          </select>`
       : `<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
 
-    /* Log Work button — visible to assignee or Manager */
-    const logWorkBtn = canEdit
-      ? `<button class="log-work-btn" onclick="openLogModal('${t.id}')" title="Log work / update status">
-           <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-           Log Work
-         </button>`
-      : "";
+    /* ═══════════════════════════════════════════════════════════════
+       FIX 2 + FIX 3 — Log Work button area:
+
+       • canLogWork  = true  → show teal "Log Work" button (assignee only)
+       • canLogWork  = false → show a soft "Assigned to [Name]" label
+                               so it's clear why the button isn't there.
+         The label uses a dashed border pill style to look intentional,
+         not like a missing element.
+
+       FIX 1 — The task ID is embedded via data-task-id attribute on
+       the button AND passed directly to openLogModal() as a JS string.
+       We also sanitise it in openLogModal() itself as a second layer
+       of defence against the uuid:"null" Supabase error.
+    ═══════════════════════════════════════════════════════════════ */
+    let logWorkRow = "";
+    if (canLogWork) {
+      /* Assignee sees the Log Work button */
+      logWorkRow = `
+        <div class="card-footer-row" style="margin-top:4px;">
+          <button
+            class="log-work-btn"
+            data-task-id="${esc(t.id)}"
+            onclick="openLogModal('${esc(t.id)}')"
+            title="Log work / update status"
+          >
+            <svg width="11" height="11" fill="none" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Log Work
+          </button>
+        </div>`;
+    } else {
+      /* FIX 3 — Non-assignee sees a clear "Assigned to [Name]" label */
+      logWorkRow = `
+        <div class="card-footer-row" style="margin-top:4px;">
+          <span class="log-work-restricted" title="Only ${esc(t.person)} can log hours on this task">
+            <svg width="11" height="11" fill="none" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Assigned to ${esc(t.person)}
+          </span>
+        </div>`;
+    }
 
     return `
       <div class="task-card pri-${t.priority} ${isOverdue ? "overdue" : ""}" style="animation-delay:${i*0.03}s">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
           <div class="card-actions">
+            ${canEditDetails ? `
             <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task details">
               <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1505,7 +1548,7 @@ function renderBoard() {
                 <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
               </svg>
-            </button>
+            </button>` : ""}
           </div>
         </div>
         ${notesHtml}
@@ -1526,7 +1569,7 @@ function renderBoard() {
             </div>
             ${statusControl}
           </div>
-          ${logWorkBtn ? `<div class="card-footer-row" style="margin-top:4px;">${logWorkBtn}</div>` : ""}
+          ${logWorkRow}
           ${addedByHtml ? `<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>` : ""}
         </div>
       </div>`;
@@ -1630,7 +1673,6 @@ function openModal() {
 }
 
 function openEdit(id) {
-  /* Edit mode: manager can update task details (not status/hours — those are via Log Work) */
   const t = tasks.find(x => x.id === id);
   if (!t) return;
   editingId = id;
@@ -1672,13 +1714,10 @@ async function saveTask() {
   };
 
   if (!editingId) {
-    /* New task — force defaults: status = To Do, hours = 0 */
     payload.status       = "To Do";
     payload.hours_worked = 0;
     payload.added_by     = currentUser;
   }
-  /* Edit mode intentionally does NOT overwrite status or hours_worked —
-     those are owned by the Log Work flow */
 
   closeModal();
   setSyncStatus("syncing", "Saving…");
@@ -1696,8 +1735,25 @@ async function saveTask() {
 let logWorkId = null;
 
 function openLogModal(id) {
+  /* ═══════════════════════════════════════════════════════════════
+     FIX 1 — Second-layer null guard.
+     If the template somehow rendered id as the literal string "null"
+     or "undefined" (e.g. t.id was falsy at render time), we catch it
+     here before anything hits Supabase, preventing the
+     "invalid input syntax for type uuid: 'null'" error.
+  ═══════════════════════════════════════════════════════════════ */
+  if (!id || id === 'null' || id === 'undefined') {
+    showToast('Error: could not read task ID. Please refresh and try again.', 'error');
+    console.error('[openLogModal] Received invalid task id:', id);
+    return;
+  }
+
   const t = tasks.find(x => x.id === id);
-  if (!t) return;
+  if (!t) {
+    showToast('Task not found. It may have been deleted.', 'error');
+    return;
+  }
+
   logWorkId = id;
   document.getElementById("log-task-name").textContent    = t.name;
   document.getElementById("log-assignee").textContent     = t.person + (TEAM.find(m=>m.name===t.person)?.role ? ` · ${TEAM.find(m=>m.name===t.person).role}` : "");
@@ -1719,14 +1775,21 @@ function handleLogOverlayClick(e) {
 }
 
 async function saveLogWork() {
-  if (!logWorkId) return;
+  /* ═══════════════════════════════════════════════════════════════
+     FIX 1 — Final guard before the PATCH hits Supabase.
+     logWorkId must be a non-null, non-"null" string at this point.
+  ═══════════════════════════════════════════════════════════════ */
+  if (!logWorkId || logWorkId === 'null' || logWorkId === 'undefined') {
+    showToast('Error: missing task ID. Please close and try again.', 'error');
+    closeLogModal();
+    return;
+  }
   if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
 
   const newStatus = document.getElementById("lw-status").value;
   const newHours  = parseFloat(document.getElementById("lw-hours").value) || 0;
   const workNote  = document.getElementById("lw-note").value.trim();
 
-  /* If there's a work note, append it to the existing task notes */
   const t = tasks.find(x => x.id === logWorkId);
   let updatedNotes = t?.notes || "";
   if (workNote) {
@@ -1750,6 +1813,7 @@ async function saveLogWork() {
 
 async function quickStatus(id, status) {
   if (!isConfigured()) return;
+  if (!id || id === 'null') { showToast('Error: invalid task ID', 'error'); return; }
   await updateTaskDB(id, { status });
 }
 
@@ -1793,47 +1857,5 @@ document.addEventListener("keydown", e => {
 init();
 </script>
 
-<!--
-═══════════════════════════════════════════════════════════════════════════
-  SUPABASE — Run these in SQL Editor → New query → Run
-═══════════════════════════════════════════════════════════════════════════
-
-  ── STEP 1: Fix the loading / insert failure ──
-  If your table still has effort_level as NOT NULL, this causes PGRST204.
-  Run this to fix it:
-
-  ALTER TABLE tasks ALTER COLUMN effort_level DROP NOT NULL;
-  ALTER TABLE tasks ALTER COLUMN effort_level SET DEFAULT '';
-
-  ── STEP 2: Add the new columns (if not already added) ──
-
-  ALTER TABLE tasks ADD COLUMN IF NOT EXISTS hours_worked numeric DEFAULT 0;
-  ALTER TABLE tasks ADD COLUMN IF NOT EXISTS client text DEFAULT null;
-
-  ── STEP 3 (optional): Drop effort_level once you're happy ──
-
-  ALTER TABLE tasks DROP COLUMN IF EXISTS effort_level;
-
-  ── Full fresh table (only if starting from scratch) ──
-
-  CREATE TABLE IF NOT EXISTS tasks (
-    id           uuid primary key default gen_random_uuid(),
-    name         text not null,
-    person       text not null,
-    added_by     text default '',
-    priority     text not null default 'Medium',
-    status       text not null default 'To Do',
-    hours_worked numeric default 0,
-    client       text default null,
-    notes        text default '',
-    due_date     date default null,
-    created_at   timestamptz default now()
-  );
-
-  ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
-  CREATE POLICY "Team open access" ON tasks FOR ALL USING (true) WITH CHECK (true);
-
-═══════════════════════════════════════════════════════════════════════════
--->
 </body>
 </html>
