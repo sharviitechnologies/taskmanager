@@ -28,6 +28,16 @@
       "divyavemula1217@gmail.com":                  "Divya",
       "hemakesani3@gmail.com":                      "Hema",
     };
+    /* Reverse map: name → email (used to store assigned_to_email) */
+    const NAME_TO_EMAIL = {
+      "Umesh":    "support@sharvii.com",
+      "Prabhu":   "prabhu.channappagol@sharvii.com",
+      "Mounika":  "mounika@sharvii.com",
+      "Chaithra": "chaithra.lakshminarayanan@sharvii.com",
+      "Sarika":   "sarikaratkalkar@gmail.com",
+      "Divya":    "divyavemula1217@gmail.com",
+      "Hema":     "hemakesani3@gmail.com",
+    };
   </script>
 
   <!-- Supabase JS v2 -->
@@ -86,9 +96,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
 
-    /* ══════════════════════════════════════════════════
-       LOGIN SHIELD — light themed, matches dashboard
-    ══════════════════════════════════════════════════ */
+    /* LOGIN SHIELD */
     #login-shield {
       position: fixed; inset: 0; z-index: 9999;
       background: var(--bg);
@@ -111,33 +119,18 @@
     }
     @keyframes cardRise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-    .login-logo-row {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 30px;
-    }
+    .login-logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
     .login-logo-icon {
       width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
       background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 3px 12px rgba(67,97,238,.35);
     }
-    .login-logo-text {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
-      color: var(--text); letter-spacing: -.01em; line-height: 1.2;
-    }
+    .login-logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -.01em; line-height: 1.2; }
     .login-logo-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; font-weight: 400; }
-
-    .login-heading {
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px;
-      color: #1e293b; line-height: 1.2; margin-bottom: 7px; letter-spacing: -.02em;
-    }
-    .login-sub {
-      font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 26px;
-    }
-
-    .login-label {
-      display: block; font-size: 11px; font-weight: 700; color: var(--text-2);
-      text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px;
-    }
+    .login-heading { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: #1e293b; line-height: 1.2; margin-bottom: 7px; letter-spacing: -.02em; }
+    .login-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 26px; }
+    .login-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
     .login-input {
       width: 100%; background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
@@ -145,11 +138,7 @@
       font-family: 'DM Sans', sans-serif;
     }
     .login-input::placeholder { color: var(--text-3); }
-    .login-input:focus {
-      border-color: var(--indigo); background: #fff;
-      box-shadow: 0 0 0 3px rgba(67,97,238,.12);
-    }
-
+    .login-input:focus { border-color: var(--indigo); background: #fff; box-shadow: 0 0 0 3px rgba(67,97,238,.12); }
     .login-btn {
       width: 100%; margin-top: 16px; padding: 11px;
       background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
@@ -163,122 +152,63 @@
     .login-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
     .login-btn:active { transform: translateY(0); }
     .login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
     .login-error {
       margin-top: 10px; background: var(--red-lt); border: 1px solid var(--red-bd);
       border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--red);
       display: none; align-items: center; gap: 8px; line-height: 1.5;
     }
     .login-error.visible { display: flex; }
-
     .login-otp-info {
       background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
       border-radius: 9px; padding: 11px 13px; font-size: 12px; color: var(--indigo);
       display: flex; align-items: flex-start; gap: 9px; line-height: 1.6; margin-bottom: 16px;
     }
     .login-otp-info svg { flex-shrink: 0; margin-top: 1px; }
-
-    .login-resend {
-      background: none; border: none; color: var(--text-3); font-size: 12px;
-      cursor: pointer; text-decoration: underline; margin-top: 14px; display: block;
-      width: 100%; text-align: center; transition: color .12s;
-    }
+    .login-resend { background: none; border: none; color: var(--text-3); font-size: 12px; cursor: pointer; text-decoration: underline; margin-top: 14px; display: block; width: 100%; text-align: center; transition: color .12s; }
     .login-resend:hover { color: var(--indigo); }
-
     .login-divider { height: 1px; background: var(--border); margin: 22px 0; }
-
-    .login-footer {
-      text-align: center; font-size: 11px; color: var(--text-3); margin-top: 18px;
-    }
-
-    .spin {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
+    .login-footer { text-align: center; font-size: 11px; color: var(--text-3); margin-top: 18px; }
+    .spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to{ transform: rotate(360deg); } }
 
-    /* ══════════════════════════════════════════════════
-       SESSION CHECK OVERLAY
-    ══════════════════════════════════════════════════ */
+    /* SESSION CHECK */
     #session-check {
-      position: fixed; inset: 0; z-index: 10000;
-      background: var(--bg);
+      position: fixed; inset: 0; z-index: 10000; background: var(--bg);
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
     }
-    #session-check .spin {
-      width: 28px; height: 28px; border-width: 3px;
-      border-color: var(--border-md); border-top-color: var(--indigo);
-    }
+    #session-check .spin { width: 28px; height: 28px; border-width: 3px; border-color: var(--border-md); border-top-color: var(--indigo); }
     #session-check p { font-size: 12px; color: var(--text-3); font-family: 'DM Sans', sans-serif; }
 
-    /* ══════════════════════════════════════════════════
-       MAIN APP
-    ══════════════════════════════════════════════════ */
+    /* MAIN APP */
     #app { display: flex; height: 100vh; overflow: hidden; }
 
-    /* ── Sidebar ── */
+    /* Sidebar */
     #sidebar {
       width: var(--sidebar-w); flex-shrink: 0;
       background: var(--surface); border-right: 1px solid var(--border);
       display: flex; flex-direction: column; height: 100vh; overflow: hidden;
     }
-    .sidebar-logo {
-      height: var(--header-h); display: flex; align-items: center; gap: 10px;
-      padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-    }
-    .logo-badge {
-      font-size: 9px; font-weight: 700; color: var(--indigo);
-      background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
-      border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em; flex-shrink: 0;
-    }
+    .sidebar-logo { height: var(--header-h); display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .logo-badge { font-size: 9px; font-weight: 700; color: var(--indigo); background: var(--indigo-lt); border: 1px solid var(--indigo-bd); border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em; flex-shrink: 0; }
     .auth-user-bar { padding: 12px 16px 0; flex-shrink: 0; }
     .auth-user-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
-    .auth-user-chip {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
-      border-radius: 10px; padding: 8px 12px;
-    }
-    .auth-user-avatar {
-      width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--indigo), var(--violet));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 800; color: #fff; line-height: 1;
-    }
+    .auth-user-chip { display: flex; align-items: center; gap: 10px; background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd); border-radius: 10px; padding: 8px 12px; }
+    .auth-user-avatar { width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0; background: linear-gradient(135deg, var(--indigo), var(--violet)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; line-height: 1; }
     .auth-user-info { flex: 1; min-width: 0; }
     .auth-user-name { font-size: 13px; font-weight: 700; color: var(--indigo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .auth-user-email { font-size: 10px; color: var(--text-3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .auth-verified-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
-
-    .sidebar-section-title {
-      font-size: 10px; font-weight: 700; color: var(--text-3);
-      text-transform: uppercase; letter-spacing: .07em; padding: 16px 20px 8px;
-    }
+    .sidebar-section-title { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .07em; padding: 16px 20px 8px; }
     .sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 16px; }
-    .member-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 16px; cursor: pointer; transition: background .12s;
-      background: none; border: none; width: 100%; text-align: left;
-    }
+    .member-row { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; transition: background .12s; background: none; border: none; width: 100%; text-align: left; }
     .member-row:hover { background: var(--bg); }
     .member-row.active { background: var(--indigo-lt); }
     .member-row.active .member-name { color: var(--indigo); font-weight: 600; }
-    .member-avatar {
-      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 13px; line-height: 1; text-align: center; overflow: hidden;
-    }
+    .member-avatar { width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; line-height: 1; text-align: center; overflow: hidden; }
     .member-info { flex: 1; min-width: 0; }
     .member-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .member-role { font-size: 11px; color: var(--text-3); margin-top: 1px; }
-    .member-count {
-      width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0;
-      background: var(--bg); border: 1px solid var(--border);
-      font-size: 11px; font-weight: 700; color: var(--text-2);
-      display: flex; align-items: center; justify-content: center; line-height: 1;
-    }
+    .member-count { width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--text-2); display: flex; align-items: center; justify-content: center; line-height: 1; }
     .member-row.active .member-count { background: var(--indigo); border-color: var(--indigo); color: #fff; }
     .sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
     .sidebar-footer { border-top: 1px solid var(--border); padding: 12px 16px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -287,86 +217,46 @@
     .sync-dot.syncing { background: #f59e0b; animation: pulse 1.2s infinite; }
     .sync-dot.error   { background: #ef4444; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-    .logout-btn {
-      display: flex; align-items: center; gap: 8px; width: 100%;
-      background: none; border: 1.5px solid var(--border); border-radius: 9px;
-      padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text-3);
-      cursor: pointer; transition: all .15s;
-    }
+    .logout-btn { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: 1.5px solid var(--border); border-radius: 9px; padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; transition: all .15s; }
     .logout-btn:hover { background: var(--red-lt); border-color: var(--red-bd); color: var(--red); }
     .logout-btn svg { flex-shrink: 0; }
 
-    /* ── Main ── */
+    /* Main */
     #main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; overflow: hidden; }
-    #topbar {
-      height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; gap: 12px; flex-shrink: 0;
-    }
+    #topbar { height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; gap: 12px; flex-shrink: 0; }
     .topbar-left { display: flex; align-items: center; gap: 8px; }
     #page-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
     #page-sub   { font-size: 11px; color: var(--text-3); margin-top: 1px; }
     .tabs { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
-    .tab-btn {
-      padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500;
-      border: none; background: none; color: var(--text-2); transition: all .12s; cursor: pointer;
-    }
+    .tab-btn { padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500; border: none; background: none; color: var(--text-2); transition: all .12s; cursor: pointer; }
     .tab-btn.active { background: var(--surface); color: var(--indigo); font-weight: 700; box-shadow: var(--shadow-sm); }
-    .btn-primary {
-      display: flex; align-items: center; gap: 6px;
-      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
-      color: #fff; border: none; border-radius: var(--radius);
-      padding: 9px 18px; font-size: 13px; font-weight: 600;
-      transition: opacity .15s, transform .1s; box-shadow: 0 2px 8px rgba(67,97,238,.32);
-    }
+    .btn-primary { display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%); color: #fff; border: none; border-radius: var(--radius); padding: 9px 18px; font-size: 13px; font-weight: 600; transition: opacity .15s, transform .1s; box-shadow: 0 2px 8px rgba(67,97,238,.32); }
     .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
 
-    /* ── KPI Strip ── */
-    #kpi-strip {
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 14px 24px; display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0;
-    }
-    .kpi-card {
-      flex: 1; min-width: 100px; background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px;
-    }
+    /* KPI Strip */
+    #kpi-strip { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0; }
+    .kpi-card { flex: 1; min-width: 100px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
     .kpi-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .kpi-num { font-family: 'Syne', sans-serif; font-size: 22px; color: var(--text); line-height: 1; }
     .kpi-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
     .kpi-body { display: flex; flex-direction: column; }
 
-    /* ── Filter Bar ── */
-    #filterbar {
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 10px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0;
-    }
-    .filter-select, .filter-input {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; padding: 6px 11px; font-size: 12px; color: var(--text);
-      outline: none; transition: border-color .12s;
-    }
+    /* Filter Bar */
+    #filterbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+    .filter-select, .filter-input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 11px; font-size: 12px; color: var(--text); outline: none; transition: border-color .12s; }
     .filter-select:focus, .filter-input:focus { border-color: var(--indigo); box-shadow: 0 0 0 2px var(--indigo-bd); }
     .filter-input { min-width: 180px; flex: 1; max-width: 260px; }
-    .filter-clear {
-      font-size: 12px; color: var(--text-3); background: none;
-      border: 1px solid var(--border); border-radius: 8px; padding: 6px 11px; transition: all .12s;
-    }
+    .filter-clear { font-size: 12px; color: var(--text-3); background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 11px; transition: all .12s; }
     .filter-clear:hover { color: var(--text); border-color: var(--border-md); }
     .filter-spacer { flex: 1; }
 
-    /* ── Content ── */
+    /* Content */
     #content { flex: 1; overflow-y: auto; padding: 22px 24px; }
 
-    /* ── Task Cards ── */
+    /* Task Cards */
     #cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
-    .task-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; box-shadow: var(--shadow-sm);
-      padding: 16px 18px; display: flex; flex-direction: column; gap: 11px;
-      transition: box-shadow .15s, transform .15s; animation: fadeUp .2s ease both;
-      position: relative; overflow: hidden;
-    }
+    .task-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-sm); padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; transition: box-shadow .15s, transform .15s; animation: fadeUp .2s ease both; position: relative; overflow: hidden; }
     .task-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 14px 0 0 14px; }
     .task-card.pri-High::before   { background: var(--red); }
     .task-card.pri-Medium::before { background: var(--amber); }
@@ -379,11 +269,7 @@
     .card-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; flex: 1; }
     .card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s; flex-shrink: 0; }
     .task-card:hover .card-actions { opacity: 1; }
-    .icon-btn {
-      width: 28px; height: 28px; border: none; background: none; border-radius: 7px;
-      display: flex; align-items: center; justify-content: center; color: var(--text-3);
-      transition: background .12s, color .12s; cursor: pointer;
-    }
+    .icon-btn { width: 28px; height: 28px; border: none; background: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: var(--text-3); transition: background .12s, color .12s; cursor: pointer; }
     .icon-btn:hover { background: var(--bg); color: var(--text); }
     .icon-btn.danger:hover { background: var(--red-lt); color: var(--red); }
     .card-notes { font-size: 12px; color: var(--text-2); line-height: 1.5; padding: 8px 10px; background: var(--bg); border-radius: 8px; }
@@ -400,18 +286,9 @@
     .assignee-role { font-size: 10px; color: var(--text-3); }
     .added-by-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-3); background: var(--bg); border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px; }
     .added-by-pill strong { color: var(--text-2); font-weight: 600; }
-    .status-lock-hint { font-size: 10px; color: var(--text-3); font-style: italic; display: flex; align-items: center; gap: 4px; }
-    .log-work-restricted {
-      display: inline-flex; align-items: center; gap: 6px; width: 100%; justify-content: center;
-      background: var(--bg); border: 1.5px dashed var(--border-md);
-      color: var(--text-3); border-radius: 7px; padding: 5px 11px;
-      font-size: 11px; font-weight: 500; cursor: default; font-style: italic;
-    }
-    .status-select {
-      background: transparent; border: 1px solid var(--border-md); border-radius: 7px;
-      padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;
-      outline: none; color: var(--text-2); transition: border-color .12s;
-    }
+    .status-lock-hint { font-size: 11px; color: var(--text-3); font-style: italic; display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; }
+    .log-work-restricted { display: inline-flex; align-items: center; gap: 6px; width: 100%; justify-content: center; background: var(--bg); border: 1.5px dashed var(--border-md); color: var(--text-3); border-radius: 7px; padding: 5px 11px; font-size: 11px; font-weight: 500; cursor: default; font-style: italic; }
+    .status-select { background: transparent; border: 1px solid var(--border-md); border-radius: 7px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; outline: none; color: var(--text-2); transition: border-color .12s; }
     .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
     .status-select.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
     .due-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; border-radius: 99px; padding: 2px 8px; border: 1px solid; }
@@ -419,6 +296,11 @@
     .due-chip.today   { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
     .due-chip.soon    { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
     .due-chip.normal  { background: var(--bg);        color: var(--text-3); border-color: var(--border); }
+
+    /* Role badge on card */
+    .role-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; border-radius: 99px; padding: 2px 7px; border: 1px solid; text-transform: uppercase; letter-spacing: .05em; }
+    .role-pill.creator  { background: var(--indigo-lt); color: var(--indigo); border-color: var(--indigo-bd); }
+    .role-pill.assignee { background: var(--teal-lt);   color: var(--teal);   border-color: var(--teal-bd); }
 
     #empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 80px 20px; color: var(--text-3); text-align: center; }
     #empty-state p { font-size: 13px; line-height: 1.6; }
@@ -444,18 +326,9 @@
     .sc-foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
     .sc-warn { margin-top: 8px; background: var(--red-lt); border: 1px solid var(--red-bd); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--red); font-weight: 500; }
 
-    /* ── Modal ── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(13,27,46,.4);
-      backdrop-filter: blur(4px); z-index: 100;
-      display: flex; align-items: center; justify-content: center; padding: 16px;
-    }
-    .modal-box {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 18px; box-shadow: var(--shadow-lg);
-      width: 100%; max-width: 480px; padding: 28px;
-      animation: fadeUp .18s ease; max-height: 90vh; overflow-y: auto;
-    }
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(13,27,46,.4); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-lg); width: 100%; max-width: 480px; padding: 28px; animation: fadeUp .18s ease; max-height: 90vh; overflow-y: auto; }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
     .modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
     .modal-close { width: 30px; height: 30px; border: none; background: none; font-size: 20px; color: var(--text-3); cursor: pointer; border-radius: 7px; transition: background .12s; display: flex; align-items: center; justify-content: center; }
@@ -463,48 +336,25 @@
     .form-group { margin-bottom: 14px; }
     .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
     .form-label .req { color: var(--red); margin-left: 2px; }
-    .form-input, .form-select, .form-textarea {
-      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
-      border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
-      outline: none; transition: border-color .12s, background .12s;
-    }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); background: #fff;
-    }
-    /* Field error state */
-    .form-input.field-error, .form-select.field-error, .form-textarea.field-error {
-      border-color: var(--red) !important;
-      background: var(--red-lt) !important;
-      box-shadow: 0 0 0 3px rgba(220,38,38,.10) !important;
-    }
-    .form-field-msg {
-      font-size: 11px; color: var(--red); margin-top: 5px;
-      display: none; align-items: center; gap: 5px; font-weight: 500;
-    }
+    .form-input, .form-select, .form-textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text); outline: none; transition: border-color .12s, background .12s; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); background: #fff; }
+    .form-input.field-error, .form-select.field-error, .form-textarea.field-error { border-color: var(--red) !important; background: var(--red-lt) !important; box-shadow: 0 0 0 3px rgba(220,38,38,.10) !important; }
+    .form-field-msg { font-size: 11px; color: var(--red); margin-top: 5px; display: none; align-items: center; gap: 5px; font-weight: 500; }
     .form-field-msg.visible { display: flex; }
     .form-textarea { resize: none; line-height: 1.5; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .added-by-display {
-      background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
-      border-radius: 9px; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--indigo);
-      display: flex; align-items: center; gap: 8px; height: 38px;
-    }
+    .added-by-display { background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd); border-radius: 9px; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--indigo); display: flex; align-items: center; gap: 8px; height: 38px; }
     .modal-footer { display: flex; gap: 10px; margin-top: 22px; }
     .btn-ghost { flex: 1; padding: 11px; border: 1.5px solid var(--border); background: none; border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--text-2); transition: all .12s; }
     .btn-ghost:hover { background: var(--bg); border-color: var(--border-md); color: var(--text); }
     .btn-save { flex: 1; padding: 11px; }
 
-    /* ── Validation Banner inside modal ── */
-    .modal-validation-banner {
-      background: var(--red-lt); border: 1.5px solid var(--red-bd);
-      border-radius: 9px; padding: 10px 14px; font-size: 12px; color: var(--red);
-      display: none; align-items: center; gap: 9px; line-height: 1.5;
-      margin-bottom: 6px; font-weight: 500;
-    }
+    /* Validation banner */
+    .modal-validation-banner { background: var(--red-lt); border: 1.5px solid var(--red-bd); border-radius: 9px; padding: 10px 14px; font-size: 12px; color: var(--red); display: none; align-items: center; gap: 9px; line-height: 1.5; margin-bottom: 14px; font-weight: 500; }
     .modal-validation-banner.visible { display: flex; }
     .modal-validation-banner svg { flex-shrink: 0; }
 
-    /* ── Toast ── */
+    /* Toast */
     #toast { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
     .toast-item { background: var(--text); color: #fff; border-radius: 10px; padding: 11px 16px; font-size: 12px; font-weight: 500; box-shadow: var(--shadow-lg); animation: fadeUp .18s ease; max-width: 320px; display: flex; align-items: center; gap: 8px; }
     .toast-item.success { background: #065f46; }
@@ -518,34 +368,17 @@
 
     #setup-banner { background: #fef3c7; border: 1px solid #fcd34d; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 18px; font-size: 12px; color: #92400e; line-height: 1.6; }
 
-    .log-work-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: var(--teal-lt); border: 1.5px solid var(--teal-bd);
-      color: var(--teal); border-radius: 7px; padding: 5px 11px;
-      font-size: 11px; font-weight: 700; cursor: pointer;
-      transition: background .12s, border-color .12s, transform .1s;
-      width: 100%; justify-content: center;
-    }
+    .log-work-btn { display: inline-flex; align-items: center; gap: 5px; background: var(--teal-lt); border: 1.5px solid var(--teal-bd); color: var(--teal); border-radius: 7px; padding: 5px 11px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background .12s, border-color .12s, transform .1s; width: 100%; justify-content: center; }
     .log-work-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); transform: translateY(-1px); }
 
-    .sidebar-add-btn {
-      width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-md);
-      background: var(--bg); color: var(--text-2); font-size: 15px; line-height: 1;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all .12s; flex-shrink: 0; padding: 0;
-    }
+    .sidebar-add-btn { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-md); background: var(--bg); color: var(--text-2); font-size: 15px; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .12s; flex-shrink: 0; padding: 0; }
     .sidebar-add-btn:hover { background: var(--indigo); border-color: var(--indigo); color: #fff; }
 
     #view-client { padding: 0; }
 
     @media (max-width: 768px) { :root { --sidebar-w: 0px; } #sidebar { display: none; } }
 
-    #notif-panel {
-      position: fixed; top: var(--header-h); right: 16px; z-index: 150;
-      width: 340px; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; box-shadow: var(--shadow-lg);
-      display: none; flex-direction: column; overflow: hidden; animation: fadeUp .18s ease;
-    }
+    #notif-panel { position: fixed; top: var(--header-h); right: 16px; z-index: 150; width: 340px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); display: none; flex-direction: column; overflow: hidden; animation: fadeUp .18s ease; }
     #notif-panel.open { display: flex; }
     .notif-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .notif-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); }
@@ -570,12 +403,9 @@
 <!-- LOGIN SHIELD -->
 <div id="login-shield" style="display:none">
   <div class="login-card">
-
     <div class="login-logo-row">
       <div class="login-logo-icon">
-        <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div>
         <div class="login-logo-text">Sharvii Technologies</div>
@@ -583,73 +413,43 @@
       </div>
     </div>
 
-    <!-- Step 1: Email -->
     <div id="login-step-email">
       <div class="login-heading">Welcome back.</div>
       <div class="login-sub">Sign in with your Sharvii email to access the team workspace.</div>
-
       <label class="login-label" for="login-email-input">Work Email</label>
-      <input
-        class="login-input"
-        id="login-email-input"
-        type="email"
-        placeholder="you@sharvii.com"
-        autocomplete="email"
-        onkeydown="if(event.key==='Enter') sendOTP()"
-      />
-
+      <input class="login-input" id="login-email-input" type="email" placeholder="you@sharvii.com" autocomplete="email" onkeydown="if(event.key==='Enter') sendOTP()"/>
       <div class="login-error" id="login-error">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span id="login-error-msg">This email is not authorised.</span>
       </div>
-
       <button class="login-btn" id="login-send-btn" onclick="sendOTP()">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Send Sign-in Link
       </button>
-
       <div class="login-divider"></div>
       <div class="login-footer">🔒 Access restricted to authorised team members only</div>
     </div>
 
-    <!-- Step 2: OTP (6–8 digits) -->
     <div id="login-step-otp" style="display:none">
       <div class="login-heading">Check your inbox.</div>
       <div class="login-sub">We sent a sign-in code to <strong id="otp-email-display" style="color:var(--indigo)"></strong></div>
-
       <div class="login-otp-info">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Enter the 6–8 digit code from the email, or click the magic link directly.
       </div>
-
       <label class="login-label" for="login-otp-input">Sign-in Code</label>
-      <input
-        class="login-input"
-        id="login-otp-input"
-        type="text"
-        inputmode="numeric"
-        placeholder="· · · · · · · ·"
-        maxlength="8"
-        autocomplete="one-time-code"
-        style="font-size:20px;letter-spacing:.3em;text-align:center;font-family:'Syne',sans-serif;color:var(--indigo);font-weight:700;"
-        oninput="this.value=this.value.replace(/\D/g,'')"
-        onkeydown="if(event.key==='Enter') verifyOTP()"
-      />
-
+      <input class="login-input" id="login-otp-input" type="text" inputmode="numeric" placeholder="· · · · · · · ·" maxlength="8" autocomplete="one-time-code" style="font-size:20px;letter-spacing:.3em;text-align:center;font-family:'Syne',sans-serif;color:var(--indigo);font-weight:700;" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter') verifyOTP()"/>
       <div class="login-error" id="otp-error">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span id="otp-error-msg">Invalid or expired code. Please try again.</span>
       </div>
-
       <button class="login-btn" id="otp-verify-btn" onclick="verifyOTP()">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Verify & Sign In
       </button>
-
       <button class="login-resend" onclick="backToEmail()">← Use a different email</button>
       <div class="login-footer" style="margin-top:8px;">Code expires in 10 minutes · Check spam if not received</div>
     </div>
-
   </div>
 </div>
 
@@ -685,25 +485,15 @@
         <span>Team Members</span>
         <button class="sidebar-add-btn" onclick="addTeamMember()" title="Add team member">+</button>
       </div>
-
       <button class="member-row active" onclick="filterByPerson('')" id="member-all">
         <div class="member-avatar" style="background:#eef1fd;color:var(--indigo);">
-          <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
-            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
-            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </div>
-        <div class="member-info">
-          <div class="member-name">All Members</div>
-          <div class="member-role">View all tasks</div>
-        </div>
+        <div class="member-info"><div class="member-name">All Members</div><div class="member-role">View all tasks</div></div>
         <span class="member-count" id="count-all">0</span>
       </button>
-
       <div class="sidebar-divider"></div>
       <div id="member-list"></div>
-
       <div class="sidebar-divider" style="margin-top:12px;"></div>
       <div class="sidebar-section-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:16px;">
         <span>Clients</span>
@@ -718,11 +508,7 @@
         <span id="sync-label">Connecting…</span>
       </div>
       <button class="logout-btn" onclick="signOut()">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Sign Out
       </button>
     </div>
@@ -742,10 +528,7 @@
           <button class="tab-btn"        onclick="switchTab('summary')" id="tab-summary">Summary</button>
         </div>
         <button class="icon-btn notif-btn" id="notif-btn" onclick="toggleNotifPanel()" style="width:36px;height:36px;border:1px solid var(--border);background:var(--bg);">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="notif-dot" id="notif-dot"></span>
         </button>
         <button class="btn-primary" onclick="openModal()">
@@ -804,7 +587,7 @@
 
 <div id="toast"></div>
 
-<!-- MODAL 1: Assign / Edit Task -->
+<!-- MODAL: Assign / Edit Task (NO project field) -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -812,34 +595,26 @@
         <span class="modal-title" id="modal-title">Assign Task</span>
         <div style="font-size:11px;color:var(--text-3);margin-top:3px;" id="modal-subtitle">New task · auto-starts as To Do</div>
       </div>
-      <button class="modal-close" onclick="closeModal()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
     </div>
 
-    <!-- ── Validation Banner ── -->
+    <!-- Validation Banner -->
     <div class="modal-validation-banner" id="modal-val-banner">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <span id="modal-val-msg">Please fill in all required fields: Client, Project, and Task Title.</span>
+      <span id="modal-val-msg">Client and Task Title are required.</span>
     </div>
 
     <!-- Task Title (required) -->
     <div class="form-group">
       <label class="form-label">Task Title <span class="req">*</span></label>
-      <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS" />
+      <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS"/>
       <div class="form-field-msg" id="err-name">
         <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Task title is required.
       </div>
     </div>
-
-    <!-- <!-- Project Name (required) -->
-    <div class="form-group">
-      <label class="form-label">Project Name <span class="req">*</span></label>
-      <input class="form-input" id="f-project" placeholder="e.g. Website Redesign, App v2.0" />
-      <div class="form-field-msg" id="err-project">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Project name is required.
-      </div>
-    </div> -->
 
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
@@ -852,11 +627,13 @@
       </div>
     </div>
 
-    <!-- Client (required) -->
+    <!-- Client (required) + Priority -->
     <div class="form-row" style="margin-top:14px;">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Client <span class="req">*</span></label>
-        <select class="form-select" id="f-client"><option value="">— Select Client —</option></select>
+        <select class="form-select" id="f-client">
+          <option value="">— Select Client —</option>
+        </select>
         <div class="form-field-msg" id="err-client">
           <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           Please select a client.
@@ -864,13 +641,15 @@
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Priority</label>
-        <select class="form-select" id="f-priority"><option>High</option><option selected>Medium</option><option>Low</option></select>
+        <select class="form-select" id="f-priority">
+          <option>High</option><option selected>Medium</option><option>Low</option>
+        </select>
       </div>
     </div>
 
     <div class="form-group" style="margin-top:14px;">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
-      <input class="form-input" type="date" id="f-due" />
+      <input class="form-input" type="date" id="f-due"/>
     </div>
     <div class="form-group">
       <label class="form-label">Notes / Brief <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
@@ -887,7 +666,7 @@
   </div>
 </div>
 
-<!-- MODAL 2: Log Work -->
+<!-- MODAL: Log Work -->
 <div class="modal-overlay" id="modal-log" style="display:none" onclick="handleLogOverlayClick(event)">
   <div class="modal-box" style="max-width:420px;">
     <div class="modal-header">
@@ -895,7 +674,9 @@
         <span class="modal-title">Log Work</span>
         <div style="font-size:11px;color:var(--text-3);margin-top:3px;" id="log-task-name">—</div>
       </div>
-      <button class="modal-close" onclick="closeLogModal()"><svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+      <button class="modal-close" onclick="closeLogModal()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
     </div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
       <div>
@@ -917,7 +698,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Hours Worked <span style="font-weight:400;text-transform:none;color:var(--text-3);margin-left:4px;">(enter total)</span></label>
-      <input class="form-input" type="number" id="lw-hours" min="0" step="0.5" placeholder="e.g. 3.5" style="font-size:16px;font-weight:700;color:var(--teal);" />
+      <input class="form-input" type="number" id="lw-hours" min="0" step="0.5" placeholder="e.g. 3.5" style="font-size:16px;font-weight:700;color:var(--teal);"/>
     </div>
     <div class="form-group">
       <label class="form-label">Work Note <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
@@ -933,18 +714,15 @@
   </div>
 </div>
 
-
-<!-- ══ JAVASCRIPT ══ -->
+<!-- JAVASCRIPT -->
 <script>
-/* ─── Supabase client ──
-   persistSession:true ensures authenticated JWT is always sent,
-   preventing RLS 42501 "anon key has no permission" errors.        */
+/* ─── Supabase client ─── */
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, storageKey: "sharvii_auth" }
 });
 
-/* ─── Team & Client Config ── */
+/* ─── Team & Client Config ─── */
 const TEAM = [
   { name: "Umesh",    role: "Manager" },
   { name: "Prabhu",   role: "Senior"  },
@@ -970,28 +748,28 @@ const ROLE_COLOR = {
 };
 const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
 
-/* ─── localStorage config ── */
+/* ─── localStorage config ─── */
 const CONFIG_KEY = "sharvii_config";
 function loadConfig() {
   try { const r=localStorage.getItem(CONFIG_KEY); return r?JSON.parse(r):{extraTeam:[],extraClients:[]}; }
   catch(e) { return {extraTeam:[],extraClients:[]}; }
 }
-function saveConfig(cfg) { localStorage.setItem(CONFIG_KEY,JSON.stringify(cfg)); }
+function saveConfig(cfg) { localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); }
 function applyConfig() {
-  const cfg=loadConfig();
-  (cfg.extraTeam||[]).forEach(m=>{if(!TEAM.find(x=>x.name===m.name))TEAM.push(m);});
-  (cfg.extraClients||[]).forEach(c=>{if(!CLIENTS.includes(c))CLIENTS.push(c);});
+  const cfg = loadConfig();
+  (cfg.extraTeam||[]).forEach(m => { if(!TEAM.find(x=>x.name===m.name)) TEAM.push(m); });
+  (cfg.extraClients||[]).forEach(c => { if(!CLIENTS.includes(c)) CLIENTS.push(c); });
 }
 
-/* ─── App state ── */
-let tasks=[],editingId=null,activeTab="board",filterPerson="",filterPriority="",
-    filterStatus="",filterSearch="",filterDue="",activeClient=null,
-    pollTimer=null,lastTaskIds=new Set(),notifications=[];
+/* ─── App state ─── */
+let tasks=[], editingId=null, activeTab="board", filterPerson="", filterPriority="",
+    filterStatus="", filterSearch="", filterDue="", activeClient=null,
+    pollTimer=null, lastTaskIds=new Set(), notifications=[];
 let currentUser="", currentUserEmail="", currentUserId="";
 
 const REST = `${SUPABASE_URL}/rest/v1`;
 
-/* ─── Auth headers (always use live session token) ── */
+/* ─── Auth headers ─── */
 async function getHeaders() {
   const { data: { session } } = await sb.auth.getSession();
   const token = session?.access_token || SUPABASE_KEY;
@@ -1002,7 +780,7 @@ async function getHeaders() {
   };
 }
 
-/* ─── REST helpers ── */
+/* ─── REST helpers ─── */
 async function dbSelect() {
   const h = await getHeaders();
   const res = await fetch(`${REST}/tasks?select=*&order=created_at.desc`, { headers:{...h,"Accept":"application/json"} });
@@ -1033,15 +811,15 @@ async function dbDelete(id) {
    AUTH
 ══════════════════════════════════════════════════ */
 function nameFromEmail(email) {
-  const lower=email.toLowerCase();
-  if(EMAIL_TO_NAME[lower])return EMAIL_TO_NAME[lower];
-  const local=email.split("@")[0];
+  const lower = email.toLowerCase();
+  if(EMAIL_TO_NAME[lower]) return EMAIL_TO_NAME[lower];
+  const local = email.split("@")[0];
   return local.charAt(0).toUpperCase()+local.slice(1);
 }
 function isEmailAllowed(email) {
-  const lower=email.toLowerCase();
-  if(ALLOWED_EMAILS.map(e=>e.toLowerCase()).includes(lower))return true;
-  if(ALLOWED_DOMAIN&&lower.endsWith(ALLOWED_DOMAIN.toLowerCase()))return true;
+  const lower = email.toLowerCase();
+  if(ALLOWED_EMAILS.map(e=>e.toLowerCase()).includes(lower)) return true;
+  if(ALLOWED_DOMAIN && lower.endsWith(ALLOWED_DOMAIN.toLowerCase())) return true;
   return false;
 }
 
@@ -1053,11 +831,11 @@ async function sendOTP() {
   errEl.classList.remove("visible");
   if(!email||!email.includes("@")){
     errMsg.textContent="Please enter a valid email address.";
-    errEl.classList.add("visible");return;
+    errEl.classList.add("visible"); return;
   }
   if(!isEmailAllowed(email)){
     errMsg.textContent="This email is not authorised to access the workspace. Contact your admin.";
-    errEl.classList.add("visible");return;
+    errEl.classList.add("visible"); return;
   }
   btn.disabled=true;
   btn.innerHTML=`<div class="spin"></div> Sending…`;
@@ -1066,7 +844,7 @@ async function sendOTP() {
     btn.disabled=false;
     btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send Sign-in Link`;
     errMsg.textContent=error.message||"Failed to send email. Try again.";
-    errEl.classList.add("visible");return;
+    errEl.classList.add("visible"); return;
   }
   document.getElementById("otp-email-display").textContent=email;
   document.getElementById("login-step-email").style.display="none";
@@ -1081,10 +859,9 @@ async function verifyOTP() {
   const errEl=document.getElementById("otp-error");
   const errMsg=document.getElementById("otp-error-msg");
   errEl.classList.remove("visible");
-  /* Accept 6–8 digit codes */
   if(token.length<6){
     errMsg.textContent="Please enter at least 6 digits.";
-    errEl.classList.add("visible");return;
+    errEl.classList.add("visible"); return;
   }
   btn.disabled=true;
   btn.innerHTML=`<div class="spin"></div> Verifying…`;
@@ -1093,7 +870,7 @@ async function verifyOTP() {
     btn.disabled=false;
     btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Verify & Sign In`;
     errMsg.textContent=error?.message||"Invalid or expired code. Try requesting a new one.";
-    errEl.classList.add("visible");return;
+    errEl.classList.add("visible"); return;
   }
 }
 
@@ -1108,35 +885,35 @@ function backToEmail() {
 }
 
 async function signOut() {
-  if(!confirm("Sign out of Sharvii Task Manager?"))return;
-  if(pollTimer)clearInterval(pollTimer);
+  if(!confirm("Sign out of Sharvii Task Manager?")) return;
+  if(pollTimer) clearInterval(pollTimer);
   await sb.auth.signOut();
 }
 
 function bootApp(session) {
   currentUserEmail = session.user.email;
-  currentUserId    = session.user.id;       // ← store the Supabase UUID
+  currentUserId    = session.user.id;          // Supabase auth UUID
   currentUser      = nameFromEmail(currentUserEmail);
 
-  document.getElementById("auth-avatar").textContent=currentUser[0]||"?";
-  document.getElementById("auth-display-name").textContent=currentUser;
-  document.getElementById("auth-display-email").textContent=currentUserEmail;
-  document.getElementById("added-by-display").textContent=currentUser;
-  document.getElementById("session-check").style.display="none";
-  document.getElementById("login-shield").style.display="none";
-  document.getElementById("app").style.display="flex";
+  document.getElementById("auth-avatar").textContent = currentUser[0]||"?";
+  document.getElementById("auth-display-name").textContent = currentUser;
+  document.getElementById("auth-display-email").textContent = currentUserEmail;
+  document.getElementById("added-by-display").textContent = currentUser;
+  document.getElementById("session-check").style.display = "none";
+  document.getElementById("login-shield").style.display  = "none";
+  document.getElementById("app").style.display           = "flex";
   applyConfig();
   buildSidebar();
   buildClientSidebar();
   buildPersonDropdown();
   checkSetup();
   requestNotifPermission();
-  if(isConfigured()){loadTasks();startPolling();}
+  if(isConfigured()){ loadTasks(); startPolling(); }
 }
 
-sb.auth.onAuthStateChange((event,session)=>{
-  document.getElementById("session-check").style.display="none";
-  if(session&&session.user){
+sb.auth.onAuthStateChange((event, session) => {
+  document.getElementById("session-check").style.display = "none";
+  if(session && session.user){
     if(!isEmailAllowed(session.user.email)){
       sb.auth.signOut();
       showLoginShield("Access denied: your email is not on the approved list.");
@@ -1144,21 +921,21 @@ sb.auth.onAuthStateChange((event,session)=>{
     }
     bootApp(session);
   } else {
-    document.getElementById("app").style.display="none";
+    document.getElementById("app").style.display = "none";
     showLoginShield();
   }
 });
 
 function showLoginShield(errorMessage) {
-  document.getElementById("login-shield").style.display="flex";
-  document.getElementById("app").style.display="none";
-  if(pollTimer)clearInterval(pollTimer);
-  document.getElementById("login-step-email").style.display="block";
-  document.getElementById("login-step-otp").style.display="none";
-  document.getElementById("login-email-input").value="";
-  document.getElementById("login-otp-input").value="";
+  document.getElementById("login-shield").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+  if(pollTimer) clearInterval(pollTimer);
+  document.getElementById("login-step-email").style.display = "block";
+  document.getElementById("login-step-otp").style.display   = "none";
+  document.getElementById("login-email-input").value = "";
+  document.getElementById("login-otp-input").value   = "";
   if(errorMessage){
-    document.getElementById("login-error-msg").textContent=errorMessage;
+    document.getElementById("login-error-msg").textContent = errorMessage;
     document.getElementById("login-error").classList.add("visible");
   } else {
     document.getElementById("login-error").classList.remove("visible");
@@ -1166,107 +943,126 @@ function showLoginShield(errorMessage) {
 }
 
 function isConfigured() {
-  return SUPABASE_URL!=="YOUR_SUPABASE_URL"&&SUPABASE_KEY!=="YOUR_SUPABASE_ANON_KEY";
+  return SUPABASE_URL !== "YOUR_SUPABASE_URL" && SUPABASE_KEY !== "YOUR_SUPABASE_ANON_KEY";
 }
 function checkSetup() {
-  document.getElementById("setup-banner").style.display=isConfigured()?"none":"block";
-  if(!isConfigured())setSyncStatus("error","Not connected");
+  document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
+  if(!isConfigured()) setSyncStatus("error", "Not connected");
 }
 
-/* ─── Polling ── */
+/* ─── Polling ─── */
 function startPolling() {
-  if(pollTimer)clearInterval(pollTimer);
-  pollTimer=setInterval(async()=>{
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
     try {
-      const fresh=await dbSelect();
-      fresh.forEach(t=>{
-        if(!lastTaskIds.has(t.id)&&t.person===currentUser&&t.added_by!==currentUser){
-          const msg=`📋 ${t.added_by||"Someone"} assigned you: "${t.name}"`;
-          pushNotification(msg,t.id);
-          showToast(`New task assigned by ${t.added_by||"a teammate"}!`,"info");
-          playNotifSound();fireBrowserNotif("New task assigned",msg);
+      const fresh = await dbSelect();
+      fresh.forEach(t => {
+        // Notify: a new task assigned to me (by someone else), matched via assigned_to_email or person name
+        const isForMe = (t.assigned_to_email && t.assigned_to_email === currentUserEmail) ||
+                        (!t.assigned_to_email && t.person === currentUser);
+        if(!lastTaskIds.has(t.id) && isForMe && t.creator_user_id !== currentUserId){
+          const msg = `📋 ${t.added_by||"Someone"} assigned you: "${t.name}"`;
+          pushNotification(msg, t.id);
+          showToast(`New task assigned by ${t.added_by||"a teammate"}!`, "info");
+          playNotifSound(); fireBrowserNotif("New task assigned", msg);
         }
       });
-      lastTaskIds=new Set(fresh.map(t=>t.id));
-      tasks=fresh;render();
-      setSyncStatus("ok",`Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
-    } catch(e){setSyncStatus("error","Sync error — retrying…");}
-  },8000);
+      lastTaskIds = new Set(fresh.map(t=>t.id));
+      tasks = fresh; render();
+      setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
+    } catch(e){ setSyncStatus("error","Sync error — retrying…"); }
+  }, 8000);
 }
 
 async function loadTasks() {
   setSyncStatus("syncing","Loading tasks…");
-  try{const data=await dbSelect();lastTaskIds=new Set(data.map(t=>t.id));tasks=data;render();setSyncStatus("ok",`Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);}
-  catch(e){setSyncStatus("error","Load failed: "+e.message);showToast("Load failed: "+e.message,"error");}
+  try {
+    const data = await dbSelect();
+    lastTaskIds = new Set(data.map(t=>t.id));
+    tasks = data; render();
+    setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
+  } catch(e){
+    setSyncStatus("error","Load failed: "+e.message);
+    showToast("Load failed: "+e.message,"error");
+  }
 }
 async function insertTask(payload){
-  try{await dbInsert(payload);await loadTasks();return true;}
-  catch(e){showToast("Failed to add task: "+e.message,"error");setSyncStatus("error","Save failed");return false;}
+  try{ await dbInsert(payload); await loadTasks(); return true; }
+  catch(e){ showToast("Failed to add task: "+e.message,"error"); setSyncStatus("error","Save failed"); return false; }
 }
-async function updateTaskDB(id,payload){
-  try{await dbUpdate(id,payload);await loadTasks();return true;}
-  catch(e){showToast("Failed to update: "+e.message,"error");setSyncStatus("error","Update failed");return false;}
+async function updateTaskDB(id, payload){
+  try{ await dbUpdate(id, payload); await loadTasks(); return true; }
+  catch(e){ showToast("Failed to update: "+e.message,"error"); setSyncStatus("error","Update failed"); return false; }
 }
 async function deleteTaskDB(id){
-  try{await dbDelete(id);await loadTasks();return true;}
-  catch(e){showToast("Failed to delete: "+e.message,"error");return false;}
+  try{ await dbDelete(id); await loadTasks(); return true; }
+  catch(e){ showToast("Failed to delete: "+e.message,"error"); return false; }
 }
 
-/* ─── Notifications ── */
-function requestNotifPermission(){if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();}
-function fireBrowserNotif(t,b){if("Notification"in window&&Notification.permission==="granted")new Notification(t,{body:b});}
+/* ─── Notifications ─── */
+function requestNotifPermission(){ if("Notification" in window && Notification.permission==="default") Notification.requestPermission(); }
+function fireBrowserNotif(t,b){ if("Notification" in window && Notification.permission==="granted") new Notification(t,{body:b}); }
 function playNotifSound(){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);osc.type="sine";
-    osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(440,ctx.currentTime+.3);
-    gain.gain.setValueAtTime(.18,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);
-    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+.4);
+    osc.connect(gain); gain.connect(ctx.destination); osc.type="sine";
+    osc.frequency.setValueAtTime(880,ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440,ctx.currentTime+.3);
+    gain.gain.setValueAtTime(.18,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime+.4);
   }catch(e){}
 }
-function pushNotification(msg,taskId){notifications.unshift({id:Date.now()+Math.random(),msg,time:new Date(),unread:true,taskId});renderNotifPanel();updateNotifDot();}
-function renderNotifPanel(){
-  const list=document.getElementById("notif-list");
-  if(!notifications.length){list.innerHTML=`<div class="notif-empty">No notifications yet</div>`;return;}
-  list.innerHTML=notifications.slice(0,30).map(n=>`<div class="notif-item ${n.unread?"unread":""}"><div class="notif-msg">${esc(n.msg)}</div><div class="notif-time">${timeAgo(n.time)}</div></div>`).join("");
+function pushNotification(msg, taskId){
+  notifications.unshift({id:Date.now()+Math.random(),msg,time:new Date(),unread:true,taskId});
+  renderNotifPanel(); updateNotifDot();
 }
-function updateNotifDot(){document.getElementById("notif-dot").classList.toggle("visible",notifications.some(n=>n.unread));}
-function toggleNotifPanel(){document.getElementById("notif-panel").classList.toggle("open");}
-function clearNotifications(){notifications.forEach(n=>n.unread=false);renderNotifPanel();updateNotifDot();}
-document.addEventListener("click",e=>{
-  const panel=document.getElementById("notif-panel"),btn=document.getElementById("notif-btn");
-  if(panel.classList.contains("open")&&!panel.contains(e.target)&&!btn.contains(e.target))panel.classList.remove("open");
+function renderNotifPanel(){
+  const list = document.getElementById("notif-list");
+  if(!notifications.length){ list.innerHTML=`<div class="notif-empty">No notifications yet</div>`; return; }
+  list.innerHTML = notifications.slice(0,30).map(n=>`
+    <div class="notif-item ${n.unread?"unread":""}">
+      <div class="notif-msg">${esc(n.msg)}</div>
+      <div class="notif-time">${timeAgo(n.time)}</div>
+    </div>`).join("");
+}
+function updateNotifDot(){ document.getElementById("notif-dot").classList.toggle("visible", notifications.some(n=>n.unread)); }
+function toggleNotifPanel(){ document.getElementById("notif-panel").classList.toggle("open"); }
+function clearNotifications(){ notifications.forEach(n=>n.unread=false); renderNotifPanel(); updateNotifDot(); }
+document.addEventListener("click", e => {
+  const panel=document.getElementById("notif-panel"), btn=document.getElementById("notif-btn");
+  if(panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target)) panel.classList.remove("open");
 });
 function timeAgo(date){
-  const d=Math.floor((Date.now()-new Date(date))/1000);
-  if(d<60)return"just now";if(d<3600)return Math.floor(d/60)+"m ago";
-  if(d<86400)return Math.floor(d/3600)+"h ago";return Math.floor(d/86400)+"d ago";
+  const d = Math.floor((Date.now()-new Date(date))/1000);
+  if(d<60) return "just now"; if(d<3600) return Math.floor(d/60)+"m ago";
+  if(d<86400) return Math.floor(d/3600)+"h ago"; return Math.floor(d/86400)+"d ago";
 }
 
-/* ─── Build UI ── */
+/* ─── Build UI ─── */
 function addTeamMember(){
-  const name=prompt("Enter new team member name:");if(!name||!name.trim())return;
-  const role=prompt("Role (Manager / Senior / Junior):","Junior")||"Junior";
-  const member={name:name.trim(),role:role.trim()};
-  if(TEAM.find(m=>m.name===member.name)){alert(`"${member.name}" already in team.`);return;}
+  const name = prompt("Enter new team member name:"); if(!name||!name.trim()) return;
+  const role = prompt("Role (Manager / Senior / Junior):","Junior")||"Junior";
+  const member = { name: name.trim(), role: role.trim() };
+  if(TEAM.find(m=>m.name===member.name)){ alert(`"${member.name}" already in team.`); return; }
   TEAM.push(member);
-  const cfg=loadConfig();cfg.extraTeam=cfg.extraTeam||[];cfg.extraTeam.push(member);saveConfig(cfg);
-  buildSidebar();buildPersonDropdown();renderCounts();showToast(`${member.name} added ✓`,"success");
+  const cfg = loadConfig(); cfg.extraTeam=cfg.extraTeam||[]; cfg.extraTeam.push(member); saveConfig(cfg);
+  buildSidebar(); buildPersonDropdown(); renderCounts(); showToast(`${member.name} added ✓`,"success");
 }
 function addClient(){
-  const name=prompt("Enter new client name:");if(!name||!name.trim())return;
-  const cname=name.trim().toUpperCase();
-  if(CLIENTS.includes(cname)){alert(`"${cname}" already exists.`);return;}
+  const name = prompt("Enter new client name:"); if(!name||!name.trim()) return;
+  const cname = name.trim().toUpperCase();
+  if(CLIENTS.includes(cname)){ alert(`"${cname}" already exists.`); return; }
   CLIENTS.push(cname);
-  const cfg=loadConfig();cfg.extraClients=cfg.extraClients||[];cfg.extraClients.push(cname);saveConfig(cfg);
+  const cfg = loadConfig(); cfg.extraClients=cfg.extraClients||[]; cfg.extraClients.push(cname); saveConfig(cfg);
   buildClientSidebar();
-  const opt=document.createElement("option");opt.value=cname;opt.textContent=cname;
+  const opt=document.createElement("option"); opt.value=cname; opt.textContent=cname;
   document.getElementById("f-client").appendChild(opt);
-  renderCounts();showToast(`${cname} added ✓`,"success");
+  renderCounts(); showToast(`${cname} added ✓`,"success");
 }
 function buildSidebar(){
-  document.getElementById("member-list").innerHTML=TEAM.map((m,i)=>{
-    const c=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[m.role]||ROLE_COLOR.Junior;
+  document.getElementById("member-list").innerHTML = TEAM.map((m,i) => {
+    const c=AV_COLORS[i%AV_COLORS.length], rc=ROLE_COLOR[m.role]||ROLE_COLOR.Junior;
     return `<button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')">
       <div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div>
       <div class="member-info"><div class="member-name">${m.name}</div><div class="member-role" style="color:${rc.text}">${m.role}</div></div>
@@ -1275,62 +1071,66 @@ function buildSidebar(){
   }).join("");
 }
 function buildPersonDropdown(){
-  document.getElementById("f-person").innerHTML=TEAM.map(m=>`<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");
+  document.getElementById("f-person").innerHTML = TEAM.map(m =>
+    `<option value="${m.name}">${m.name} — ${m.role}</option>`
+  ).join("");
 }
 function buildClientSidebar(){
   const CI={"YFS":"🏫","NAIK COLLEGE":"🎓","PFA":"🐾","SEVA IN ACTION":"🤝","Internal":"⚙️"};
-  document.getElementById("client-list").innerHTML=CLIENTS.map(c=>`
+  document.getElementById("client-list").innerHTML = CLIENTS.map(c => `
     <button class="member-row" id="cl-${c.replace(/\s+/g,'-')}" onclick="showClientSnapshot('${c}')">
       <div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${CI[c]||"🏢"}</div>
       <div class="member-info"><div class="member-name">${c}</div><div class="member-role">Client</div></div>
       <span class="member-count" id="cl-count-${c.replace(/\s+/g,'-')}">0</span>
     </button>`).join("");
-  const sel=document.getElementById("f-client");
-  if(sel)sel.innerHTML=`<option value="">— Select Client —</option>`+CLIENTS.map(c=>`<option value="${c}">${c}</option>`).join("");
+  const sel = document.getElementById("f-client");
+  if(sel) sel.innerHTML = `<option value="">— Select Client —</option>`+CLIENTS.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
 function updateClientCounts(){
-  CLIENTS.forEach(c=>{const el=document.getElementById("cl-count-"+c.replace(/\s+/g,'-'));if(el)el.textContent=tasks.filter(t=>t.client===c&&t.status!=="Done").length;});
+  CLIENTS.forEach(c => {
+    const el = document.getElementById("cl-count-"+c.replace(/\s+/g,'-'));
+    if(el) el.textContent = tasks.filter(t=>t.client===c && t.status!=="Done").length;
+  });
 }
 
-/* ─── Client Snapshot ── */
+/* ─── Client Snapshot ─── */
 function showClientSnapshot(cn){
-  activeClient=cn;
+  activeClient = cn;
   document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
-  const btn=document.getElementById("cl-"+cn.replace(/\s+/g,'-'));if(btn)btn.classList.add("active");
-  document.getElementById("page-title").textContent=cn;
-  document.getElementById("page-sub").textContent="Client Snapshot";
-  document.getElementById("view-board").style.display="none";
-  document.getElementById("view-summary").style.display="none";
-  document.getElementById("view-client").style.display="block";
-  document.getElementById("filterbar").style.display="none";
-  document.getElementById("kpi-strip").style.display="none";
+  const btn = document.getElementById("cl-"+cn.replace(/\s+/g,'-')); if(btn) btn.classList.add("active");
+  document.getElementById("page-title").textContent = cn;
+  document.getElementById("page-sub").textContent   = "Client Snapshot";
+  document.getElementById("view-board").style.display   = "none";
+  document.getElementById("view-summary").style.display = "none";
+  document.getElementById("view-client").style.display  = "block";
+  document.getElementById("filterbar").style.display    = "none";
+  document.getElementById("kpi-strip").style.display    = "none";
   renderClientSnapshot(cn);
 }
 function exitClientSnapshot(){
-  activeClient=null;
-  document.getElementById("view-client").style.display="none";
-  document.getElementById("kpi-strip").style.display="";
+  activeClient = null;
+  document.getElementById("view-client").style.display = "none";
+  document.getElementById("kpi-strip").style.display   = "";
   switchTab(activeTab==="client"?"board":activeTab);
   filterByPerson("");
 }
 function renderClientSnapshot(cn){
-  const mine=tasks.filter(t=>t.client===cn),pending=mine.filter(t=>t.status!=="Done").length,
-        done=mine.filter(t=>t.status==="Done").length,total=mine.length,
+  const mine=tasks.filter(t=>t.client===cn), pending=mine.filter(t=>t.status!=="Done").length,
+        done=mine.filter(t=>t.status==="Done").length, total=mine.length,
         hours=mine.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0),
         syncDate=CLIENT_SYNC[cn]||"TBD",
         syncFmt=syncDate!=="TBD"?new Date(syncDate).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'}):"TBD";
-  const taskRows=mine.length?mine.map(t=>{
-    const sc=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
-    const pc=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
+  const taskRows = mine.length ? mine.map(t => {
+    const sc = t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
+    const pc = t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
     return `<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td>
-      <td style="padding:10px 12px;font-size:12px;">${t.project?`<span style="font-size:11px;color:var(--text-2);font-weight:500;">${esc(t.project)}</span>`:'—'}</td>
       <td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td>
       <td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td>
       <td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td>
       <td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td>
     </tr>`;
-  }).join(""):`<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
+  }).join("") : `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
   document.getElementById("client-snapshot").innerHTML=`
     <div style="max-width:900px;">
       <button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;">
@@ -1350,7 +1150,6 @@ function renderClientSnapshot(cn){
         <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
           <thead><tr style="background:var(--bg);">
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th>
-            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Project</th>
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th>
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th>
             <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th>
@@ -1362,27 +1161,29 @@ function renderClientSnapshot(cn){
     </div>`;
 }
 
-/* ─── Filtering ── */
+/* ─── Filtering ─── */
 function filterByPerson(name){
-  activeClient=null;
-  document.getElementById("view-client").style.display="none";
-  document.getElementById("kpi-strip").style.display="";
-  document.getElementById("filterbar").style.display=activeTab==="board"?"flex":"none";
-  document.getElementById("view-board").style.display=activeTab==="board"?"block":"none";
-  document.getElementById("view-summary").style.display=activeTab==="summary"?"block":"none";
-  filterPerson=name;
+  activeClient = null;
+  document.getElementById("view-client").style.display   = "none";
+  document.getElementById("kpi-strip").style.display     = "";
+  document.getElementById("filterbar").style.display     = activeTab==="board" ? "flex" : "none";
+  document.getElementById("view-board").style.display    = activeTab==="board" ? "block" : "none";
+  document.getElementById("view-summary").style.display  = activeTab==="summary" ? "block" : "none";
+  filterPerson = name;
   document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
-  const target=name?document.getElementById("mb-"+name):document.getElementById("member-all");
-  if(target)target.classList.add("active");
-  document.getElementById("page-title").textContent=name||"Task Board";
-  document.getElementById("page-sub").textContent=name?`Showing tasks for ${name} · ${TEAM.find(m=>m.name===name)?.role}`:"Showing all tasks";
+  const target = name ? document.getElementById("mb-"+name) : document.getElementById("member-all");
+  if(target) target.classList.add("active");
+  document.getElementById("page-title").textContent = name || "Task Board";
+  document.getElementById("page-sub").textContent   = name
+    ? `Showing tasks for ${name} · ${TEAM.find(m=>m.name===name)?.role}`
+    : "Showing all tasks";
   render();
 }
 function applyFilters(){
-  filterPriority=document.getElementById("flt-priority").value;
-  filterStatus=document.getElementById("flt-status").value;
-  filterSearch=document.getElementById("flt-search").value.toLowerCase();
-  filterDue=document.getElementById("flt-due").value;
+  filterPriority = document.getElementById("flt-priority").value;
+  filterStatus   = document.getElementById("flt-status").value;
+  filterSearch   = document.getElementById("flt-search").value.toLowerCase();
+  filterDue      = document.getElementById("flt-due").value;
   render();
 }
 function clearFilters(){
@@ -1391,144 +1192,202 @@ function clearFilters(){
   render();
 }
 function getDueState(d){
-  if(!d)return null;
-  const today=new Date();today.setHours(0,0,0,0);
-  const due=new Date(d);due.setHours(0,0,0,0);
+  if(!d) return null;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const due=new Date(d); due.setHours(0,0,0,0);
   const diff=Math.floor((due-today)/86400000);
-  if(diff<0)return"overdue";if(diff===0)return"today";if(diff<=3)return"soon";return"normal";
+  if(diff<0) return "overdue"; if(diff===0) return "today"; if(diff<=3) return "soon"; return "normal";
 }
 function getFiltered(){
-  const today=new Date();today.setHours(0,0,0,0);
-  return tasks.filter(t=>{
-    if(filterPerson&&t.person!==filterPerson)return false;
-    if(filterPriority&&t.priority!==filterPriority)return false;
-    if(filterStatus&&t.status!==filterStatus)return false;
-    if(filterSearch){const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")+" "+(t.project||"")).toLowerCase();if(!h.includes(filterSearch))return false;}
+  const today=new Date(); today.setHours(0,0,0,0);
+  return tasks.filter(t => {
+    if(filterPerson && t.person!==filterPerson) return false;
+    if(filterPriority && t.priority!==filterPriority) return false;
+    if(filterStatus && t.status!==filterStatus) return false;
+    if(filterSearch){
+      const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")).toLowerCase();
+      if(!h.includes(filterSearch)) return false;
+    }
     if(filterDue){
-      if(!t.due_date)return false;
-      const due=new Date(t.due_date);due.setHours(0,0,0,0);
+      if(!t.due_date) return false;
+      const due=new Date(t.due_date); due.setHours(0,0,0,0);
       const diff=Math.floor((due-today)/86400000);
-      if(filterDue==="overdue"&&diff>=0)return false;
-      if(filterDue==="today"&&diff!==0)return false;
-      if(filterDue==="week"&&(diff<0||diff>7))return false;
+      if(filterDue==="overdue" && diff>=0) return false;
+      if(filterDue==="today"   && diff!==0) return false;
+      if(filterDue==="week"    && (diff<0||diff>7)) return false;
     }
     return true;
   });
 }
 
-/* ─── Render ── */
+/* ══════════════════════════════════════════════════
+   ROLE-BASED PERMISSION HELPERS
+
+   isCreator  → the logged-in user created this task
+                matched by: creator_user_id === currentUserId
+                fallback (old tasks without creator_user_id):
+                  added_by name matches currentUser OR user is Manager
+
+   isAssignee → the logged-in user is assigned this task
+                matched by: assigned_to_email === currentUserEmail (preferred)
+                fallback: person name === currentUser
+══════════════════════════════════════════════════ */
+function taskIsCreator(t){
+  if(t.creator_user_id) return t.creator_user_id === currentUserId;
+  // Fallback for legacy tasks
+  return currentUser === MANAGER_NAME || currentUser === t.added_by;
+}
+function taskIsAssignee(t){
+  if(t.assigned_to_email) return t.assigned_to_email === currentUserEmail;
+  return t.person === currentUser;
+}
+
+/* ─── Render ─── */
 function render(){
   renderCounts();
-  if(activeClient){renderClientSnapshot(activeClient);return;}
+  if(activeClient){ renderClientSnapshot(activeClient); return; }
   renderKPI();
-  if(activeTab==="board")renderBoard();else renderSummary();
+  if(activeTab==="board") renderBoard(); else renderSummary();
 }
 function renderCounts(){
-  document.getElementById("count-all").textContent=tasks.length;
-  TEAM.forEach(m=>{const el=document.getElementById("count-"+m.name);if(el)el.textContent=tasks.filter(t=>t.person===m.name).length;});
+  document.getElementById("count-all").textContent = tasks.length;
+  TEAM.forEach(m => {
+    const el = document.getElementById("count-"+m.name);
+    if(el) el.textContent = tasks.filter(t=>t.person===m.name).length;
+  });
   updateClientCounts();
 }
 function renderKPI(){
-  const f=getFiltered(),today=new Date();today.setHours(0,0,0,0);
-  const ov=f.filter(t=>{if(!t.due_date||t.status==="Done")return false;const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;
-  document.getElementById("kpi-total").textContent=f.length;
-  document.getElementById("kpi-inprog").textContent=f.filter(t=>t.status==="In Progress").length;
-  document.getElementById("kpi-done").textContent=f.filter(t=>t.status==="Done").length;
-  document.getElementById("kpi-high").textContent=f.filter(t=>t.priority==="High"&&t.status!=="Done").length;
-  document.getElementById("kpi-overdue").textContent=ov;
+  const f=getFiltered(), today=new Date(); today.setHours(0,0,0,0);
+  const ov=f.filter(t=>{
+    if(!t.due_date||t.status==="Done") return false;
+    const d=new Date(t.due_date); d.setHours(0,0,0,0); return d<today;
+  }).length;
+  document.getElementById("kpi-total").textContent  = f.length;
+  document.getElementById("kpi-inprog").textContent = f.filter(t=>t.status==="In Progress").length;
+  document.getElementById("kpi-done").textContent   = f.filter(t=>t.status==="Done").length;
+  document.getElementById("kpi-high").textContent   = f.filter(t=>t.priority==="High"&&t.status!=="Done").length;
+  document.getElementById("kpi-overdue").textContent= ov;
 }
 function hoursBadge(hours){
-  if(!hours&&hours!==0)return"";const h=parseFloat(hours)||0;if(h===0)return"";
+  if(!hours && hours!==0) return "";
+  const h=parseFloat(hours)||0; if(h===0) return "";
   return `<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);">⏱ ${h.toFixed(1)}h</span>`;
 }
 
-/* ── renderBoard: Edit button shown ONLY to the task creator (matched by user_id) ── */
+/* ══════════════════════════════════════════════════
+   renderBoard — strict role-based permissions
+   ─────────────────────────────────────────────────
+   CREATOR  → can see Edit + Delete buttons
+              status is shown as a STATIC LABEL (locked)
+   ASSIGNEE → can see the status DROPDOWN (editable)
+              Edit + Delete buttons are HIDDEN
+   NEITHER  → static status label, no edit/delete
+══════════════════════════════════════════════════ */
 function renderBoard(){
-  const filtered=getFiltered(),grid=document.getElementById("cards-grid"),empty=document.getElementById("empty-state");
-  if(!filtered.length){grid.innerHTML="";empty.style.display="flex";return;}
+  const filtered=getFiltered(), grid=document.getElementById("cards-grid"), empty=document.getElementById("empty-state");
+  if(!filtered.length){ grid.innerHTML=""; empty.style.display="flex"; return; }
   empty.style.display="none";
-  grid.innerHTML=filtered.map((t,i)=>{
-    const mi=TEAM.findIndex(m=>m.name===t.person),avColor=AV_COLORS[mi>=0?mi:0];
-    const role=TEAM.find(m=>m.name===t.person)?.role||"",rc=ROLE_COLOR[role]||ROLE_COLOR.Junior;
+
+  grid.innerHTML = filtered.map((t, i) => {
+    const mi=TEAM.findIndex(m=>m.name===t.person), avColor=AV_COLORS[mi>=0?mi:0];
+    const role=TEAM.find(m=>m.name===t.person)?.role||"", rc=ROLE_COLOR[role]||ROLE_COLOR.Junior;
     const pClass=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
-    const statusCls=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
-    const notesHtml=t.notes?`<div class="card-notes">${esc(t.notes)}</div>`:"";
+
     const ds=getDueState(t.due_date);
     let dueBadge="";
-    if(t.due_date&&t.status!=="Done"){
+    if(t.due_date && t.status!=="Done"){
       const lbl={overdue:"🔴 Overdue",today:"🟡 Due Today",soon:"⏰ Due Soon",normal:""};
-      if(ds!=="normal"&&lbl[ds])dueBadge=`<span class="due-chip ${ds}">${lbl[ds]}</span>`;
-      else if(ds==="normal"){const d=new Date(t.due_date);dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;}
-    }else if(t.due_date&&t.status==="Done"){
-      const d=new Date(t.due_date);dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
+      if(ds!=="normal" && lbl[ds]) dueBadge=`<span class="due-chip ${ds}">${lbl[ds]}</span>`;
+      else if(ds==="normal"){ const d=new Date(t.due_date); dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`; }
+    } else if(t.due_date && t.status==="Done"){
+      const d=new Date(t.due_date); dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
     }
-    const isOverdue=ds==="overdue"&&t.status!=="Done";
-    const addedByHtml=t.added_by?`<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`:"";
+    const isOverdue = ds==="overdue" && t.status!=="Done";
+    const addedByHtml = t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
+    const notesHtml   = t.notes   ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
+
+    /* ── Permission flags ── */
+    const isCreator  = taskIsCreator(t);
+    const isAssignee = taskIsAssignee(t);
 
     /*
-     * OWNER-ONLY EDITING:
-     * - If the task has a creator_user_id, compare it to the current user's UUID.
-     * - Fallback: if no creator_user_id (old tasks), allow the manager or the assignee.
-     * - The Edit & Delete buttons are ONLY rendered when isOwner is true.
+     * STATUS CONTROL RULES:
+     * • Assignee   → editable <select>
+     * • Creator    → static label with lock icon (cannot change status)
+     * • Neither    → static label
      */
-    const isOwner = t.creator_user_id
-      ? t.creator_user_id === currentUserId
-      : (currentUser === MANAGER_NAME || currentUser === t.added_by);
+    const statusCls = t.status==="Done"?"status-done": t.status==="In Progress"?"status-prog":"status-todo";
+    let statusControl;
+    if(isAssignee && !isCreator){
+      // Pure assignee: can update status only
+      statusControl = `<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}',this.value)">
+        <option ${t.status==="To Do"?"selected":""}>To Do</option>
+        <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+        <option ${t.status==="Done"?"selected":""}>Done</option>
+      </select>`;
+    } else {
+      // Creator or uninvolved viewer: static label
+      statusControl = `<span class="status-lock-hint">
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        ${esc(t.status)}
+      </span>`;
+    }
 
-    /* Log Work is still restricted to the task assignee */
-    const canLogWork=(currentUser===t.person);
+    /*
+     * EDIT / DELETE RULES:
+     * • Only the Creator sees these buttons
+     * • Assignee (non-creator) never sees them
+     */
+    const actionBtns = isCreator ? `
+      <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete task">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>` : "";
 
-    /* Status dropdown: assignee or owner can change status */
-    const canEditStatus=(currentUser===t.person||isOwner);
-
-    const statusControl=canEditStatus
-      ?`<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}',this.value)">
-          <option ${t.status==="To Do"?"selected":""}>To Do</option>
-          <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
-          <option ${t.status==="Done"?"selected":""}>Done</option>
-        </select>`
-      :`<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
-
-    const logWorkRow=canLogWork
-      ?`<div class="card-footer-row" style="margin-top:4px;">
+    /*
+     * LOG WORK RULES:
+     * • Only the Assignee can log work
+     */
+    const canLogWork = isAssignee;
+    const logWorkRow = canLogWork
+      ? `<div class="card-footer-row" style="margin-top:4px;">
           <button class="log-work-btn" onclick="openLogModal('${esc(t.id)}')">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             Log Work
           </button>
         </div>`
-      :`<div class="card-footer-row" style="margin-top:4px;">
+      : `<div class="card-footer-row" style="margin-top:4px;">
           <span class="log-work-restricted">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             Assigned to ${esc(t.person)}
           </span>
         </div>`;
 
-    /* Project badge — shown in card meta if present */
-    const projectBadge = t.project
-      ? `<span class="badge" style="background:var(--violet)18;color:var(--violet);border-color:var(--violet)44;font-size:10px;">📁 ${esc(t.project)}</span>`
+    /* Role pill: show viewer's relationship to the task */
+    const rolePill = isCreator && isAssignee
+      ? `<span class="role-pill creator" title="You assigned this to yourself">✏️ Creator &amp; Assignee</span>`
+      : isCreator
+      ? `<span class="role-pill creator" title="You created this task">✏️ Creator</span>`
+      : isAssignee
+      ? `<span class="role-pill assignee" title="This task is assigned to you">✅ Assignee</span>`
       : "";
 
     return `
       <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
-          <div class="card-actions">
-            ${isOwner?`
-            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task">
-              <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>
-            <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete task">
-              <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>`:""}
-          </div>
+          <div class="card-actions">${actionBtns}</div>
         </div>
         ${notesHtml}
         <div class="card-meta">
           <span class="badge ${pClass}">${t.priority}</span>
           ${hoursBadge(t.hours_worked)}
-          ${projectBadge}
           ${t.client?`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);font-size:10px;">🏢 ${esc(t.client)}</span>`:""}
           ${dueBadge}
+          ${rolePill}
         </div>
         <div class="card-footer">
           <div class="card-footer-row">
@@ -1546,14 +1405,23 @@ function renderBoard(){
 }
 
 function renderSummary(){
-  const grid=document.getElementById("summary-grid"),maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
-  grid.innerHTML=TEAM.map((member,i)=>{
-    const mine=tasks.filter(t=>t.person===member.name),total=mine.length,
-          doneC=mine.filter(t=>t.status==="Done").length,inpC=mine.filter(t=>t.status==="In Progress").length,
-          todoC=mine.filter(t=>t.status==="To Do").length,highC=mine.filter(t=>t.priority==="High"&&t.status!=="Done").length,
-          pct=total?Math.round(doneC/total*100):0,barW=total?Math.round(total/maxLoad*100):0,
-          color=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[member.role]||ROLE_COLOR.Junior,loaded=total>=5;
-    const ovC=mine.filter(t=>{if(!t.due_date||t.status==="Done")return false;const today=new Date();today.setHours(0,0,0,0);const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;
+  const grid=document.getElementById("summary-grid"),
+        maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
+  grid.innerHTML = TEAM.map((member, i) => {
+    const mine=tasks.filter(t=>t.person===member.name), total=mine.length,
+          doneC=mine.filter(t=>t.status==="Done").length,
+          inpC=mine.filter(t=>t.status==="In Progress").length,
+          todoC=mine.filter(t=>t.status==="To Do").length,
+          highC=mine.filter(t=>t.priority==="High"&&t.status!=="Done").length,
+          pct=total?Math.round(doneC/total*100):0,
+          barW=total?Math.round(total/maxLoad*100):0,
+          color=AV_COLORS[i%AV_COLORS.length], rc=ROLE_COLOR[member.role]||ROLE_COLOR.Junior,
+          loaded=total>=5;
+    const ovC=mine.filter(t=>{
+      if(!t.due_date||t.status==="Done") return false;
+      const today=new Date(); today.setHours(0,0,0,0);
+      const d=new Date(t.due_date); d.setHours(0,0,0,0); return d<today;
+    }).length;
     return `
       <div class="summary-card ${loaded?"overloaded":""}">
         <div class="sc-header">
@@ -1580,247 +1448,213 @@ function renderSummary(){
 }
 
 function switchTab(tab){
-  activeClient=null;activeTab=tab;
-  document.getElementById("view-board").style.display=tab==="board"?"block":"none";
-  document.getElementById("view-summary").style.display=tab==="summary"?"block":"none";
-  document.getElementById("view-client").style.display="none";
-  document.getElementById("filterbar").style.display=tab==="board"?"flex":"none";
-  document.getElementById("kpi-strip").style.display="";
-  document.getElementById("tab-board").classList.toggle("active",tab==="board");
-  document.getElementById("tab-summary").classList.toggle("active",tab==="summary");
+  activeClient=null; activeTab=tab;
+  document.getElementById("view-board").style.display   = tab==="board"   ? "block" : "none";
+  document.getElementById("view-summary").style.display = tab==="summary" ? "block" : "none";
+  document.getElementById("view-client").style.display  = "none";
+  document.getElementById("filterbar").style.display    = tab==="board"   ? "flex"  : "none";
+  document.getElementById("kpi-strip").style.display    = "";
+  document.getElementById("tab-board").classList.toggle("active",   tab==="board");
+  document.getElementById("tab-summary").classList.toggle("active", tab==="summary");
   render();
 }
 
 /* ══════════════════════════════════════════════════
    FORM VALIDATION HELPERS
 ══════════════════════════════════════════════════ */
-
-/** Mark a field as errored or clear it */
-function setFieldError(inputId, errId, hasError) {
-  const input = document.getElementById(inputId);
-  const err   = document.getElementById(errId);
-  if (!input || !err) return;
-  if (hasError) {
-    input.classList.add("field-error");
-    err.classList.add("visible");
-  } else {
-    input.classList.remove("field-error");
-    err.classList.remove("visible");
-  }
+function setFieldError(inputId, errId, hasError){
+  const input=document.getElementById(inputId), err=document.getElementById(errId);
+  if(!input||!err) return;
+  if(hasError){ input.classList.add("field-error"); err.classList.add("visible"); }
+  else { input.classList.remove("field-error"); err.classList.remove("visible"); }
 }
-
-/** Clear all field errors and the banner */
-function clearModalErrors() {
-  ["f-name","f-project","f-client"].forEach(id => {
-    document.getElementById(id)?.classList.remove("field-error");
-  });
-  ["err-name","err-project","err-client"].forEach(id => {
-    document.getElementById(id)?.classList.remove("visible");
-  });
+function clearModalErrors(){
+  ["f-name","f-client"].forEach(id => document.getElementById(id)?.classList.remove("field-error"));
+  ["err-name","err-client"].forEach(id => document.getElementById(id)?.classList.remove("visible"));
   document.getElementById("modal-val-banner").classList.remove("visible");
 }
 
-/** Live-clear errors as user fills in each field */
-["f-name","f-project"].forEach(id => {
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById(id)?.addEventListener("input", () => {
-      if (document.getElementById(id).value.trim())
-        setFieldError(id, "err-" + id.replace("f-",""), false);
-    });
-  });
-});
-
 /**
- * Validate the three required fields.
- * Returns true if all good; false + highlights errors if not.
+ * Validate required fields: Task Title + Client.
+ * Returns true if valid, false + highlights errors if not.
  */
-function validateTaskForm() {
-  const name    = document.getElementById("f-name").value.trim();
-  const project = document.getElementById("f-project").value.trim();
-  const client  = document.getElementById("f-client").value;
+function validateTaskForm(){
+  const name   = document.getElementById("f-name").value.trim();
+  const client = document.getElementById("f-client").value;
 
-  const nameErr    = !name;
-  const projectErr = !project;
-  const clientErr  = !client;
+  const nameErr   = !name;
+  const clientErr = !client;
 
-  setFieldError("f-name",    "err-name",    nameErr);
-  setFieldError("f-project", "err-project", projectErr);
-  setFieldError("f-client",  "err-client",  clientErr);
+  setFieldError("f-name",   "err-name",   nameErr);
+  setFieldError("f-client", "err-client", clientErr);
 
-  if (nameErr || projectErr || clientErr) {
-    const missing = [];
-    if (clientErr)  missing.push("Client");
-    if (nameErr)    missing.push("Task Title");
-
-    const banner  = document.getElementById("modal-val-banner");
+  if(nameErr || clientErr){
+    const banner    = document.getElementById("modal-val-banner");
     const bannerMsg = document.getElementById("modal-val-msg");
-    bannerMsg.textContent = `Please fill in all required fields: ${missing.join(", ")}.`;
+    bannerMsg.textContent = "Client and Task Title are required.";
     banner.classList.add("visible");
-
-    /* Scroll to top of modal box and focus the first empty field */
     document.querySelector(".modal-box").scrollTo({top:0,behavior:"smooth"});
-    if (nameErr)         document.getElementById("f-name").focus();
-    else if (projectErr) document.getElementById("f-project").focus();
-    else                 document.getElementById("f-client").focus();
-
+    if(nameErr) document.getElementById("f-name").focus();
+    else        document.getElementById("f-client").focus();
     return false;
   }
-
   document.getElementById("modal-val-banner").classList.remove("visible");
   return true;
 }
 
-/* ─── Modals ── */
+/* ─── Modals ─── */
 function openModal(){
   editingId=null;
   clearModalErrors();
-  document.getElementById("modal-title").textContent="Assign Task";
-  document.getElementById("modal-subtitle").textContent="New task · auto-starts as To Do";
-  document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg> Assign Task`;
-  document.getElementById("f-name").value="";
-  document.getElementById("f-project").value="";
-  document.getElementById("f-person").value=TEAM[0].name;
-  document.getElementById("f-priority").value="Medium";
-  document.getElementById("f-client").value=activeClient||"";
-  document.getElementById("f-notes").value="";
-  document.getElementById("f-due").value="";
-  document.getElementById("added-by-display").textContent=currentUser;
-  document.getElementById("modal").style.display="flex";
-  setTimeout(()=>document.getElementById("f-name").focus(),60);
+  document.getElementById("modal-title").textContent    = "Assign Task";
+  document.getElementById("modal-subtitle").textContent = "New task · auto-starts as To Do";
+  document.getElementById("btn-save").innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg> Assign Task`;
+  document.getElementById("f-name").value     = "";
+  document.getElementById("f-person").value   = TEAM[0].name;
+  document.getElementById("f-priority").value = "Medium";
+  document.getElementById("f-client").value   = activeClient || "";
+  document.getElementById("f-notes").value    = "";
+  document.getElementById("f-due").value      = "";
+  document.getElementById("added-by-display").textContent = currentUser;
+  document.getElementById("modal").style.display = "flex";
+  setTimeout(()=>document.getElementById("f-name").focus(), 60);
 }
 
 function openEdit(id){
-  const t=tasks.find(x=>x.id===id);if(!t)return;
+  const t=tasks.find(x=>x.id===id); if(!t) return;
   editingId=id;
   clearModalErrors();
-  document.getElementById("modal-title").textContent="Edit Task Details";
-  document.getElementById("modal-subtitle").textContent=`Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
-  document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
-  document.getElementById("f-name").value=t.name;
-  document.getElementById("f-project").value=t.project||"";
-  document.getElementById("f-person").value=t.person;
-  document.getElementById("f-priority").value=t.priority;
-  document.getElementById("f-client").value=t.client||"";
-  document.getElementById("f-notes").value=t.notes||"";
-  document.getElementById("f-due").value=t.due_date||"";
-  document.getElementById("added-by-display").textContent=t.added_by||currentUser;
-  document.getElementById("modal").style.display="flex";
-  setTimeout(()=>document.getElementById("f-name").focus(),60);
+  document.getElementById("modal-title").textContent    = "Edit Task Details";
+  document.getElementById("modal-subtitle").textContent = `Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
+  document.getElementById("btn-save").innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
+  document.getElementById("f-name").value     = t.name;
+  document.getElementById("f-person").value   = t.person;
+  document.getElementById("f-priority").value = t.priority;
+  document.getElementById("f-client").value   = t.client||"";
+  document.getElementById("f-notes").value    = t.notes||"";
+  document.getElementById("f-due").value      = t.due_date||"";
+  document.getElementById("added-by-display").textContent = t.added_by||currentUser;
+  document.getElementById("modal").style.display = "flex";
+  setTimeout(()=>document.getElementById("f-name").focus(), 60);
 }
-function closeModal(){document.getElementById("modal").style.display="none";editingId=null;clearModalErrors();}
-function handleOverlayClick(e){if(e.target.id==="modal")closeModal();}
+function closeModal(){ document.getElementById("modal").style.display="none"; editingId=null; clearModalErrors(); }
+function handleOverlayClick(e){ if(e.target.id==="modal") closeModal(); }
 
 async function saveTask(){
-  /* ── Run validation before doing anything ── */
-  if (!validateTaskForm()) return;
+  if(!validateTaskForm()) return;
+  if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
 
-  if(!isConfigured()){showToast("Configure Supabase first","error");return;}
+  const assignedName  = document.getElementById("f-person").value;
+  const assignedEmail = NAME_TO_EMAIL[assignedName] || "";
 
-  const payload={
-    name:    document.getElementById("f-name").value.trim(),
-    project: document.getElementById("f-project").value.trim(),
-    person:  document.getElementById("f-person").value,
-    priority:document.getElementById("f-priority").value,
-    client:  document.getElementById("f-client").value,           // guaranteed non-empty by validation
-    notes:   document.getElementById("f-notes").value.trim(),
-    due_date:document.getElementById("f-due").value||null,
+  /*
+   * Payload intentionally excludes 'project' — the column does not exist
+   * in the database and would cause a PGRST204 schema error.
+   */
+  const payload = {
+    name:              document.getElementById("f-name").value.trim(),
+    person:            assignedName,
+    assigned_to_email: assignedEmail,
+    priority:          document.getElementById("f-priority").value,
+    client:            document.getElementById("f-client").value,
+    notes:             document.getElementById("f-notes").value.trim(),
+    due_date:          document.getElementById("f-due").value || null,
   };
 
   if(!editingId){
-    /* New task — stamp creator identity */
-    payload.status         = "To Do";
-    payload.hours_worked   = 0;
-    payload.added_by       = currentUser;
-    payload.creator_user_id = currentUserId;   // ← Supabase auth UUID
+    payload.status          = "To Do";
+    payload.hours_worked    = 0;
+    payload.added_by        = currentUser;
+    payload.creator_user_id = currentUserId;   // Supabase auth UUID
   }
 
   closeModal();
   setSyncStatus("syncing","Saving…");
 
   if(editingId){
-    const ok=await updateTaskDB(editingId,payload);
-    if(ok)showToast("Task updated ✓","success");
+    const ok = await updateTaskDB(editingId, payload);
+    if(ok) showToast("Task updated ✓","success");
   } else {
-    const ok=await insertTask(payload);
-    if(ok)showToast("Task assigned ✓","success");
+    const ok = await insertTask(payload);
+    if(ok) showToast("Task assigned ✓","success");
   }
 }
 
 let logWorkId=null;
 function openLogModal(id){
-  if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID","error");return;}
-  const t=tasks.find(x=>x.id===id);if(!t){showToast("Task not found.","error");return;}
+  if(!id||id==="null"||id==="undefined"){ showToast("Error: invalid task ID","error"); return; }
+  const t=tasks.find(x=>x.id===id); if(!t){ showToast("Task not found.","error"); return; }
   logWorkId=id;
-  document.getElementById("log-task-name").textContent=t.name;
-  document.getElementById("log-assignee").textContent=t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
-  document.getElementById("log-current-hours").textContent=(parseFloat(t.hours_worked)||0).toFixed(1)+"h";
-  document.getElementById("lw-status").value=t.status;
-  document.getElementById("lw-hours").value=t.hours_worked||"";
-  document.getElementById("lw-note").value="";
-  document.getElementById("modal-log").style.display="flex";
-  setTimeout(()=>document.getElementById("lw-hours").focus(),60);
+  document.getElementById("log-task-name").textContent     = t.name;
+  document.getElementById("log-assignee").textContent      = t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
+  document.getElementById("log-current-hours").textContent = (parseFloat(t.hours_worked)||0).toFixed(1)+"h";
+  document.getElementById("lw-status").value               = t.status;
+  document.getElementById("lw-hours").value                = t.hours_worked||"";
+  document.getElementById("lw-note").value                 = "";
+  document.getElementById("modal-log").style.display = "flex";
+  setTimeout(()=>document.getElementById("lw-hours").focus(), 60);
 }
-function closeLogModal(){document.getElementById("modal-log").style.display="none";logWorkId=null;}
-function handleLogOverlayClick(e){if(e.target.id==="modal-log")closeLogModal();}
+function closeLogModal(){ document.getElementById("modal-log").style.display="none"; logWorkId=null; }
+function handleLogOverlayClick(e){ if(e.target.id==="modal-log") closeLogModal(); }
 
 async function saveLogWork(){
-  if(!logWorkId||logWorkId==="null"){showToast("Error: missing task ID.","error");closeLogModal();return;}
-  if(!isConfigured()){showToast("Configure Supabase first","error");return;}
-  const newStatus=document.getElementById("lw-status").value,
-        newHours=parseFloat(document.getElementById("lw-hours").value)||0,
-        workNote=document.getElementById("lw-note").value.trim();
+  if(!logWorkId||logWorkId==="null"){ showToast("Error: missing task ID.","error"); closeLogModal(); return; }
+  if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
+  const newStatus = document.getElementById("lw-status").value;
+  const newHours  = parseFloat(document.getElementById("lw-hours").value)||0;
+  const workNote  = document.getElementById("lw-note").value.trim();
   const t=tasks.find(x=>x.id===logWorkId);
   let updatedNotes=t?.notes||"";
-  if(workNote){const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});updatedNotes=updatedNotes?updatedNotes+`\n[${stamp}] ${workNote}`:`[${stamp}] ${workNote}`;}
-  const payload={status:newStatus,hours_worked:newHours};
-  if(workNote)payload.notes=updatedNotes;
-  closeLogModal();setSyncStatus("syncing","Saving…");
-  const ok=await updateTaskDB(logWorkId,payload);
-  if(ok)showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`,"success");
+  if(workNote){
+    const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    updatedNotes=updatedNotes?updatedNotes+`\n[${stamp}] ${workNote}`:`[${stamp}] ${workNote}`;
+  }
+  const payload={status:newStatus, hours_worked:newHours};
+  if(workNote) payload.notes=updatedNotes;
+  closeLogModal(); setSyncStatus("syncing","Saving…");
+  const ok=await updateTaskDB(logWorkId, payload);
+  if(ok) showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`,"success");
 }
 
-async function quickStatus(id,status){
-  if(!isConfigured())return;
-  if(!id||id==="null"){showToast("Error: invalid task ID","error");return;}
-  await updateTaskDB(id,{status});
+/* Status quick-change (assignee only — enforced in renderBoard) */
+async function quickStatus(id, status){
+  if(!isConfigured()) return;
+  if(!id||id==="null"){ showToast("Error: invalid task ID","error"); return; }
+  await updateTaskDB(id, {status});
 }
 async function deleteTask(id){
-  if(!confirm("Delete this task?"))return;
-  if(!isConfigured())return;
+  if(!confirm("Delete this task?")) return;
+  if(!isConfigured()) return;
   const ok=await deleteTaskDB(id);
-  if(ok)showToast("Task deleted","success");
+  if(ok) showToast("Task deleted","success");
 }
 
-function setSyncStatus(state,msg){
-  const dot=document.getElementById("sync-dot"),label=document.getElementById("sync-label");
+function setSyncStatus(state, msg){
+  const dot=document.getElementById("sync-dot"), label=document.getElementById("sync-label");
   dot.className="sync-dot"+(state==="syncing"?" syncing":state==="error"?" error":"");
   label.textContent=msg;
 }
-function showToast(msg,type=""){
-  const c=document.getElementById("toast"),el=document.createElement("div");
-  el.className="toast-item "+type;el.innerHTML=`<span>${esc(msg)}</span>`;
-  c.appendChild(el);setTimeout(()=>el.remove(),3500);
+function showToast(msg, type=""){
+  const c=document.getElementById("toast"), el=document.createElement("div");
+  el.className="toast-item "+type;
+  el.innerHTML=`<span>${esc(msg)}</span>`;
+  c.appendChild(el); setTimeout(()=>el.remove(), 3500);
 }
-function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){closeModal();closeLogModal();}
-  if(e.key==="n"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))openModal();
+/* ─── Keyboard shortcuts ─── */
+document.addEventListener("keydown", e => {
+  if(e.key==="Escape"){ closeModal(); closeLogModal(); }
+  if(e.key==="n" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) openModal();
 });
 
-/* ── Live-clear field errors on input (wired after DOM ready) ── */
+/* ─── Live-clear field errors ─── */
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("f-name")?.addEventListener("input", () => {
-    if (document.getElementById("f-name").value.trim())
-      setFieldError("f-name","err-name",false);
-  });
-  document.getElementById("f-project")?.addEventListener("input", () => {
-    if (document.getElementById("f-project").value.trim())
-      setFieldError("f-project","err-project",false);
+    if(document.getElementById("f-name").value.trim()) setFieldError("f-name","err-name",false);
   });
   document.getElementById("f-client")?.addEventListener("change", () => {
-    if (document.getElementById("f-client").value)
-      setFieldError("f-client","err-client",false);
+    if(document.getElementById("f-client").value) setFieldError("f-client","err-client",false);
   });
 });
 </script>
