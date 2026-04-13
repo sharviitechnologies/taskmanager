@@ -331,7 +331,7 @@
     .sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .sc-person { display: flex; align-items: center; gap: 10px; }
     .sc-total { text-align: right; }
-    .sc-total-num { font-family: 'Syne', sans-serif; font-size: 28px;  color: var(--text); line-height: 1; }
+    .sc-total-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; }
     .sc-total-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
     .sc-bar-wrap { height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .sc-bar { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
@@ -343,7 +343,7 @@
       text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
     .sc-stat-num {
-      font-family: 'Syne', sans-serif; font-size: 18px; 
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
       line-height: 1; width: 34px; height: 34px;
       display: flex; align-items: center; justify-content: center;
       border-radius: 50%; margin: 0 auto 4px;
@@ -429,6 +429,17 @@
     }
     #setup-banner strong { color: #78350f; }
     #setup-banner code { background: #fde68a; border-radius: 4px; padding: 1px 5px; font-size: 11px; }
+
+    /* ── Log Work button on cards ── */
+    .log-work-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--teal-lt); border: 1.5px solid var(--teal-bd);
+      color: var(--teal); border-radius: 7px; padding: 5px 11px;
+      font-size: 11px; font-weight: 700; cursor: pointer;
+      transition: background .12s, border-color .12s, transform .1s;
+      width: 100%;  justify-content: center;
+    }
+    .log-work-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); transform: translateY(-1px); }
 
     /* ── Sidebar add (+) button ── */
     .sidebar-add-btn {
@@ -660,72 +671,137 @@
 <!-- Toast container -->
 <div id="toast"></div>
 
-<!-- ══ MODAL ══ -->
+<!-- ══ MODAL 1: ASSIGN TASK ══ -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-title" id="modal-title">Add New Task</span>
+      <div>
+        <span class="modal-title" id="modal-title">Assign Task</span>
+        <div style="font-size:11px;color:var(--text-3);margin-top:3px;" id="modal-subtitle">New task · auto-starts as To Do</div>
+      </div>
       <button class="modal-close" onclick="closeModal()">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       </button>
     </div>
+
+    <!-- Task Name -->
     <div class="form-group">
       <label class="form-label">Task Name</label>
-      <input class="form-input" id="f-name" placeholder="e.g. Review pull request #42" />
+      <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS" />
     </div>
-    <div class="form-group">
-      <label class="form-label">Assigned To</label>
-      <select class="form-select" id="f-person"></select>
+
+    <!-- Assigned To + Added By -->
+    <div class="form-row">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Assigned To</label>
+        <select class="form-select" id="f-person"></select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Added By</label>
+        <div class="added-by-display" id="added-by-display" style="height:38px;">—</div>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Added By</label>
-      <div class="added-by-display" id="added-by-display">—</div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Client</label>
-      <select class="form-select" id="f-client">
-        <option value="">— Select Client —</option>
-        <option value="YFS">YFS</option>
-        <option value="NAIK COLLEGE">NAIK COLLEGE</option>
-        <option value="PFA">PFA</option>
-        <option value="SEVA IN ACTION">SEVA IN ACTION</option>
-        <option value="Internal">Internal</option>
-      </select>
-    </div>
-    <!-- Priority + Status + Hours in one row -->
-    <div class="form-row-3">
+
+    <!-- Client + Priority -->
+    <div class="form-row" style="margin-top:14px;">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Client</label>
+        <select class="form-select" id="f-client">
+          <option value="">— Select Client —</option>
+        </select>
+      </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Priority</label>
         <select class="form-select" id="f-priority">
           <option>High</option><option selected>Medium</option><option>Low</option>
         </select>
       </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Status</label>
-        <select class="form-select" id="f-status">
-          <option>To Do</option><option>In Progress</option><option>Done</option>
-        </select>
-      </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Hours Worked</label>
-        <input class="form-input" type="number" id="f-hours" min="0" step="0.5" placeholder="0" style="padding:8px 10px;" />
-      </div>
     </div>
-    <div class="form-group" style="margin-top:14px">
+
+    <!-- Due Date -->
+    <div class="form-group" style="margin-top:14px;">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <input class="form-input" type="date" id="f-due" />
     </div>
+
+    <!-- Notes -->
     <div class="form-group">
-      <label class="form-label">Notes <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
-      <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Any extra context or links…"></textarea>
+      <label class="form-label">Notes / Brief <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
+      <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Context, links, or instructions for the assignee…"></textarea>
     </div>
-    <!-- FIX 6: Status lock notice in modal -->
-    <div style="background:var(--amber-lt);border:1px solid var(--amber-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#92400e;margin-bottom:6px;">
-      🔒 <strong>Note:</strong> Only the task assignee or Manager (Umesh) should update the task status.
+
+    <!-- Info strip -->
+    <div style="background:var(--indigo-lt);border:1px solid var(--indigo-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#3451d1;margin-bottom:6px;display:flex;align-items:center;gap:7px;">
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="12" x2="12" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Task starts as <strong style="margin:0 3px;">To Do · 0 hrs</strong> — the assignee logs work via <strong style="margin-left:3px;">Log Work</strong> on the card.
     </div>
+
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary btn-save" id="btn-save" onclick="saveTask()">Add Task</button>
+      <button class="btn-primary btn-save" id="btn-save" onclick="saveTask()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+        Assign Task
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL 2: LOG WORK (Status + Hours) ══ -->
+<div class="modal-overlay" id="modal-log" style="display:none" onclick="handleLogOverlayClick(event)">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header">
+      <div>
+        <span class="modal-title">Log Work</span>
+        <div style="font-size:11px;color:var(--text-3);margin-top:3px;" id="log-task-name">—</div>
+      </div>
+      <button class="modal-close" onclick="closeLogModal()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Current status display -->
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Assigned To</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);" id="log-assignee">—</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Hours Logged So Far</div>
+        <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:var(--teal);" id="log-current-hours">0</div>
+      </div>
+    </div>
+
+    <!-- New Status -->
+    <div class="form-group">
+      <label class="form-label">Update Status</label>
+      <select class="form-select" id="lw-status" style="font-weight:600;">
+        <option value="To Do">📋 To Do</option>
+        <option value="In Progress">🔵 In Progress</option>
+        <option value="Done">✅ Done</option>
+      </select>
+    </div>
+
+    <!-- Hours to add -->
+    <div class="form-group">
+      <label class="form-label">
+        Hours Worked
+        <span style="font-weight:400;text-transform:none;color:var(--text-3);margin-left:4px;">(enter total, not additional)</span>
+      </label>
+      <input class="form-input" type="number" id="lw-hours" min="0" step="0.5" placeholder="e.g. 3.5" style="font-size:16px;font-weight:700;color:var(--teal);" />
+    </div>
+
+    <!-- Work note (optional) -->
+    <div class="form-group">
+      <label class="form-label">Work Note <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
+      <textarea class="form-textarea" id="lw-note" rows="2" placeholder="What did you work on? Any blockers?"></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-primary btn-save" onclick="saveLogWork()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Save Update
+      </button>
     </div>
   </div>
 </div>
@@ -1405,12 +1481,20 @@ function renderBoard() {
          </select>`
       : `<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
 
+    /* Log Work button — visible to assignee or Manager */
+    const logWorkBtn = canEdit
+      ? `<button class="log-work-btn" onclick="openLogModal('${t.id}')" title="Log work / update status">
+           <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+           Log Work
+         </button>`
+      : "";
+
     return `
       <div class="task-card pri-${t.priority} ${isOverdue ? "overdue" : ""}" style="animation-delay:${i*0.03}s">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
           <div class="card-actions">
-            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit">
+            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task details">
               <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -1442,6 +1526,7 @@ function renderBoard() {
             </div>
             ${statusControl}
           </div>
+          ${logWorkBtn ? `<div class="card-footer-row" style="margin-top:4px;">${logWorkBtn}</div>` : ""}
           ${addedByHtml ? `<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>` : ""}
         </div>
       </div>`;
@@ -1527,38 +1612,37 @@ function switchTab(tab) {
   render();
 }
 
-/* ─── Modal ── */
+/* ─── MODAL 1: Assign Task ── */
 function openModal() {
   editingId = null;
-  document.getElementById("modal-title").textContent = "Add New Task";
-  document.getElementById("btn-save").textContent    = "Add Task";
-  document.getElementById("f-name").value       = "";
-  document.getElementById("f-person").value     = TEAM[0].name;
-  document.getElementById("f-priority").value   = "Medium";
-  document.getElementById("f-status").value     = "To Do";
-  document.getElementById("f-hours").value      = "";
-  document.getElementById("f-client").value     = activeClient || "";
-  document.getElementById("f-notes").value      = "";
-  document.getElementById("f-due").value        = "";
+  document.getElementById("modal-title").textContent    = "Assign Task";
+  document.getElementById("modal-subtitle").textContent = "New task · auto-starts as To Do";
+  document.getElementById("btn-save").textContent       = "Assign Task";
+  document.getElementById("f-name").value     = "";
+  document.getElementById("f-person").value   = TEAM[0].name;
+  document.getElementById("f-priority").value = "Medium";
+  document.getElementById("f-client").value   = activeClient || "";
+  document.getElementById("f-notes").value    = "";
+  document.getElementById("f-due").value      = "";
   updateAddedByDisplay();
   document.getElementById("modal").style.display = "flex";
   setTimeout(() => document.getElementById("f-name").focus(), 60);
 }
 
 function openEdit(id) {
+  /* Edit mode: manager can update task details (not status/hours — those are via Log Work) */
   const t = tasks.find(x => x.id === id);
   if (!t) return;
   editingId = id;
-  document.getElementById("modal-title").textContent = "Edit Task";
-  document.getElementById("btn-save").textContent    = "Save Changes";
-  document.getElementById("f-name").value       = t.name;
-  document.getElementById("f-person").value     = t.person;
-  document.getElementById("f-priority").value   = t.priority;
-  document.getElementById("f-status").value     = t.status;
-  document.getElementById("f-hours").value      = t.hours_worked || "";
-  document.getElementById("f-client").value     = t.client || "";
-  document.getElementById("f-notes").value      = t.notes || "";
-  document.getElementById("f-due").value        = t.due_date || "";
+  document.getElementById("modal-title").textContent    = "Edit Task Details";
+  document.getElementById("modal-subtitle").textContent = `Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
+  document.getElementById("btn-save").textContent       = "Save Changes";
+  document.getElementById("f-name").value     = t.name;
+  document.getElementById("f-person").value   = t.person;
+  document.getElementById("f-priority").value = t.priority;
+  document.getElementById("f-client").value   = t.client || "";
+  document.getElementById("f-notes").value    = t.notes || "";
+  document.getElementById("f-due").value      = t.due_date || "";
   document.getElementById("added-by-display").textContent = t.added_by || currentUser;
   document.getElementById("modal").style.display = "flex";
   setTimeout(() => document.getElementById("f-name").focus(), 60);
@@ -1578,20 +1662,23 @@ async function saveTask() {
   if (!name) { document.getElementById("f-name").focus(); return; }
   if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
 
-  /* Fix PGRST204: payload uses `name` column (matches DB schema).
-     effort_level sent as null in case column still exists on old table. */
   const payload = {
     name,
-    person:        document.getElementById("f-person").value,
-    priority:      document.getElementById("f-priority").value,
-    status:        document.getElementById("f-status").value,
-    hours_worked:  parseFloat(document.getElementById("f-hours").value) || 0,
-    client:        document.getElementById("f-client").value || null,
-    notes:         document.getElementById("f-notes").value.trim(),
-    due_date:      document.getElementById("f-due").value || null,
+    person:       document.getElementById("f-person").value,
+    priority:     document.getElementById("f-priority").value,
+    client:       document.getElementById("f-client").value || null,
+    notes:        document.getElementById("f-notes").value.trim(),
+    due_date:     document.getElementById("f-due").value || null,
   };
 
-  if (!editingId) payload.added_by = currentUser;
+  if (!editingId) {
+    /* New task — force defaults: status = To Do, hours = 0 */
+    payload.status       = "To Do";
+    payload.hours_worked = 0;
+    payload.added_by     = currentUser;
+  }
+  /* Edit mode intentionally does NOT overwrite status or hours_worked —
+     those are owned by the Log Work flow */
 
   closeModal();
   setSyncStatus("syncing", "Saving…");
@@ -1601,8 +1688,64 @@ async function saveTask() {
     if (ok) showToast("Task updated ✓", "success");
   } else {
     const ok = await insertTask(payload);
-    if (ok) showToast("Task added ✓", "success");
+    if (ok) showToast("Task assigned ✓", "success");
   }
+}
+
+/* ─── MODAL 2: Log Work ── */
+let logWorkId = null;
+
+function openLogModal(id) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  logWorkId = id;
+  document.getElementById("log-task-name").textContent    = t.name;
+  document.getElementById("log-assignee").textContent     = t.person + (TEAM.find(m=>m.name===t.person)?.role ? ` · ${TEAM.find(m=>m.name===t.person).role}` : "");
+  document.getElementById("log-current-hours").textContent = (parseFloat(t.hours_worked)||0).toFixed(1) + "h";
+  document.getElementById("lw-status").value  = t.status;
+  document.getElementById("lw-hours").value   = t.hours_worked || "";
+  document.getElementById("lw-note").value    = "";
+  document.getElementById("modal-log").style.display = "flex";
+  setTimeout(() => document.getElementById("lw-hours").focus(), 60);
+}
+
+function closeLogModal() {
+  document.getElementById("modal-log").style.display = "none";
+  logWorkId = null;
+}
+
+function handleLogOverlayClick(e) {
+  if (e.target.id === "modal-log") closeLogModal();
+}
+
+async function saveLogWork() {
+  if (!logWorkId) return;
+  if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
+
+  const newStatus = document.getElementById("lw-status").value;
+  const newHours  = parseFloat(document.getElementById("lw-hours").value) || 0;
+  const workNote  = document.getElementById("lw-note").value.trim();
+
+  /* If there's a work note, append it to the existing task notes */
+  const t = tasks.find(x => x.id === logWorkId);
+  let updatedNotes = t?.notes || "";
+  if (workNote) {
+    const stamp = new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short' });
+    updatedNotes = updatedNotes
+      ? updatedNotes + `\n[${stamp}] ${workNote}`
+      : `[${stamp}] ${workNote}`;
+  }
+
+  const payload = {
+    status:       newStatus,
+    hours_worked: newHours,
+  };
+  if (workNote) payload.notes = updatedNotes;
+
+  closeLogModal();
+  setSyncStatus("syncing", "Saving…");
+  const ok = await updateTaskDB(logWorkId, payload);
+  if (ok) showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`, "success");
 }
 
 async function quickStatus(id, status) {
@@ -1642,7 +1785,7 @@ function esc(s) {
 
 /* ─── Keyboard shortcuts ── */
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeModal();
+  if (e.key === "Escape") { closeModal(); closeLogModal(); }
   if (e.key === "n" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) openModal();
 });
 
