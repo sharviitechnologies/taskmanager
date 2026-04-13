@@ -1650,7 +1650,6 @@ function validateTaskForm() {
   if (nameErr || projectErr || clientErr) {
     const missing = [];
     if (clientErr)  missing.push("Client");
-    if (projectErr) missing.push("Project Name");
     if (nameErr)    missing.push("Task Title");
 
     const banner  = document.getElementById("modal-val-banner");
