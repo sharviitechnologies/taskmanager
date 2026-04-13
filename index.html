@@ -6,251 +6,1416 @@
   <title>Sharvii Technologies — Task Manager</title>
 
   <script>
-    // These are your specific keys - do not change them
     const SUPABASE_URL = "https://aagztfgkthgpysrlyksa.supabase.co";
     const SUPABASE_KEY = "sb_publishable_dCYu2aNVBG2DIIeIC_hwdw_p18eQsa5";
   </script>
 
+  <!-- No Supabase JS library — all DB calls use plain fetch() against the REST API -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet"/>
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #f4f6fb; --surface: #ffffff; --border: #e4e9f2; --text: #0d1b2e;
-      --indigo: #4361ee; --violet: #7c3aed; --red: #dc2626; --green: #059669;
-      --sidebar-w: 260px; --radius: 12px;
+      --bg:         #f4f6fb;
+      --surface:    #ffffff;
+      --border:     #e4e9f2;
+      --border-md:  #cdd5e4;
+      --text:       #0d1b2e;
+      --text-2:     #4a5568;
+      --text-3:     #8f9ab5;
+      --indigo:     #4361ee;
+      --indigo-dk:  #3451d1;
+      --indigo-lt:  #eef1fd;
+      --indigo-bd:  #b8c5f8;
+      --violet:     #7c3aed;
+      --green:      #059669;
+      --green-lt:   #ecfdf5;
+      --green-bd:   #a7f3d0;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --amber-bd:   #fde68a;
+      --red:        #dc2626;
+      --red-lt:     #fef2f2;
+      --red-bd:     #fecaca;
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --blue-bd:    #bfdbfe;
+      --orange:     #ea580c;
+      --orange-lt:  #fff7ed;
+      --orange-bd:  #fed7aa;
+      --teal:       #0d9488;
+      --teal-lt:    #f0fdfa;
+      --teal-bd:    #99f6e4;
+      --sidebar-w:  270px;
+      --header-h:   62px;
+      --radius:     12px;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow:     0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.05);
+      --shadow-lg:  0 12px 32px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+    html, body { height: 100%; font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+    button { font-family: inherit; cursor: pointer; }
+    input, select, textarea { font-family: inherit; font-size: 13px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
 
     /* ── Layout ── */
-    #app { display: flex; height: 100vh; }
-    #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-    #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    #app { display: flex; height: 100vh; overflow: hidden; }
 
-    /* ── Branding Fix ── */
-    .sidebar-logo { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; line-height: 1.1; color: var(--indigo); }
-    
-    /* ── Fixed Circular Numbers ── */
-    .sc-stat-num {
-      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
-      width: 40px; height: 40px; /* Fixed square box */
-      display: flex; align-items: center; justify-content: center; /* Perfect centering */
-      border-radius: 50%; border: 2px solid var(--border); margin: 0 auto 8px;
+    /* ── Sidebar ── */
+    #sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+    }
+    .sidebar-logo {
+      height: var(--header-h); display: flex; align-items: center; gap: 10px;
+      padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(67,97,238,.35);
+    }
+    /* ── Branding: Sharvii Technologies ── */
+    .logo-text {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px;
+      color: var(--text); letter-spacing: -.01em; line-height: 1.2;
+    }
+    .logo-badge {
+      font-size: 9px; font-weight: 700; color: var(--indigo);
+      background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
+      border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em; flex-shrink: 0;
     }
 
-    /* ── Team Summary Cards ── */
-    #summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px; overflow-y: auto; }
-    .summary-card { background: var(--surface); border-radius: 16px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    .sc-stats { display: flex; justify-content: space-around; text-align: center; margin-top: 15px; }
+    /* ── Current user selector ── */
+    .current-user-bar { padding: 12px 16px 0; flex-shrink: 0; }
+    .current-user-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
+    .current-user-select {
+      width: 100%; background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
+      border-radius: 9px; padding: 8px 10px; font-size: 13px; font-weight: 600;
+      color: var(--indigo); outline: none; cursor: pointer; transition: border-color .15s;
+    }
+    .current-user-select:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); }
+
+    .sidebar-section-title {
+      font-size: 10px; font-weight: 700; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: .07em; padding: 16px 20px 8px;
+    }
+    .sidebar-scroll { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+
+    .member-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px; cursor: pointer; transition: background .12s;
+      background: none; border: none; width: 100%; text-align: left;
+    }
+    .member-row:hover { background: var(--bg); }
+    .member-row.active { background: var(--indigo-lt); }
+    .member-row.active .member-name { color: var(--indigo); font-weight: 600; }
+
+    /* ── FIX 1: Member avatar — always perfectly circular, centered ── */
+    .member-avatar {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; line-height: 1;
+      text-align: center; overflow: hidden;
+    }
+    .member-info { flex: 1; min-width: 0; }
+    .member-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .member-role { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+    /* ── FIX 1: Count badge — fixed square size, perfectly circular pill ── */
+    .member-count {
+      width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0;
+      background: var(--bg); border: 1px solid var(--border);
+      font-size: 11px; font-weight: 700; color: var(--text-2);
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1; text-align: center;
+    }
+    .member-row.active .member-count { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 20px; }
+    .sidebar-footer { border-top: 1px solid var(--border); padding: 14px 20px; flex-shrink: 0; }
+    .sync-status { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text-3); }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+    .sync-dot.syncing { background: #f59e0b; animation: pulse 1.2s infinite; }
+    .sync-dot.error   { background: #ef4444; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── Main Area ── */
+    #main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; overflow: hidden; }
+
+    /* ── Top Bar ── */
+    #topbar {
+      height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; gap: 12px; flex-shrink: 0;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 8px; }
+    #page-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+    #page-sub   { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+    .tabs { display: flex; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+    .tab-btn {
+      padding: 5px 14px; border-radius: 7px; font-size: 12px; font-weight: 500;
+      border: none; background: none; color: var(--text-2); transition: all .12s; cursor: pointer;
+    }
+    .tab-btn.active { background: var(--surface); color: var(--indigo); font-weight: 700; box-shadow: var(--shadow-sm); }
+
+    .btn-primary {
+      display: flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      color: #fff; border: none; border-radius: var(--radius);
+      padding: 9px 18px; font-size: 13px; font-weight: 600;
+      transition: opacity .15s, transform .1s; box-shadow: 0 2px 8px rgba(67,97,238,.32);
+    }
+    .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ── KPI Strip ── */
+    #kpi-strip {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 14px 24px; display: flex; gap: 14px; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .kpi-card {
+      flex: 1; min-width: 100px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    }
+    .kpi-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .kpi-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+    .kpi-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+    /* ── Filter Bar ── */
+    #filterbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 10px 24px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .filter-select, .filter-input {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 11px; font-size: 12px; color: var(--text);
+      outline: none; transition: border-color .12s;
+    }
+    .filter-select:focus, .filter-input:focus { border-color: var(--indigo); box-shadow: 0 0 0 2px var(--indigo-bd); }
+    .filter-input { min-width: 180px; flex: 1; max-width: 260px; }
+    .filter-clear {
+      font-size: 12px; color: var(--text-3); background: none;
+      border: 1px solid var(--border); border-radius: 8px; padding: 6px 11px; transition: all .12s;
+    }
+    .filter-clear:hover { color: var(--text); border-color: var(--border-md); }
+    .filter-spacer { flex: 1; }
+
+    /* ── Content ── */
+    #content { flex: 1; overflow-y: auto; padding: 22px 24px; }
 
     /* ── Task Cards ── */
-    #content { flex: 1; overflow-y: auto; padding: 20px; }
-    #cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-    .task-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid var(--border); position: relative; }
-    .effort-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; margin-left: 5px; }
+    #cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 14px;
+    }
+    .task-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: var(--shadow-sm);
+      padding: 16px 18px; display: flex; flex-direction: column; gap: 11px;
+      transition: box-shadow .15s, transform .15s; animation: fadeUp .2s ease both;
+      position: relative; overflow: hidden;
+    }
+    .task-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; border-radius: 14px 0 0 14px;
+    }
+    .task-card.pri-High::before   { background: var(--red); }
+    .task-card.pri-Medium::before { background: var(--amber); }
+    .task-card.pri-Low::before    { background: var(--green); }
+    .task-card.overdue            { border-color: var(--red-bd); }
+    .task-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── UI Elements ── */
-    .btn-primary { background: var(--indigo); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .header { height: 70px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
-    
-    /* Modal Styles */
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
-    .modal-content { background: white; padding: 30px; border-radius: 16px; width: 400px; }
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 12px; margin-bottom: 5px; font-weight: 600; }
-    .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .card-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; flex: 1; }
+    .card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s; flex-shrink: 0; }
+    .task-card:hover .card-actions { opacity: 1; }
+    .icon-btn {
+      width: 28px; height: 28px; border: none; background: none; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center; color: var(--text-3);
+      transition: background .12s, color .12s; cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--bg); color: var(--text); }
+    .icon-btn.danger:hover { background: var(--red-lt); color: var(--red); }
+
+    .card-notes { font-size: 12px; color: var(--text-2); line-height: 1.5; padding: 8px 10px; background: var(--bg); border-radius: 8px; }
+
+    .card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 5px; padding: 3px 8px; font-size: 11px; font-weight: 600; border: 1px solid;
+    }
+    .badge-high    { background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
+    .badge-medium  { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
+    .badge-low     { background: var(--green-lt);  color: var(--green);  border-color: var(--green-bd); }
+
+    /* ── FIX 3: Effort level badge ── */
+    .badge-effort-high   { background: #fdf2f8; color: #9d174d; border-color: #f9a8d4; }
+    .badge-effort-medium { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+    .badge-effort-low    { background: var(--teal-lt); color: var(--teal); border-color: var(--teal-bd); }
+
+    .card-footer { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .card-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+    .card-assignee { display: flex; align-items: center; gap: 7px; }
+    .assignee-avatar { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; line-height: 1; }
+    .assignee-name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .assignee-role { font-size: 10px; color: var(--text-3); }
+
+    .added-by-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: var(--text-3); background: var(--bg);
+      border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px;
+    }
+    .added-by-pill strong { color: var(--text-2); font-weight: 600; }
+
+    /* ── FIX 6: Status lock hint ── */
+    .status-lock-hint {
+      font-size: 10px; color: var(--text-3); font-style: italic;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .status-select {
+      background: transparent; border: 1px solid var(--border-md); border-radius: 7px;
+      padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+      outline: none; color: var(--text-2); transition: border-color .12s;
+    }
+    .status-select:focus { border-color: var(--indigo); box-shadow: 0 0 0 2px var(--indigo-bd); }
+    .status-select.status-todo { color: var(--text-2); }
+    .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
+    .status-select.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
+
+    /* ── Due date chips ── */
+    .due-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600; border-radius: 99px; padding: 2px 8px; border: 1px solid;
+    }
+    .due-chip.overdue { background: var(--red-lt);    color: var(--red);    border-color: var(--red-bd); }
+    .due-chip.today   { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
+    .due-chip.soon    { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
+    .due-chip.normal  { background: var(--bg);        color: var(--text-3); border-color: var(--border); }
+
+    /* ── Empty State ── */
+    #empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; padding: 80px 20px; color: var(--text-3); text-align: center;
+    }
+    #empty-state p { font-size: 13px; line-height: 1.6; }
+    #empty-state strong { color: var(--indigo); }
+
+    /* ── Summary Grid ── */
+    #summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: var(--shadow-sm); padding: 20px;
+      animation: fadeUp .2s ease both;
+    }
+    .summary-card.overloaded { border-color: var(--red-bd); box-shadow: 0 0 0 1px var(--red-bd), var(--shadow-sm); }
+    .sc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .sc-person { display: flex; align-items: center; gap: 10px; }
+    .sc-total { text-align: right; }
+    .sc-total-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; }
+    .sc-total-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+    .sc-bar-wrap { height: 5px; background: var(--bg); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+    .sc-bar { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+    /* ── FIX 1: Summary stats — fixed square cells so numbers don't stretch ── */
+    .sc-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .sc-stat {
+      background: var(--bg); border-radius: 8px; padding: 10px 6px;
+      text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .sc-stat-num {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+      line-height: 1; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; margin: 0 auto 4px;
+    }
+    .sc-stat-num.todo-num  { background: var(--bg);       color: var(--text-2); border: 1.5px solid var(--border-md); }
+    .sc-stat-num.prog-num  { background: var(--blue-lt);  color: var(--blue);   border: 1.5px solid var(--blue-bd); }
+    .sc-stat-num.done-num  { background: var(--green-lt); color: var(--green);  border: 1.5px solid var(--green-bd); }
+    .sc-stat-lbl { font-size: 10px; color: var(--text-3); }
+
+    .sc-foot { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .sc-warn { margin-top: 8px; background: var(--red-lt); border: 1px solid var(--red-bd); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--red); font-weight: 500; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(13,27,46,.4);
+      backdrop-filter: blur(4px); z-index: 100;
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; box-shadow: var(--shadow-lg);
+      width: 100%; max-width: 480px; padding: 28px;
+      animation: fadeUp .18s ease; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+    .modal-close {
+      width: 30px; height: 30px; border: none; background: none; font-size: 20px;
+      color: var(--text-3); cursor: pointer; border-radius: 7px; transition: background .12s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: var(--bg); color: var(--text); }
+
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
+      outline: none; transition: border-color .12s, background .12s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); background: #fff;
+    }
+    .form-textarea { resize: none; line-height: 1.5; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    .added-by-display {
+      background: var(--indigo-lt); border: 1.5px solid var(--indigo-bd);
+      border-radius: 9px; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--indigo);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .modal-footer { display: flex; gap: 10px; margin-top: 22px; }
+    .btn-ghost {
+      flex: 1; padding: 11px; border: 1.5px solid var(--border); background: none;
+      border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--text-2); transition: all .12s;
+    }
+    .btn-ghost:hover { background: var(--bg); border-color: var(--border-md); color: var(--text); }
+    .btn-save { flex: 1; padding: 11px; }
+
+    /* ── Toast ── */
+    #toast { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
+    .toast-item {
+      background: var(--text); color: #fff; border-radius: 10px;
+      padding: 11px 16px; font-size: 12px; font-weight: 500;
+      box-shadow: var(--shadow-lg); animation: fadeUp .18s ease;
+      max-width: 320px; display: flex; align-items: center; gap: 8px;
+    }
+    .toast-item.success { background: #065f46; }
+    .toast-item.error   { background: #991b1b; }
+    .toast-item.info    { background: var(--indigo); }
+
+    /* ── Notification bell ── */
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); position: absolute; top: -2px; right: -2px; display: none; }
+    .notif-dot.visible { display: block; }
+    .notif-btn { position: relative; }
+
+    /* ── Setup Banner ── */
+    #setup-banner {
+      background: #fef3c7; border: 1px solid #fcd34d; border-radius: var(--radius);
+      padding: 12px 16px; margin-bottom: 18px; font-size: 12px; color: #92400e; line-height: 1.6;
+    }
+    #setup-banner strong { color: #78350f; }
+    #setup-banner code { background: #fde68a; border-radius: 4px; padding: 1px 5px; font-size: 11px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      #sidebar { display: none; }
+    }
+
+    /* ── Notification Panel ── */
+    #notif-panel {
+      position: fixed; top: var(--header-h); right: 16px; z-index: 150;
+      width: 340px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; box-shadow: var(--shadow-lg);
+      display: none; flex-direction: column; overflow: hidden; animation: fadeUp .18s ease;
+    }
+    #notif-panel.open { display: flex; }
+    .notif-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .notif-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--text); }
+    .notif-clear { font-size: 11px; color: var(--indigo); background: none; border: none; cursor: pointer; font-weight: 600; }
+    .notif-list { max-height: 340px; overflow-y: auto; }
+    .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item.unread { background: var(--indigo-lt); }
+    .notif-msg { font-size: 12px; color: var(--text); line-height: 1.5; }
+    .notif-time { font-size: 10px; color: var(--text-3); }
+    .notif-empty { padding: 32px 16px; text-align: center; color: var(--text-3); font-size: 12px; }
   </style>
 </head>
 <body>
 
 <div id="app">
+
+  <!-- ══ SIDEBAR ══ -->
   <aside id="sidebar">
     <div class="sidebar-logo">
-      <div style="background: var(--indigo); width:32px; height:32px; border-radius:8px;"></div>
+      <div class="logo-icon">
+        <!-- FIX 2: Sharvii Technologies logo — building/office icon -->
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+          <path d="M3 21h18M3 7l9-4 9 4M4 7v14M20 7v14M9 21v-4a3 3 0 016 0v4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <span class="logo-text">Sharvii<br>Technologies</span>
+      <span class="logo-badge">PRO</span>
     </div>
-    <div style="padding:20px;">
-      <label style="font-size:10px; font-weight:bold; color:#666;">LOGGED IN AS</label>
-      <select id="user-select" style="width:100%; margin-top:5px; padding:8px; border-radius:6px;"></select>
+
+    <!-- Who am I — FIX 4: restored from localStorage -->
+    <div class="current-user-bar">
+      <div class="current-user-label">Logged in as</div>
+      <select class="current-user-select" id="current-user-select" onchange="onCurrentUserChange()"></select>
     </div>
-    <div id="team-list" style="padding:0 20px;"></div>
+
+    <div class="sidebar-scroll">
+      <div class="sidebar-section-title">Team Members</div>
+
+      <button class="member-row active" onclick="filterByPerson('')" id="member-all">
+        <div class="member-avatar" style="background:#eef1fd;color:var(--indigo);">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="member-info">
+          <div class="member-name">All Members</div>
+          <div class="member-role">View all tasks</div>
+        </div>
+        <span class="member-count" id="count-all">0</span>
+      </button>
+
+      <div class="sidebar-divider"></div>
+      <div id="member-list"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sync-status">
+        <span class="sync-dot syncing" id="sync-dot"></span>
+        <span id="sync-label">Connecting…</span>
+      </div>
+    </div>
   </aside>
 
+  <!-- ══ MAIN ══ -->
   <div id="main">
-    <header class="header">
-      <h2 id="view-title">Task Board</h2>
-      <div style="display:flex; gap:10px;">
-        <button class="btn-primary" onclick="switchView('board')">Board</button>
-        <button class="btn-primary" onclick="switchView('summary')" style="background:#666;">Summary</button>
-        <button class="btn-primary" onclick="showModal()" style="background:var(--violet);">+ Add Task</button>
-      </div>
-    </header>
 
-    <div id="content">
-      <div id="cards-grid"></div>
-      <div id="summary-grid" style="display:none;"></div>
-    </div>
-  </div>
-</div>
-
-<div id="task-modal" class="modal">
-  <div class="modal-content">
-    <h3>Add New Task</h3>
-    <div class="form-group">
-      <label>TASK TITLE</label>
-      <input type="text" id="task-title" placeholder="What needs to be done?">
-    </div>
-    <div class="form-group">
-      <label>ASSIGN TO</label>
-      <select id="task-assignee"></select>
-    </div>
-    <div style="display:flex; gap:10px;">
-      <div class="form-group" style="flex:1;">
-        <label>PRIORITY</label>
-        <select id="task-priority">
-          <option>Low</option>
-          <option selected>Medium</option>
-          <option>High</option>
-        </select>
-      </div>
-      <div class="form-group" style="flex:1;">
-        <label>EFFORT</label>
-        <select id="task-effort">
-          <option>Low</option>
-          <option selected>Medium</option>
-          <option>High</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>DUE DATE</label>
-      <input type="date" id="task-date">
-    </div>
-    <button class="btn-primary" style="width:100%;" onclick="saveTask()">Save Task</button>
-    <button onclick="hideModal()" style="width:100%; background:none; border:none; margin-top:10px; cursor:pointer; color:#666;">Cancel</button>
-  </div>
-</div>
-
-<script>
-  const team = ["Umesh", "Prabhu", "Mounika", "Chaithra", "Sarika", "Divya", "Hema"];
-  let currentTasks = [];
-
-  // Initialize
-  window.onload = () => {
-    const userDropdowns = [document.getElementById('user-select'), document.getElementById('task-assignee')];
-    team.forEach(name => {
-      userDropdowns.forEach(drop => {
-        const opt = document.createElement('option');
-        opt.value = opt.text = name;
-        drop.add(opt);
-      });
-    });
-
-    // Restore login
-    const savedUser = localStorage.getItem('sharvii_user');
-    if (savedUser) document.getElementById('user-select').value = savedUser;
-
-    document.getElementById('user-select').onchange = (e) => {
-      localStorage.setItem('sharvii_user', e.target.value);
-    };
-
-    fetchTasks();
-    // Refresh every 30 seconds
-    setInterval(fetchTasks, 30000);
-  };
-
-  async function fetchTasks() {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks?select=*`, {
-      headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
-    });
-    currentTasks = await res.json();
-    renderBoard();
-    renderSummary();
-  }
-
-  function renderBoard() {
-    const grid = document.getElementById('cards-grid');
-    grid.innerHTML = currentTasks.map(t => `
-      <div class="task-card">
-        <div style="font-weight:bold;">${t.title}</div>
-        <div style="font-size:11px; color:#666; margin:5px 0;">Assigned to: ${t.assignee}</div>
+    <!-- Top Bar -->
+    <div id="topbar">
+      <div class="topbar-left">
         <div>
-          <span class="effort-tag" style="background:#eee;">${t.priority} Priority</span>
-          <span class="effort-tag" style="background:#eef1fd; color:var(--indigo);">Effort: ${t.effort_level}</span>
-        </div>
-        <div style="margin-top:10px; font-size:12px; border-top:1px solid #eee; pt:10px;">
-          Status: <strong>${t.status}</strong>
+          <div id="page-title">Task Board</div>
+          <div id="page-sub">Showing all tasks</div>
         </div>
       </div>
-    `).join('');
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('board')"   id="tab-board">Board</button>
+          <button class="tab-btn"        onclick="switchTab('summary')" id="tab-summary">Summary</button>
+        </div>
+        <!-- Bell -->
+        <button class="icon-btn notif-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifications" style="width:36px;height:36px;border:1px solid var(--border);background:var(--bg);">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="notif-dot" id="notif-dot"></span>
+        </button>
+        <button class="btn-primary" onclick="openModal()">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Add Task
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Strip -->
+    <div id="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:#eef1fd;">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="var(--indigo)" stroke-width="2"/><path d="M9 12h6M9 8h6M9 16h3" stroke="var(--indigo)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-total">0</div><div class="kpi-label">Total Tasks</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--blue-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="2"/><path d="M12 7v5l3 3" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-inprog">0</div><div class="kpi-label">In Progress</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--green-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-done">0</div><div class="kpi-label">Completed</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--red-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="var(--red)" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-high">0</div><div class="kpi-label">High Priority Open</div></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--orange-lt);">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" stroke="var(--orange)" stroke-width="2"/><line x1="16" y1="2" x2="16" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke="var(--orange)" stroke-width="2"/></svg>
+        </div>
+        <div class="kpi-body"><div class="kpi-num" id="kpi-overdue">0</div><div class="kpi-label">Overdue</div></div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div id="filterbar">
+      <select class="filter-select" id="flt-priority" onchange="applyFilters()">
+        <option value="">All Priorities</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <select class="filter-select" id="flt-status" onchange="applyFilters()">
+        <option value="">All Statuses</option>
+        <option value="To Do">To Do</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Done">Done</option>
+      </select>
+      <select class="filter-select" id="flt-due" onchange="applyFilters()">
+        <option value="">All Due Dates</option>
+        <option value="overdue">Overdue</option>
+        <option value="today">Due Today</option>
+        <option value="week">Due This Week</option>
+      </select>
+      <input class="filter-input" id="flt-search" placeholder="Search tasks, notes, people…" oninput="applyFilters()"/>
+      <button class="filter-clear" onclick="clearFilters()">Clear</button>
+      <div class="filter-spacer"></div>
+    </div>
+
+    <!-- Content -->
+    <div id="content">
+      <div id="setup-banner" style="display:none">
+        ⚙️ <strong>Supabase not configured.</strong> Replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code>, then run the SQL below.
+      </div>
+
+      <!-- Board view -->
+      <div id="view-board">
+        <div id="cards-grid"></div>
+        <div id="empty-state" style="display:none">
+          <svg width="48" height="48" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#cbd5e1" stroke-width="1.5"/><path d="M9 12h6M9 8h6M9 16h3" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <p>No tasks match your filters.<br/>Hit <strong>Add Task</strong> to create the first one.</p>
+        </div>
+      </div>
+
+      <!-- Summary view -->
+      <div id="view-summary" style="display:none">
+        <div id="summary-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Panel -->
+<div id="notif-panel">
+  <div class="notif-header">
+    <span class="notif-title">🔔 Notifications</span>
+    <button class="notif-clear" onclick="clearNotifications()">Mark all read</button>
+  </div>
+  <div class="notif-list" id="notif-list">
+    <div class="notif-empty">No notifications yet</div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast"></div>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Add New Task</span>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Task Name</label>
+      <input class="form-input" id="f-name" placeholder="e.g. Review pull request #42" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Assigned To</label>
+      <select class="form-select" id="f-person"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Added By</label>
+      <div class="added-by-display" id="added-by-display">—</div>
+    </div>
+    <!-- Priority + Status + Effort in one row -->
+    <div class="form-row-3">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Priority</label>
+        <select class="form-select" id="f-priority">
+          <option>High</option><option selected>Medium</option><option>Low</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="f-status">
+          <option>To Do</option><option>In Progress</option><option>Done</option>
+        </select>
+      </div>
+      <!-- FIX 3: Effort Level field -->
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Effort</label>
+        <select class="form-select" id="f-effort">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:14px">
+      <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
+      <input class="form-input" type="date" id="f-due" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
+      <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Any extra context or links…"></textarea>
+    </div>
+    <!-- FIX 6: Status lock notice in modal -->
+    <div style="background:var(--amber-lt);border:1px solid var(--amber-bd);border-radius:8px;padding:8px 12px;font-size:11px;color:#92400e;margin-bottom:6px;">
+      🔒 <strong>Note:</strong> Only the task assignee or Manager (Umesh) should update the task status.
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary btn-save" id="btn-save" onclick="saveTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ JAVASCRIPT ══ -->
+<script>
+/* ─── Team Config ── */
+const TEAM = [
+  { name: "Umesh",    role: "Manager" },
+  { name: "Prabhu",   role: "Senior"  },
+  { name: "Mounika",  role: "Senior"  },
+  { name: "Chaithra", role: "Senior"  },
+  { name: "Sarika",   role: "Junior"  },
+  { name: "Divya",    role: "Junior"  },
+  { name: "Hema",     role: "Junior"  },
+];
+const MANAGER_NAME = "Umesh";
+
+const ROLE_COLOR = {
+  Manager: { bg: "#fef3c7", text: "#d97706" },
+  Senior:  { bg: "#eef1fd", text: "#4361ee" },
+  Junior:  { bg: "#f0fdf4", text: "#059669" },
+};
+const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
+
+/* ─── State ── */
+let tasks          = [];
+let editingId      = null;
+let activeTab      = "board";
+let filterPerson   = "";
+let filterPriority = "";
+let filterStatus   = "";
+let filterSearch   = "";
+let filterDue      = "";
+let pollTimer      = null;
+let lastTaskIds    = new Set();
+let notifications  = [];
+
+/* FIX 4: Restore currentUser from localStorage */
+let currentUser = localStorage.getItem("sharvii_current_user") || TEAM[0].name;
+
+/* ─── REST helpers — zero dependencies ── */
+const REST    = `${SUPABASE_URL}/rest/v1`;
+const HEADERS = {
+  "Content-Type":  "application/json",
+  "apikey":        SUPABASE_KEY,
+  "Authorization": `Bearer ${SUPABASE_KEY}`,
+};
+
+async function dbSelect() {
+  const res = await fetch(
+    `${REST}/tasks?select=*&order=created_at.desc`,
+    { headers: { ...HEADERS, "Accept": "application/json" } }
+  );
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return res.json();
+}
+
+async function dbInsert(payload) {
+  const res = await fetch(`${REST}/tasks`, {
+    method:  "POST",
+    headers: { ...HEADERS, "Prefer": "return=representation" },
+    body:    JSON.stringify(payload),
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return res.json();
+}
+
+async function dbUpdate(id, payload) {
+  const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
+    method:  "PATCH",
+    headers: { ...HEADERS, "Prefer": "return=minimal" },
+    body:    JSON.stringify(payload),
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return true;
+}
+
+async function dbDelete(id) {
+  const res = await fetch(`${REST}/tasks?id=eq.${id}`, {
+    method:  "DELETE",
+    headers: HEADERS,
+  });
+  if (!res.ok) { const t = await res.text(); throw new Error(t); }
+  return true;
+}
+
+/* ─── Init ── */
+async function init() {
+  buildCurrentUserSelect();
+  buildSidebar();
+  buildPersonDropdown();
+  checkSetup();
+  requestNotifPermission();
+  if (!isConfigured()) return;
+  await loadTasks();
+  startPolling();
+}
+
+function isConfigured() {
+  return SUPABASE_URL !== "YOUR_SUPABASE_URL" && SUPABASE_KEY !== "YOUR_SUPABASE_ANON_KEY";
+}
+
+function checkSetup() {
+  document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
+  if (!isConfigured()) setSyncStatus("error", "Not connected");
+}
+
+/* ─── Polling (replaces Realtime WebSocket) ── */
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    try {
+      const fresh = await dbSelect();
+      // FIX 5: detect new tasks assigned to me
+      fresh.forEach(t => {
+        if (!lastTaskIds.has(t.id) && t.person === currentUser && t.added_by !== currentUser) {
+          const msg = `📋 ${t.added_by || "Someone"} assigned you: "${t.name}"`;
+          pushNotification(msg, t.id);
+          showToast(`New task assigned to you by ${t.added_by || "a teammate"}!`, "info");
+          playNotifSound();
+          fireBrowserNotif("New task assigned", msg);
+        }
+      });
+      lastTaskIds = new Set(fresh.map(t => t.id));
+      tasks = fresh;
+      render();
+      setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
+    } catch (e) {
+      setSyncStatus("error", "Sync error — retrying…");
+    }
+  }, 8000);
+}
+
+/* ─── DB operations ── */
+async function loadTasks() {
+  setSyncStatus("syncing", "Loading tasks…");
+  try {
+    const data = await dbSelect();
+    lastTaskIds = new Set(data.map(t => t.id));
+    tasks = data;
+    render();
+    setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length !== 1 ? "s" : ""}`);
+  } catch (e) {
+    setSyncStatus("error", "Load failed: " + e.message);
+    showToast("Load failed: " + e.message, "error");
   }
+}
 
-  function renderSummary() {
-    const grid = document.getElementById('summary-grid');
-    grid.innerHTML = team.map(name => {
-      const userTasks = currentTasks.filter(t => t.assignee === name);
-      const todo = userTasks.filter(t => t.status === 'To Do').length;
-      const prog = userTasks.filter(t => t.status === 'In Progress').length;
-      const done = userTasks.filter(t => t.status === 'Done').length;
+async function insertTask(payload) {
+  try {
+    await dbInsert(payload);
+    await loadTasks();
+    return true;
+  } catch (e) {
+    showToast("Failed to add task: " + e.message, "error");
+    setSyncStatus("error", "Save failed");
+    return false;
+  }
+}
 
-      return `
-        <div class="summary-card">
-          <h3 style="margin-bottom:10px;">${name}</h3>
-          <div class="sc-stats">
-            <div><div class="sc-stat-num" style="color:#666;">${todo}</div><small>To Do</small></div>
-            <div><div class="sc-stat-num" style="color:var(--indigo); border-color:var(--indigo);">${prog}</div><small>In Progress</small></div>
-            <div><div class="sc-stat-num" style="color:var(--green); border-color:var(--green);">${done}</div><small>Done</small></div>
+async function updateTaskDB(id, payload) {
+  try {
+    await dbUpdate(id, payload);
+    await loadTasks();
+    return true;
+  } catch (e) {
+    showToast("Failed to update: " + e.message, "error");
+    setSyncStatus("error", "Update failed");
+    return false;
+  }
+}
+
+async function deleteTaskDB(id) {
+  try {
+    await dbDelete(id);
+    await loadTasks();
+    return true;
+  } catch (e) {
+    showToast("Failed to delete: " + e.message, "error");
+    return false;
+  }
+}
+
+/* ─── Current User ── */
+function buildCurrentUserSelect() {
+  const sel = document.getElementById("current-user-select");
+  sel.innerHTML = TEAM.map(m =>
+    `<option value="${m.name}" ${m.name === currentUser ? "selected" : ""}>${m.name} (${m.role})</option>`
+  ).join("");
+  updateAddedByDisplay();
+}
+
+function onCurrentUserChange() {
+  currentUser = document.getElementById("current-user-select").value;
+  /* FIX 4: Persist to localStorage */
+  localStorage.setItem("sharvii_current_user", currentUser);
+  updateAddedByDisplay();
+}
+
+function updateAddedByDisplay() {
+  const el = document.getElementById("added-by-display");
+  if (el) el.textContent = currentUser;
+}
+
+/* ─── FIX 5: Notifications & Sound ── */
+function requestNotifPermission() {
+  if ("Notification" in window && Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+}
+
+function fireBrowserNotif(title, body) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    new Notification(title, { body, icon: "" });
+  }
+}
+
+/* FIX 5: Play subtle notification sound using Web Audio API — no file needed */
+function playNotifSound() {
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const osc  = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type      = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch(e) { /* ignore — sound is non-critical */ }
+}
+
+function pushNotification(msg, taskId) {
+  notifications.unshift({ id: Date.now() + Math.random(), msg, time: new Date(), unread: true, taskId });
+  renderNotifPanel();
+  updateNotifDot();
+}
+
+function renderNotifPanel() {
+  const list = document.getElementById("notif-list");
+  if (!notifications.length) {
+    list.innerHTML = `<div class="notif-empty">No notifications yet</div>`;
+    return;
+  }
+  list.innerHTML = notifications.slice(0, 30).map(n => `
+    <div class="notif-item ${n.unread ? "unread" : ""}">
+      <div class="notif-msg">${esc(n.msg)}</div>
+      <div class="notif-time">${timeAgo(n.time)}</div>
+    </div>`).join("");
+}
+
+function updateNotifDot() {
+  document.getElementById("notif-dot").classList.toggle("visible", notifications.some(n => n.unread));
+}
+
+function toggleNotifPanel() {
+  document.getElementById("notif-panel").classList.toggle("open");
+}
+
+function clearNotifications() {
+  notifications.forEach(n => n.unread = false);
+  renderNotifPanel();
+  updateNotifDot();
+}
+
+document.addEventListener("click", e => {
+  const panel = document.getElementById("notif-panel");
+  const btn   = document.getElementById("notif-btn");
+  if (panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target))
+    panel.classList.remove("open");
+});
+
+function timeAgo(date) {
+  const diff = Math.floor((Date.now() - new Date(date)) / 1000);
+  if (diff < 60)    return "just now";
+  if (diff < 3600)  return Math.floor(diff/60) + "m ago";
+  if (diff < 86400) return Math.floor(diff/3600) + "h ago";
+  return Math.floor(diff/86400) + "d ago";
+}
+
+/* ─── Build UI ── */
+function buildSidebar() {
+  const list = document.getElementById("member-list");
+  list.innerHTML = TEAM.map((m, i) => {
+    const c  = AV_COLORS[i % AV_COLORS.length];
+    const rc = ROLE_COLOR[m.role] || ROLE_COLOR.Junior;
+    return `
+      <button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')">
+        <div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div>
+        <div class="member-info">
+          <div class="member-name">${m.name}</div>
+          <div class="member-role" style="color:${rc.text}">${m.role}</div>
+        </div>
+        <span class="member-count" id="count-${m.name}">0</span>
+      </button>`;
+  }).join("");
+}
+
+function buildPersonDropdown() {
+  document.getElementById("f-person").innerHTML =
+    TEAM.map(m => `<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");
+}
+
+/* ─── Filtering ── */
+function filterByPerson(name) {
+  filterPerson = name;
+  document.querySelectorAll(".member-row").forEach(el => el.classList.remove("active"));
+  const target = name ? document.getElementById("mb-" + name) : document.getElementById("member-all");
+  if (target) target.classList.add("active");
+  document.getElementById("page-title").textContent = name || "Task Board";
+  document.getElementById("page-sub").textContent   = name
+    ? `Showing tasks for ${name} · ${TEAM.find(m => m.name === name)?.role}`
+    : "Showing all tasks";
+  render();
+}
+
+function applyFilters() {
+  filterPriority = document.getElementById("flt-priority").value;
+  filterStatus   = document.getElementById("flt-status").value;
+  filterSearch   = document.getElementById("flt-search").value.toLowerCase();
+  filterDue      = document.getElementById("flt-due").value;
+  render();
+}
+
+function clearFilters() {
+  filterPriority = ""; filterStatus = ""; filterSearch = ""; filterDue = "";
+  document.getElementById("flt-priority").value = "";
+  document.getElementById("flt-status").value   = "";
+  document.getElementById("flt-search").value   = "";
+  document.getElementById("flt-due").value       = "";
+  render();
+}
+
+function getDueState(dueDate) {
+  if (!dueDate) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due   = new Date(dueDate); due.setHours(0,0,0,0);
+  const diff  = Math.floor((due - today) / 86400000);
+  if (diff < 0)   return "overdue";
+  if (diff === 0) return "today";
+  if (diff <= 3)  return "soon";
+  return "normal";
+}
+
+function getFiltered() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  return tasks.filter(t => {
+    if (filterPerson   && t.person   !== filterPerson)   return false;
+    if (filterPriority && t.priority !== filterPriority) return false;
+    if (filterStatus   && t.status   !== filterStatus)   return false;
+    if (filterSearch) {
+      const hay = (t.name + " " + (t.notes||"") + " " + t.person + " " + (t.added_by||"")).toLowerCase();
+      if (!hay.includes(filterSearch)) return false;
+    }
+    if (filterDue) {
+      if (!t.due_date) return false;
+      const due  = new Date(t.due_date); due.setHours(0,0,0,0);
+      const diff = Math.floor((due - today) / 86400000);
+      if (filterDue === "overdue" && diff >= 0)            return false;
+      if (filterDue === "today"   && diff !== 0)           return false;
+      if (filterDue === "week"    && (diff < 0 || diff > 7)) return false;
+    }
+    return true;
+  });
+}
+
+/* ─── Render ── */
+function render() {
+  renderCounts();
+  renderKPI();
+  if (activeTab === "board") renderBoard();
+  else renderSummary();
+}
+
+function renderCounts() {
+  document.getElementById("count-all").textContent = tasks.length;
+  TEAM.forEach(m => {
+    const el = document.getElementById("count-" + m.name);
+    if (el) el.textContent = tasks.filter(t => t.person === m.name).length;
+  });
+}
+
+function renderKPI() {
+  const f     = getFiltered();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const overdue = f.filter(t => {
+    if (!t.due_date || t.status === "Done") return false;
+    const due = new Date(t.due_date); due.setHours(0,0,0,0);
+    return due < today;
+  }).length;
+  document.getElementById("kpi-total").textContent  = f.length;
+  document.getElementById("kpi-inprog").textContent = f.filter(t => t.status === "In Progress").length;
+  document.getElementById("kpi-done").textContent   = f.filter(t => t.status === "Done").length;
+  document.getElementById("kpi-high").textContent   = f.filter(t => t.priority === "High" && t.status !== "Done").length;
+  document.getElementById("kpi-overdue").textContent = overdue;
+}
+
+/* FIX 3: Effort badge helper */
+function effortBadge(effort) {
+  if (!effort) return "";
+  const cls = effort === "High"   ? "badge-effort-high"
+            : effort === "Medium" ? "badge-effort-medium"
+            :                       "badge-effort-low";
+  const icon = effort === "High" ? "🔥" : effort === "Medium" ? "⚡" : "🍃";
+  return `<span class="badge ${cls}">${icon} ${effort} Effort</span>`;
+}
+
+function renderBoard() {
+  const filtered = getFiltered();
+  const grid  = document.getElementById("cards-grid");
+  const empty = document.getElementById("empty-state");
+
+  if (!filtered.length) { grid.innerHTML = ""; empty.style.display = "flex"; return; }
+  empty.style.display = "none";
+
+  grid.innerHTML = filtered.map((t, i) => {
+    const memberIdx = TEAM.findIndex(m => m.name === t.person);
+    const avColor   = AV_COLORS[memberIdx >= 0 ? memberIdx : 0];
+    const role      = TEAM.find(m => m.name === t.person)?.role || "";
+    const rc        = ROLE_COLOR[role] || ROLE_COLOR.Junior;
+    const pClass    = t.priority === "High" ? "badge-high" : t.priority === "Medium" ? "badge-medium" : "badge-low";
+    const statusCls = t.status === "Done" ? "status-done" : t.status === "In Progress" ? "status-prog" : "status-todo";
+    const notesHtml = t.notes ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
+
+    const dueState = getDueState(t.due_date);
+    let dueBadge = "";
+    if (t.due_date && t.status !== "Done") {
+      const labels = { overdue:"🔴 Overdue", today:"🟡 Due Today", soon:"⏰ Due Soon", normal:"" };
+      if (dueState !== "normal" && labels[dueState]) {
+        dueBadge = `<span class="due-chip ${dueState}">${labels[dueState]}</span>`;
+      } else if (dueState === "normal") {
+        const d = new Date(t.due_date);
+        dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
+      }
+    } else if (t.due_date && t.status === "Done") {
+      const d = new Date(t.due_date);
+      dueBadge = `<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
+    }
+
+    const isOverdue   = dueState === "overdue" && t.status !== "Done";
+    const addedByHtml = t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
+
+    /* FIX 6: Status is editable by assignee or Manager only */
+    const canEdit = (currentUser === t.person || currentUser === MANAGER_NAME);
+    const statusControl = canEdit
+      ? `<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}', this.value)">
+           <option ${t.status==="To Do"?"selected":""}>To Do</option>
+           <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+           <option ${t.status==="Done"?"selected":""}>Done</option>
+         </select>`
+      : `<span class="status-lock-hint">🔒 ${esc(t.status)}</span>`;
+
+    return `
+      <div class="task-card pri-${t.priority} ${isOverdue ? "overdue" : ""}" style="animation-delay:${i*0.03}s">
+        <div class="card-top">
+          <div class="card-name">${esc(t.name)}</div>
+          <div class="card-actions">
+            <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit">
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete">
+              <svg width="13" height="13" fill="none" viewBox="0 0 24 24">
+                <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
           </div>
         </div>
-      `;
-    }).join('');
+        ${notesHtml}
+        <div class="card-meta">
+          <span class="badge ${pClass}">${t.priority}</span>
+          ${effortBadge(t.effort_level)}
+          ${dueBadge}
+        </div>
+        <div class="card-footer">
+          <div class="card-footer-row">
+            <div class="card-assignee">
+              <div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person ? t.person[0] : "?"}</div>
+              <div>
+                <div class="assignee-name">${esc(t.person)}</div>
+                <div class="assignee-role" style="color:${rc.text}">${role}</div>
+              </div>
+            </div>
+            ${statusControl}
+          </div>
+          ${addedByHtml ? `<div class="card-footer-row" style="justify-content:flex-start">${addedByHtml}</div>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function renderSummary() {
+  const grid    = document.getElementById("summary-grid");
+  const maxLoad = Math.max(...TEAM.map(m => tasks.filter(t => t.person === m.name).length), 1);
+
+  grid.innerHTML = TEAM.map((member, i) => {
+    const mine  = tasks.filter(t => t.person === member.name);
+    const total = mine.length;
+    const doneC = mine.filter(t => t.status === "Done").length;
+    const inpC  = mine.filter(t => t.status === "In Progress").length;
+    const todoC = mine.filter(t => t.status === "To Do").length;
+    const highC = mine.filter(t => t.priority === "High" && t.status !== "Done").length;
+    const pct   = total ? Math.round(doneC/total*100) : 0;
+    const barW  = total ? Math.round(total/maxLoad*100) : 0;
+    const color = AV_COLORS[i % AV_COLORS.length];
+    const rc    = ROLE_COLOR[member.role] || ROLE_COLOR.Junior;
+    const loaded= total >= 5;
+    const overdueC = mine.filter(t => {
+      if (!t.due_date || t.status === "Done") return false;
+      const today = new Date(); today.setHours(0,0,0,0);
+      const due   = new Date(t.due_date); due.setHours(0,0,0,0);
+      return due < today;
+    }).length;
+
+    return `
+      <div class="summary-card ${loaded ? "overloaded" : ""}">
+        <div class="sc-header">
+          <div class="sc-person">
+            <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px;border-radius:10px;">${member.name[0]}</div>
+            <div>
+              <div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div>
+              <div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div>
+            </div>
+          </div>
+          <div class="sc-total">
+            <div class="sc-total-num">${total}</div>
+            <div class="sc-total-lbl">tasks</div>
+          </div>
+        </div>
+        <div class="sc-bar-wrap">
+          <div class="sc-bar" style="width:${barW}%;background:${color}"></div>
+        </div>
+        <div class="sc-stats">
+          <div class="sc-stat">
+            <div class="sc-stat-num todo-num">${todoC}</div>
+            <div class="sc-stat-lbl">To Do</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-num prog-num">${inpC}</div>
+            <div class="sc-stat-lbl">In Progress</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-num done-num">${doneC}</div>
+            <div class="sc-stat-lbl">Done</div>
+          </div>
+        </div>
+        <div class="sc-foot">
+          <span style="color:var(--text-3)">${pct}% complete</span>
+          ${highC > 0 ? `<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>` : `<span style="color:var(--green)">✓ No high priority</span>`}
+        </div>
+        ${overdueC > 0 ? `<div class="sc-warn">🔴 ${overdueC} overdue task${overdueC > 1 ? "s" : ""}</div>` : ""}
+        ${loaded ? `<div class="sc-warn" style="background:var(--amber-lt);border-color:var(--amber-bd);color:var(--amber)">⚠ High load — ${total} tasks</div>` : ""}
+      </div>`;
+  }).join("");
+}
+
+/* ─── Tab switching ── */
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById("view-board").style.display   = tab === "board"   ? "block" : "none";
+  document.getElementById("view-summary").style.display = tab === "summary" ? "block" : "none";
+  document.getElementById("filterbar").style.display    = tab === "board"   ? "flex"  : "none";
+  document.getElementById("tab-board").classList.toggle("active",   tab === "board");
+  document.getElementById("tab-summary").classList.toggle("active", tab === "summary");
+  render();
+}
+
+/* ─── Modal ── */
+function openModal() {
+  editingId = null;
+  document.getElementById("modal-title").textContent = "Add New Task";
+  document.getElementById("btn-save").textContent    = "Add Task";
+  document.getElementById("f-name").value       = "";
+  document.getElementById("f-person").value     = TEAM[0].name;
+  document.getElementById("f-priority").value   = "Medium";
+  document.getElementById("f-status").value     = "To Do";
+  document.getElementById("f-effort").value     = "Medium";
+  document.getElementById("f-notes").value      = "";
+  document.getElementById("f-due").value        = "";
+  updateAddedByDisplay();
+  document.getElementById("modal").style.display = "flex";
+  setTimeout(() => document.getElementById("f-name").focus(), 60);
+}
+
+function openEdit(id) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  editingId = id;
+  document.getElementById("modal-title").textContent = "Edit Task";
+  document.getElementById("btn-save").textContent    = "Save Changes";
+  document.getElementById("f-name").value       = t.name;
+  document.getElementById("f-person").value     = t.person;
+  document.getElementById("f-priority").value   = t.priority;
+  document.getElementById("f-status").value     = t.status;
+  document.getElementById("f-effort").value     = t.effort_level || "Medium";
+  document.getElementById("f-notes").value      = t.notes || "";
+  document.getElementById("f-due").value        = t.due_date || "";
+  document.getElementById("added-by-display").textContent = t.added_by || currentUser;
+  document.getElementById("modal").style.display = "flex";
+  setTimeout(() => document.getElementById("f-name").focus(), 60);
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+  editingId = null;
+}
+
+function handleOverlayClick(e) {
+  if (e.target.id === "modal") closeModal();
+}
+
+async function saveTask() {
+  const name = document.getElementById("f-name").value.trim();
+  if (!name) { document.getElementById("f-name").focus(); return; }
+  if (!isConfigured()) { showToast("Configure Supabase first", "error"); return; }
+
+  /* FIX 3: include effort_level in payload */
+  const payload = {
+    name,
+    person:       document.getElementById("f-person").value,
+    priority:     document.getElementById("f-priority").value,
+    status:       document.getElementById("f-status").value,
+    effort_level: document.getElementById("f-effort").value,
+    notes:        document.getElementById("f-notes").value.trim(),
+    due_date:     document.getElementById("f-due").value || null,
+  };
+
+  if (!editingId) payload.added_by = currentUser;
+
+  closeModal();
+  setSyncStatus("syncing", "Saving…");
+
+  if (editingId) {
+    const ok = await updateTaskDB(editingId, payload);
+    if (ok) showToast("Task updated ✓", "success");
+  } else {
+    const ok = await insertTask(payload);
+    if (ok) showToast("Task added ✓", "success");
   }
+}
 
-  async function saveTask() {
-    const newTask = {
-      title: document.getElementById('task-title').value,
-      assignee: document.getElementById('task-assignee').value,
-      priority: document.getElementById('task-priority').value,
-      effort_level: document.getElementById('task-effort').value,
-      due_date: document.getElementById('task-date').value || null,
-      added_by: document.getElementById('user-select').value,
-      status: 'To Do'
-    };
+async function quickStatus(id, status) {
+  if (!isConfigured()) return;
+  await updateTaskDB(id, { status });
+}
 
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/tasks`, {
-      method: 'POST',
-      headers: { 
-        "apikey": SUPABASE_KEY, 
-        "Authorization": `Bearer ${SUPABASE_KEY}`,
-        "Content-Type": "application/json",
-        "Prefer": "return=representation"
-      },
-      body: JSON.stringify(newTask)
-    });
+async function deleteTask(id) {
+  if (!confirm("Delete this task?")) return;
+  if (!isConfigured()) return;
+  const ok = await deleteTaskDB(id);
+  if (ok) showToast("Task deleted", "success");
+}
 
-    if (res.ok) {
-      hideModal();
-      fetchTasks();
-      alert("Task added successfully!");
-    } else {
-      const err = await res.json();
-      alert("Error: " + err.message);
-    }
-  }
+/* ─── Sync Status ── */
+function setSyncStatus(state, msg) {
+  const dot   = document.getElementById("sync-dot");
+  const label = document.getElementById("sync-label");
+  dot.className   = "sync-dot" + (state === "syncing" ? " syncing" : state === "error" ? " error" : "");
+  label.textContent = msg;
+}
 
-  function switchView(view) {
-    document.getElementById('cards-grid').style.display = view === 'board' ? 'grid' : 'none';
-    document.getElementById('summary-grid').style.display = view === 'summary' ? 'grid' : 'none';
-    document.getElementById('view-title').innerText = view === 'board' ? 'Task Board' : 'Team Summary';
-  }
+/* ─── Toast ── */
+function showToast(msg, type = "") {
+  const c  = document.getElementById("toast");
+  const el = document.createElement("div");
+  el.className = "toast-item " + type;
+  el.innerHTML = `<span>${esc(msg)}</span>`;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
 
-  function showModal() { document.getElementById('task-modal').style.display = 'flex'; }
-  function hideModal() { document.getElementById('task-modal').style.display = 'none'; }
+/* ─── Utils ── */
+function esc(s) {
+  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ─── Keyboard shortcuts ── */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+  if (e.key === "n" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) openModal();
+});
+
+/* ─── Start ── */
+init();
 </script>
 
+<!--
+═══════════════════════════════════════════════════════════════════════════
+  SUPABASE TABLE — Run this SQL once in SQL Editor → New query → Run
+═══════════════════════════════════════════════════════════════════════════
+
+-- Fresh table (run if starting from scratch):
+create table if not exists tasks (
+  id           uuid primary key default gen_random_uuid(),
+  name         text not null,
+  person       text not null,
+  added_by     text default '',
+  priority     text not null default 'Medium',
+  status       text not null default 'To Do',
+  effort_level text not null default 'Medium',
+  notes        text default '',
+  due_date     date default null,
+  created_at   timestamptz default now()
+);
+
+alter table tasks enable row level security;
+create policy "Team open access" on tasks for all using (true) with check (true);
+
+-- If your table already exists, add only the new column:
+-- alter table tasks add column if not exists effort_level text not null default 'Medium';
+
+═══════════════════════════════════════════════════════════════════════════
+-->
 </body>
 </html>
