@@ -29,7 +29,6 @@
       "divyavemula1217@gmail.com":                  "Divya",
       "hemakesani3@gmail.com":                      "Hema",
     };
-    /* Reverse map: name → email (used to store assigned_to_email) */
     const NAME_TO_EMAIL = {
       "Umesh":    "support@sharvii.com",
       "Prabhu":   "prabhu.channappagol@sharvii.com",
@@ -41,7 +40,6 @@
     };
   </script>
 
-  <!-- Supabase JS v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -97,7 +95,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
 
-    /* LOGIN SHIELD */
+    /* LOGIN SHIELD — light theme matching dashboard */
     #login-shield {
       position: fixed; inset: 0; z-index: 9999;
       background: var(--bg);
@@ -169,7 +167,11 @@
     .login-resend:hover { color: var(--indigo); }
     .login-divider { height: 1px; background: var(--border); margin: 22px 0; }
     .login-footer { text-align: center; font-size: 11px; color: var(--text-3); margin-top: 18px; }
-    .spin { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+
+    /* Spinner — light bg version */
+    .spin { width: 16px; height: 16px; border: 2px solid var(--border-md); border-top-color: var(--indigo); border-radius: 50%; animation: spin .7s linear infinite; }
+    /* White spinner variant for inside colored buttons */
+    .spin-white { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to{ transform: rotate(360deg); } }
 
     /* SESSION CHECK */
@@ -177,7 +179,7 @@
       position: fixed; inset: 0; z-index: 10000; background: var(--bg);
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
     }
-    #session-check .spin { width: 28px; height: 28px; border-width: 3px; border-color: var(--border-md); border-top-color: var(--indigo); }
+    #session-check .spin { width: 28px; height: 28px; border-width: 3px; }
     #session-check p { font-size: 12px; color: var(--text-3); font-family: 'DM Sans', sans-serif; }
 
     /* MAIN APP */
@@ -265,7 +267,6 @@
     .task-card.overdue { border-color: var(--red-bd); }
     .task-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
     .card-name { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; flex: 1; }
     .card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s; flex-shrink: 0; }
@@ -298,10 +299,11 @@
     .due-chip.soon    { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
     .due-chip.normal  { background: var(--bg);        color: var(--text-3); border-color: var(--border); }
 
-    /* Role badge on card */
+    /* Role pill on card */
     .role-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; border-radius: 99px; padding: 2px 7px; border: 1px solid; text-transform: uppercase; letter-spacing: .05em; }
     .role-pill.creator  { background: var(--indigo-lt); color: var(--indigo); border-color: var(--indigo-bd); }
     .role-pill.assignee { background: var(--teal-lt);   color: var(--teal);   border-color: var(--teal-bd); }
+    .role-pill.both     { background: var(--violet); color: #fff; border-color: var(--violet); }
 
     #empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 80px 20px; color: var(--text-3); text-align: center; }
     #empty-state p { font-size: 13px; line-height: 1.6; }
@@ -339,7 +341,7 @@
     .form-label .req { color: var(--red); margin-left: 2px; }
     .form-input, .form-select, .form-textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text); outline: none; transition: border-color .12s, background .12s; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(67,97,238,.12); background: #fff; }
-    .form-input.field-error, .form-select.field-error, .form-textarea.field-error { border-color: var(--red) !important; background: var(--red-lt) !important; box-shadow: 0 0 0 3px rgba(220,38,38,.10) !important; }
+    .form-input.field-error, .form-select.field-error { border-color: var(--red) !important; background: var(--red-lt) !important; box-shadow: 0 0 0 3px rgba(220,38,38,.10) !important; }
     .form-field-msg { font-size: 11px; color: var(--red); margin-top: 5px; display: none; align-items: center; gap: 5px; font-weight: 500; }
     .form-field-msg.visible { display: flex; }
     .form-textarea { resize: none; line-height: 1.5; }
@@ -436,17 +438,19 @@
       <div class="login-sub">We sent a sign-in code to <strong id="otp-email-display" style="color:var(--indigo)"></strong></div>
       <div class="login-otp-info">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Enter the 8-digit code from the email, or click the magic link directly.
+        Enter the 6–8 digit code from the email, or click the magic link directly.
       </div>
       <label class="login-label" for="login-otp-input">Sign-in Code</label>
-      <input class="login-input" id="login-otp-input" type="text" inputmode="numeric" placeholder="· · · · · · · ·" maxlength="8" autocomplete="one-time-code" style="font-size:20px;letter-spacing:.3em;text-align:center;font-family:'Syne',sans-serif;color:var(--indigo);font-weight:700;" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter') verifyOTP()"/>
+      <input class="login-input" id="login-otp-input" type="text" inputmode="numeric" placeholder="· · · · · · · ·" maxlength="8" autocomplete="one-time-code"
+        style="font-size:20px;letter-spacing:.3em;text-align:center;font-family:'Syne',sans-serif;color:var(--indigo);font-weight:700;"
+        oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter') verifyOTP()"/>
       <div class="login-error" id="otp-error">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span id="otp-error-msg">Invalid or expired code. Please try again.</span>
       </div>
       <button class="login-btn" id="otp-verify-btn" onclick="verifyOTP()">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Verify & Sign In
+        Verify &amp; Sign In
       </button>
       <button class="login-resend" onclick="backToEmail()">← Use a different email</button>
       <div class="login-footer" style="margin-top:8px;">Code expires in 10 minutes · Check spam if not received</div>
@@ -518,10 +522,7 @@
   <div id="main">
     <div id="topbar">
       <div class="topbar-left">
-        <div>
-          <div id="page-title">Task Board</div>
-          <div id="page-sub">Showing all tasks</div>
-        </div>
+        <div><div id="page-title">Task Board</div><div id="page-sub">Showing all tasks</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <div class="tabs">
@@ -588,7 +589,7 @@
 
 <div id="toast"></div>
 
-<!-- MODAL: Assign / Edit Task (NO project field) -->
+<!-- MODAL: Assign / Edit Task -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -601,7 +602,7 @@
       </button>
     </div>
 
-    <!-- Hidden field: stores the task UUID when editing. NEVER cleared until modal closes. -->
+    <!-- ══ FIX 3: Single source of truth for editing. Never wiped mid-session. ══ -->
     <input type="hidden" id="f-task-id" value=""/>
 
     <!-- Validation Banner -->
@@ -610,7 +611,6 @@
       <span id="modal-val-msg">Client and Task Title are required.</span>
     </div>
 
-    <!-- Task Title (required) -->
     <div class="form-group">
       <label class="form-label">Task Title <span class="req">*</span></label>
       <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS"/>
@@ -631,7 +631,6 @@
       </div>
     </div>
 
-    <!-- Client (required) + Priority -->
     <div class="form-row" style="margin-top:14px;">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Client <span class="req">*</span></label>
@@ -720,13 +719,13 @@
 
 <!-- JAVASCRIPT -->
 <script>
-/* ─── Supabase client ─── */
+/* ══ Supabase client ══ */
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, storageKey: "sharvii_auth" }
 });
 
-/* ─── Team & Client Config ─── */
+/* ══ Team & Client Config ══ */
 const TEAM = [
   { name: "Umesh",    role: "Manager" },
   { name: "Prabhu",   role: "Senior"  },
@@ -739,144 +738,110 @@ const TEAM = [
 const MANAGER_NAME = "Umesh";
 const CLIENTS      = ["YFS", "NAIK COLLEGE", "PFA", "SEVA IN ACTION", "Internal"];
 const CLIENT_SYNC  = {
-  "YFS":           "2025-04-18",
-  "NAIK COLLEGE":  "2025-04-21",
-  "PFA":           "2025-04-17",
-  "SEVA IN ACTION":"2025-04-22",
-  "Internal":      "2025-04-14",
+  "YFS":"2025-04-18", "NAIK COLLEGE":"2025-04-21",
+  "PFA":"2025-04-17", "SEVA IN ACTION":"2025-04-22", "Internal":"2025-04-14",
 };
 const ROLE_COLOR = {
-  Manager: { bg: "#fef3c7", text: "#d97706" },
-  Senior:  { bg: "#eef1fd", text: "#4361ee" },
-  Junior:  { bg: "#f0fdf4", text: "#059669" },
+  Manager:{ bg:"#fef3c7", text:"#d97706" },
+  Senior: { bg:"#eef1fd", text:"#4361ee" },
+  Junior: { bg:"#f0fdf4", text:"#059669" },
 };
 const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
 
-/* ─── localStorage config ─── */
+/* ══ localStorage config ══ */
 const CONFIG_KEY = "sharvii_config";
-function loadConfig() {
-  try { const r=localStorage.getItem(CONFIG_KEY); return r?JSON.parse(r):{extraTeam:[],extraClients:[]}; }
-  catch(e) { return {extraTeam:[],extraClients:[]}; }
-}
-function saveConfig(cfg) { localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); }
-function applyConfig() {
-  const cfg = loadConfig();
-  (cfg.extraTeam||[]).forEach(m => { if(!TEAM.find(x=>x.name===m.name)) TEAM.push(m); });
-  (cfg.extraClients||[]).forEach(c => { if(!CLIENTS.includes(c)) CLIENTS.push(c); });
+function loadConfig(){try{const r=localStorage.getItem(CONFIG_KEY);return r?JSON.parse(r):{extraTeam:[],extraClients:[]};}catch(e){return{extraTeam:[],extraClients:[]};}}
+function saveConfig(cfg){localStorage.setItem(CONFIG_KEY,JSON.stringify(cfg));}
+function applyConfig(){
+  const cfg=loadConfig();
+  (cfg.extraTeam||[]).forEach(m=>{if(!TEAM.find(x=>x.name===m.name))TEAM.push(m);});
+  (cfg.extraClients||[]).forEach(c=>{if(!CLIENTS.includes(c))CLIENTS.push(c);});
 }
 
-/* ─── App state ─── */
-let tasks=[], editingId=null, activeTab="board", filterPerson="", filterPriority="",
-    filterStatus="", filterSearch="", filterDue="", activeClient=null,
-    pollTimer=null, lastTaskIds=new Set(), notifications=[];
-let currentUser="", currentUserEmail="", currentUserId="";
+/* ══ App state ══ */
+let tasks=[],activeTab="board",filterPerson="",filterPriority="",
+    filterStatus="",filterSearch="",filterDue="",activeClient=null,
+    pollTimer=null,lastTaskIds=new Set(),notifications=[];
+let currentUser="",currentUserEmail="",currentUserId="";
 
-const REST = `${SUPABASE_URL}/rest/v1`;
+/* ══════════════════════════════════════════════════════════════════════
+   DB HELPERS — use Supabase JS client only (no raw fetch).
 
-/* ─── Auth headers ─── */
-async function getHeaders() {
-  const { data: { session } } = await sb.auth.getSession();
-  const token = session?.access_token || SUPABASE_KEY;
-  return {
-    "Content-Type":  "application/json",
-    "apikey":        SUPABASE_KEY,
-    "Authorization": `Bearer ${token}`,
+   FIX 2: Every update/insert payload is hand-written to contain ONLY
+   the exact columns that exist in the tasks table.
+   "creator_user_id", "project", "project_name" are NEVER sent anywhere.
+══════════════════════════════════════════════════════════════════════ */
+async function dbSelect(){
+  const{data,error}=await sb.from("tasks").select("*").order("created_at",{ascending:false});
+  if(error)throw new Error(error.message);
+  return data;
+}
+
+async function dbInsert(payload){
+  /* Only permitted insert columns — nothing else */
+  const safe={
+    name:              payload.name,
+    person:            payload.person,
+    assigned_to_email: payload.assigned_to_email||"",
+    priority:          payload.priority,
+    client:            payload.client,
+    notes:             payload.notes||"",
+    due_date:          payload.due_date||null,
+    status:            payload.status||"To Do",
+    hours_worked:      payload.hours_worked||0,
+    added_by:          payload.added_by||"",
+    user_id:           payload.user_id||null,
   };
+  const{data,error}=await sb.from("tasks").insert(safe).select();
+  if(error)throw new Error(`${error.message}${error.details?" — "+error.details:""} (${error.code})`);
+  return data;
 }
 
-/* ─── DB helpers — use the Supabase JS client exclusively ──────────────────
-   This avoids raw-fetch quirks (query-string filter escaping, Prefer headers)
-   and means update() reliably targets the exact row by UUID.              */
-async function dbSelect() {
-  const { data, error } = await sb.from("tasks").select("*").order("created_at", { ascending: false });
-  if(error) throw new Error(error.message);
-  return data;
-}
-async function dbInsert(payload) {
-  // Strip any undefined/null fields that could hit missing-column errors
-  const clean = stripUnknownFields(payload);
-  const { data, error } = await sb.from("tasks").insert(clean).select();
-  if(error) throw new Error(error.message);
-  return data;
-}
-async function dbUpdate(id, payload) {
-  if(!id || id === "null" || id === "undefined") {
-    showToast("Error: invalid task ID — cannot update","error"); return false;
+/* FIX 2: dbUpdate never sends banned fields.
+   It accepts only an explicit payload — no spread of unknown objects. */
+async function dbUpdate(id, payload){
+  if(!id||id==="null"||id==="undefined"){
+    showToast("Error: invalid task ID — cannot update","error");
+    return false;
   }
-  const clean = stripUnknownFields(payload);
-  // Log the exact payload sent so any remaining column issues are visible in console
-  console.debug("[dbUpdate] id:", id, "payload:", clean);
-  const { error } = await sb.from("tasks").update(clean).eq("id", id);
-  if(error){
-    // Include the Supabase error detail so PGRST204 column name is visible
-    const detail = error.details ? ` — ${error.details}` : "";
-    throw new Error(`${error.message}${detail} (code: ${error.code})`);
-  }
-  return true;
-}
-async function dbDelete(id) {
-  const { error } = await sb.from("tasks").delete().eq("id", id);
-  if(error) throw new Error(error.message);
+  /* Log so any future column issue is immediately visible in console */
+  console.debug("[dbUpdate] id:", id, "| cols:", Object.keys(payload));
+  const{error}=await sb.from("tasks").update(payload).eq("id",id);
+  if(error)throw new Error(`${error.message}${error.details?" — "+error.details:""} (${error.code})`);
   return true;
 }
 
-/**
- * Remove any fields that are known NOT to exist in the database.
- * This is the definitive guard against PGRST204 schema errors.
- *
- * BANNED_COLS must include:
- *   - "project" / "project_name"  → columns that were never created
- *   - "creator_user_id"           → old name; renamed to "user_id" in schema
- *
- * stripUnknownFields() is called on EVERY insert and update payload,
- * so even if a legacy reference slips through anywhere in the code,
- * it will be stripped before it reaches Supabase.
- */
-const BANNED_COLS = ["project", "project_name", "creator_user_id"];
-function stripUnknownFields(obj) {
-  const clean = { ...obj };
-  BANNED_COLS.forEach(col => delete clean[col]);
-  return clean;
+async function dbDelete(id){
+  const{error}=await sb.from("tasks").delete().eq("id",id);
+  if(error)throw new Error(error.message);
+  return true;
 }
 
-/* ══════════════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════════════ */
-function nameFromEmail(email) {
-  const lower = email.toLowerCase();
-  if(EMAIL_TO_NAME[lower]) return EMAIL_TO_NAME[lower];
-  const local = email.split("@")[0];
-  return local.charAt(0).toUpperCase()+local.slice(1);
+/* ══ AUTH ══ */
+function nameFromEmail(email){
+  const l=email.toLowerCase();
+  if(EMAIL_TO_NAME[l])return EMAIL_TO_NAME[l];
+  const loc=email.split("@")[0];return loc.charAt(0).toUpperCase()+loc.slice(1);
 }
-function isEmailAllowed(email) {
-  const lower = email.toLowerCase();
-  if(ALLOWED_EMAILS.map(e=>e.toLowerCase()).includes(lower)) return true;
-  if(ALLOWED_DOMAIN && lower.endsWith(ALLOWED_DOMAIN.toLowerCase())) return true;
+function isEmailAllowed(email){
+  const l=email.toLowerCase();
+  if(ALLOWED_EMAILS.map(e=>e.toLowerCase()).includes(l))return true;
+  if(ALLOWED_DOMAIN&&l.endsWith(ALLOWED_DOMAIN.toLowerCase()))return true;
   return false;
 }
 
-async function sendOTP() {
+async function sendOTP(){
   const btn=document.getElementById("login-send-btn");
   const email=document.getElementById("login-email-input").value.trim().toLowerCase();
-  const errEl=document.getElementById("login-error");
-  const errMsg=document.getElementById("login-error-msg");
+  const errEl=document.getElementById("login-error"),errMsg=document.getElementById("login-error-msg");
   errEl.classList.remove("visible");
-  if(!email||!email.includes("@")){
-    errMsg.textContent="Please enter a valid email address.";
-    errEl.classList.add("visible"); return;
-  }
-  if(!isEmailAllowed(email)){
-    errMsg.textContent="This email is not authorised to access the workspace. Contact your admin.";
-    errEl.classList.add("visible"); return;
-  }
-  btn.disabled=true;
-  btn.innerHTML=`<div class="spin"></div> Sending…`;
-  const {error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
+  if(!email||!email.includes("@")){errMsg.textContent="Please enter a valid email address.";errEl.classList.add("visible");return;}
+  if(!isEmailAllowed(email)){errMsg.textContent="This email is not authorised to access the workspace. Contact your admin.";errEl.classList.add("visible");return;}
+  btn.disabled=true;btn.innerHTML=`<div class="spin-white"></div> Sending…`;
+  const{error}=await sb.auth.signInWithOtp({email,options:{shouldCreateUser:false}});
   if(error){
-    btn.disabled=false;
-    btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send Sign-in Link`;
-    errMsg.textContent=error.message||"Failed to send email. Try again.";
-    errEl.classList.add("visible"); return;
+    btn.disabled=false;btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send Sign-in Link`;
+    errMsg.textContent=error.message||"Failed to send email. Try again.";errEl.classList.add("visible");return;
   }
   document.getElementById("otp-email-display").textContent=email;
   document.getElementById("login-step-email").style.display="none";
@@ -884,524 +849,310 @@ async function sendOTP() {
   setTimeout(()=>document.getElementById("login-otp-input").focus(),80);
 }
 
-async function verifyOTP() {
+async function verifyOTP(){
   const btn=document.getElementById("otp-verify-btn");
   const email=document.getElementById("login-email-input").value.trim().toLowerCase();
   const token=document.getElementById("login-otp-input").value.trim();
-  const errEl=document.getElementById("otp-error");
-  const errMsg=document.getElementById("otp-error-msg");
+  const errEl=document.getElementById("otp-error"),errMsg=document.getElementById("otp-error-msg");
   errEl.classList.remove("visible");
-  if(token.length < 6){
-    errMsg.textContent="Please enter the full code (6–8 digits).";
-    errEl.classList.add("visible"); return;
-  }
-  btn.disabled=true;
-  btn.innerHTML=`<div class="spin"></div> Verifying…`;
-  const {data,error}=await sb.auth.verifyOtp({email,token,type:"email"});
+  if(token.length<6){errMsg.textContent="Please enter the full code (6–8 digits).";errEl.classList.add("visible");return;}
+  btn.disabled=true;btn.innerHTML=`<div class="spin-white"></div> Verifying…`;
+  const{data,error}=await sb.auth.verifyOtp({email,token,type:"email"});
   if(error||!data.session){
-    btn.disabled=false;
-    btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Verify & Sign In`;
+    btn.disabled=false;btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Verify &amp; Sign In`;
     errMsg.textContent=error?.message||"Invalid or expired code. Try requesting a new one.";
-    errEl.classList.add("visible"); return;
+    errEl.classList.add("visible");return;
   }
 }
 
-function backToEmail() {
+function backToEmail(){
   document.getElementById("login-step-otp").style.display="none";
   document.getElementById("login-step-email").style.display="block";
   document.getElementById("login-otp-input").value="";
   document.getElementById("otp-error").classList.remove("visible");
-  const btn=document.getElementById("login-send-btn");
-  btn.disabled=false;
+  const btn=document.getElementById("login-send-btn");btn.disabled=false;
   btn.innerHTML=`<svg width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Send Sign-in Link`;
 }
 
-async function signOut() {
-  if(!confirm("Sign out of Sharvii Task Manager?")) return;
-  if(pollTimer) clearInterval(pollTimer);
+async function signOut(){
+  if(!confirm("Sign out of Sharvii Task Manager?"))return;
+  if(pollTimer)clearInterval(pollTimer);
   await sb.auth.signOut();
 }
 
-function bootApp(session) {
-  currentUserEmail = session.user.email;
-  currentUserId    = session.user.id;          // Supabase auth UUID
-  currentUser      = nameFromEmail(currentUserEmail);
-
-  document.getElementById("auth-avatar").textContent = currentUser[0]||"?";
-  document.getElementById("auth-display-name").textContent = currentUser;
-  document.getElementById("auth-display-email").textContent = currentUserEmail;
-  document.getElementById("added-by-display").textContent = currentUser;
-  document.getElementById("session-check").style.display = "none";
-  document.getElementById("login-shield").style.display  = "none";
-  document.getElementById("app").style.display           = "flex";
-  applyConfig();
-  buildSidebar();
-  buildClientSidebar();
-  buildPersonDropdown();
-  checkSetup();
-  requestNotifPermission();
-  if(isConfigured()){ loadTasks(); startPolling(); }
+function bootApp(session){
+  currentUserEmail=session.user.email;
+  currentUserId   =session.user.id;
+  currentUser     =nameFromEmail(currentUserEmail);
+  document.getElementById("auth-avatar").textContent=currentUser[0]||"?";
+  document.getElementById("auth-display-name").textContent=currentUser;
+  document.getElementById("auth-display-email").textContent=currentUserEmail;
+  document.getElementById("added-by-display").textContent=currentUser;
+  document.getElementById("session-check").style.display="none";
+  document.getElementById("login-shield").style.display="none";
+  document.getElementById("app").style.display="flex";
+  applyConfig();buildSidebar();buildClientSidebar();buildPersonDropdown();
+  checkSetup();requestNotifPermission();
+  if(isConfigured()){loadTasks();startPolling();}
 }
 
-sb.auth.onAuthStateChange((event, session) => {
-  document.getElementById("session-check").style.display = "none";
-  if(session && session.user){
-    if(!isEmailAllowed(session.user.email)){
-      sb.auth.signOut();
-      showLoginShield("Access denied: your email is not on the approved list.");
-      return;
-    }
+sb.auth.onAuthStateChange((event,session)=>{
+  document.getElementById("session-check").style.display="none";
+  if(session&&session.user){
+    if(!isEmailAllowed(session.user.email)){sb.auth.signOut();showLoginShield("Access denied: email not on approved list.");return;}
     bootApp(session);
-  } else {
-    document.getElementById("app").style.display = "none";
-    showLoginShield();
-  }
+  } else {document.getElementById("app").style.display="none";showLoginShield();}
 });
 
-function showLoginShield(errorMessage) {
-  document.getElementById("login-shield").style.display = "flex";
-  document.getElementById("app").style.display = "none";
-  if(pollTimer) clearInterval(pollTimer);
-  document.getElementById("login-step-email").style.display = "block";
-  document.getElementById("login-step-otp").style.display   = "none";
-  document.getElementById("login-email-input").value = "";
-  document.getElementById("login-otp-input").value   = "";
-  if(errorMessage){
-    document.getElementById("login-error-msg").textContent = errorMessage;
-    document.getElementById("login-error").classList.add("visible");
-  } else {
-    document.getElementById("login-error").classList.remove("visible");
-  }
+function showLoginShield(msg){
+  document.getElementById("login-shield").style.display="flex";
+  document.getElementById("app").style.display="none";
+  if(pollTimer)clearInterval(pollTimer);
+  document.getElementById("login-step-email").style.display="block";
+  document.getElementById("login-step-otp").style.display="none";
+  document.getElementById("login-email-input").value="";
+  document.getElementById("login-otp-input").value="";
+  if(msg){document.getElementById("login-error-msg").textContent=msg;document.getElementById("login-error").classList.add("visible");}
+  else document.getElementById("login-error").classList.remove("visible");
 }
 
-function isConfigured() {
-  return SUPABASE_URL !== "YOUR_SUPABASE_URL" && SUPABASE_KEY !== "YOUR_SUPABASE_ANON_KEY";
-}
-function checkSetup() {
-  document.getElementById("setup-banner").style.display = isConfigured() ? "none" : "block";
-  if(!isConfigured()) setSyncStatus("error", "Not connected");
-}
+function isConfigured(){return SUPABASE_URL!=="YOUR_SUPABASE_URL"&&SUPABASE_KEY!=="YOUR_SUPABASE_ANON_KEY";}
+function checkSetup(){document.getElementById("setup-banner").style.display=isConfigured()?"none":"block";if(!isConfigured())setSyncStatus("error","Not connected");}
 
-/* ─── Polling ─── */
-function startPolling() {
-  if(pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(async () => {
-    try {
-      const fresh = await dbSelect();
-      fresh.forEach(t => {
-        // Notify: a new task assigned to me (by someone else), matched via assigned_to_email or person name
-        const isForMe = (t.assigned_to_email && t.assigned_to_email === currentUserEmail) ||
-                        (!t.assigned_to_email && t.person === currentUser);
-        if(!lastTaskIds.has(t.id) && isForMe && t.user_id !== currentUserId){
-          const msg = `📋 ${t.added_by||"Someone"} assigned you: "${t.name}"`;
-          pushNotification(msg, t.id);
-          showToast(`New task assigned by ${t.added_by||"a teammate"}!`, "info");
-          playNotifSound(); fireBrowserNotif("New task assigned", msg);
+/* ══ Polling ══ */
+function startPolling(){
+  if(pollTimer)clearInterval(pollTimer);
+  pollTimer=setInterval(async()=>{
+    try{
+      const fresh=await dbSelect();
+      fresh.forEach(t=>{
+        const isForMe=(t.assigned_to_email&&t.assigned_to_email===currentUserEmail)||
+                      (!t.assigned_to_email&&t.person===currentUser);
+        if(!lastTaskIds.has(t.id)&&isForMe&&t.user_id!==currentUserId){
+          const msg=`📋 ${t.added_by||"Someone"} assigned you: "${t.name}"`;
+          pushNotification(msg,t.id);showToast(`New task assigned by ${t.added_by||"a teammate"}!`,"info");
+          playNotifSound();fireBrowserNotif("New task assigned",msg);
         }
       });
-      lastTaskIds = new Set(fresh.map(t=>t.id));
-      tasks = fresh; render();
-      setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
-    } catch(e){ setSyncStatus("error","Sync error — retrying…"); }
-  }, 8000);
+      lastTaskIds=new Set(fresh.map(t=>t.id));tasks=fresh;render();
+      setSyncStatus("ok",`Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
+    }catch(e){setSyncStatus("error","Sync error — retrying…");}
+  },8000);
 }
 
-async function loadTasks() {
+async function loadTasks(){
   setSyncStatus("syncing","Loading tasks…");
-  try {
-    const data = await dbSelect();
-    lastTaskIds = new Set(data.map(t=>t.id));
-    tasks = data; render();
-    setSyncStatus("ok", `Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);
-  } catch(e){
-    setSyncStatus("error","Load failed: "+e.message);
-    showToast("Load failed: "+e.message,"error");
-  }
+  try{const d=await dbSelect();lastTaskIds=new Set(d.map(t=>t.id));tasks=d;render();setSyncStatus("ok",`Synced · ${tasks.length} task${tasks.length!==1?"s":""}`);}
+  catch(e){setSyncStatus("error","Load failed: "+e.message);showToast("Load failed: "+e.message,"error");}
 }
-async function insertTask(payload){
-  try{ await dbInsert(payload); await loadTasks(); return true; }
-  catch(e){ showToast("Failed to add task: "+e.message,"error"); setSyncStatus("error","Save failed"); return false; }
-}
-async function updateTaskDB(id, payload){
-  try{ await dbUpdate(id, payload); await loadTasks(); return true; }
-  catch(e){ showToast("Failed to update: "+e.message,"error"); setSyncStatus("error","Update failed"); return false; }
-}
-async function deleteTaskDB(id){
-  try{ await dbDelete(id); await loadTasks(); return true; }
-  catch(e){ showToast("Failed to delete: "+e.message,"error"); return false; }
-}
+async function insertTask(p){try{await dbInsert(p);await loadTasks();return true;}catch(e){showToast("Failed to add task: "+e.message,"error");setSyncStatus("error","Save failed");return false;}}
+async function updateTaskDB(id,p){try{await dbUpdate(id,p);await loadTasks();return true;}catch(e){showToast("Failed to update: "+e.message,"error");setSyncStatus("error","Update failed");return false;}}
+async function deleteTaskDB(id){try{await dbDelete(id);await loadTasks();return true;}catch(e){showToast("Failed to delete: "+e.message,"error");return false;}}
 
-/* ─── Notifications ─── */
-function requestNotifPermission(){ if("Notification" in window && Notification.permission==="default") Notification.requestPermission(); }
-function fireBrowserNotif(t,b){ if("Notification" in window && Notification.permission==="granted") new Notification(t,{body:b}); }
-function playNotifSound(){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination); osc.type="sine";
-    osc.frequency.setValueAtTime(880,ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(440,ctx.currentTime+.3);
-    gain.gain.setValueAtTime(.18,ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);
-    osc.start(ctx.currentTime); osc.stop(ctx.currentTime+.4);
-  }catch(e){}
-}
-function pushNotification(msg, taskId){
-  notifications.unshift({id:Date.now()+Math.random(),msg,time:new Date(),unread:true,taskId});
-  renderNotifPanel(); updateNotifDot();
-}
-function renderNotifPanel(){
-  const list = document.getElementById("notif-list");
-  if(!notifications.length){ list.innerHTML=`<div class="notif-empty">No notifications yet</div>`; return; }
-  list.innerHTML = notifications.slice(0,30).map(n=>`
-    <div class="notif-item ${n.unread?"unread":""}">
-      <div class="notif-msg">${esc(n.msg)}</div>
-      <div class="notif-time">${timeAgo(n.time)}</div>
-    </div>`).join("");
-}
-function updateNotifDot(){ document.getElementById("notif-dot").classList.toggle("visible", notifications.some(n=>n.unread)); }
-function toggleNotifPanel(){ document.getElementById("notif-panel").classList.toggle("open"); }
-function clearNotifications(){ notifications.forEach(n=>n.unread=false); renderNotifPanel(); updateNotifDot(); }
-document.addEventListener("click", e => {
-  const panel=document.getElementById("notif-panel"), btn=document.getElementById("notif-btn");
-  if(panel.classList.contains("open") && !panel.contains(e.target) && !btn.contains(e.target)) panel.classList.remove("open");
-});
-function timeAgo(date){
-  const d = Math.floor((Date.now()-new Date(date))/1000);
-  if(d<60) return "just now"; if(d<3600) return Math.floor(d/60)+"m ago";
-  if(d<86400) return Math.floor(d/3600)+"h ago"; return Math.floor(d/86400)+"d ago";
-}
+/* ══ Notifications ══ */
+function requestNotifPermission(){if("Notification"in window&&Notification.permission==="default")Notification.requestPermission();}
+function fireBrowserNotif(t,b){if("Notification"in window&&Notification.permission==="granted")new Notification(t,{body:b});}
+function playNotifSound(){try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type="sine";o.frequency.setValueAtTime(880,c.currentTime);o.frequency.exponentialRampToValueAtTime(440,c.currentTime+.3);g.gain.setValueAtTime(.18,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.4);o.start(c.currentTime);o.stop(c.currentTime+.4);}catch(e){}}
+function pushNotification(msg,tid){notifications.unshift({id:Date.now()+Math.random(),msg,time:new Date(),unread:true,tid});renderNotifPanel();updateNotifDot();}
+function renderNotifPanel(){const l=document.getElementById("notif-list");if(!notifications.length){l.innerHTML=`<div class="notif-empty">No notifications yet</div>`;return;}l.innerHTML=notifications.slice(0,30).map(n=>`<div class="notif-item ${n.unread?"unread":""}"><div class="notif-msg">${esc(n.msg)}</div><div class="notif-time">${timeAgo(n.time)}</div></div>`).join("");}
+function updateNotifDot(){document.getElementById("notif-dot").classList.toggle("visible",notifications.some(n=>n.unread));}
+function toggleNotifPanel(){document.getElementById("notif-panel").classList.toggle("open");}
+function clearNotifications(){notifications.forEach(n=>n.unread=false);renderNotifPanel();updateNotifDot();}
+document.addEventListener("click",e=>{const p=document.getElementById("notif-panel"),b=document.getElementById("notif-btn");if(p.classList.contains("open")&&!p.contains(e.target)&&!b.contains(e.target))p.classList.remove("open");});
+function timeAgo(d){const s=Math.floor((Date.now()-new Date(d))/1000);if(s<60)return"just now";if(s<3600)return Math.floor(s/60)+"m ago";if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago";}
 
-/* ─── Build UI ─── */
+/* ══ Build UI ══ */
 function addTeamMember(){
-  const name = prompt("Enter new team member name:"); if(!name||!name.trim()) return;
-  const role = prompt("Role (Manager / Senior / Junior):","Junior")||"Junior";
-  const member = { name: name.trim(), role: role.trim() };
-  if(TEAM.find(m=>m.name===member.name)){ alert(`"${member.name}" already in team.`); return; }
-  TEAM.push(member);
-  const cfg = loadConfig(); cfg.extraTeam=cfg.extraTeam||[]; cfg.extraTeam.push(member); saveConfig(cfg);
-  buildSidebar(); buildPersonDropdown(); renderCounts(); showToast(`${member.name} added ✓`,"success");
+  const n=prompt("Enter new team member name:");if(!n||!n.trim())return;
+  const r=prompt("Role (Manager / Senior / Junior):","Junior")||"Junior";
+  const m={name:n.trim(),role:r.trim()};
+  if(TEAM.find(x=>x.name===m.name)){alert(`"${m.name}" already in team.`);return;}
+  TEAM.push(m);const cfg=loadConfig();cfg.extraTeam=cfg.extraTeam||[];cfg.extraTeam.push(m);saveConfig(cfg);
+  buildSidebar();buildPersonDropdown();renderCounts();showToast(`${m.name} added ✓`,"success");
 }
 function addClient(){
-  const name = prompt("Enter new client name:"); if(!name||!name.trim()) return;
-  const cname = name.trim().toUpperCase();
-  if(CLIENTS.includes(cname)){ alert(`"${cname}" already exists.`); return; }
-  CLIENTS.push(cname);
-  const cfg = loadConfig(); cfg.extraClients=cfg.extraClients||[]; cfg.extraClients.push(cname); saveConfig(cfg);
+  const n=prompt("Enter new client name:");if(!n||!n.trim())return;
+  const cn=n.trim().toUpperCase();if(CLIENTS.includes(cn)){alert(`"${cn}" already exists.`);return;}
+  CLIENTS.push(cn);const cfg=loadConfig();cfg.extraClients=cfg.extraClients||[];cfg.extraClients.push(cn);saveConfig(cfg);
   buildClientSidebar();
-  const opt=document.createElement("option"); opt.value=cname; opt.textContent=cname;
+  const opt=document.createElement("option");opt.value=cn;opt.textContent=cn;
   document.getElementById("f-client").appendChild(opt);
-  renderCounts(); showToast(`${cname} added ✓`,"success");
+  renderCounts();showToast(`${cn} added ✓`,"success");
 }
 function buildSidebar(){
-  document.getElementById("member-list").innerHTML = TEAM.map((m,i) => {
-    const c=AV_COLORS[i%AV_COLORS.length], rc=ROLE_COLOR[m.role]||ROLE_COLOR.Junior;
-    return `<button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')">
-      <div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div>
-      <div class="member-info"><div class="member-name">${m.name}</div><div class="member-role" style="color:${rc.text}">${m.role}</div></div>
-      <span class="member-count" id="count-${m.name}">0</span>
-    </button>`;
+  document.getElementById("member-list").innerHTML=TEAM.map((m,i)=>{
+    const c=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[m.role]||ROLE_COLOR.Junior;
+    return`<button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')"><div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div><div class="member-info"><div class="member-name">${m.name}</div><div class="member-role" style="color:${rc.text}">${m.role}</div></div><span class="member-count" id="count-${m.name}">0</span></button>`;
   }).join("");
 }
-function buildPersonDropdown(){
-  document.getElementById("f-person").innerHTML = TEAM.map(m =>
-    `<option value="${m.name}">${m.name} — ${m.role}</option>`
-  ).join("");
-}
+function buildPersonDropdown(){document.getElementById("f-person").innerHTML=TEAM.map(m=>`<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");}
 function buildClientSidebar(){
   const CI={"YFS":"🏫","NAIK COLLEGE":"🎓","PFA":"🐾","SEVA IN ACTION":"🤝","Internal":"⚙️"};
-  document.getElementById("client-list").innerHTML = CLIENTS.map(c => `
-    <button class="member-row" id="cl-${c.replace(/\s+/g,'-')}" onclick="showClientSnapshot('${c}')">
-      <div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${CI[c]||"🏢"}</div>
-      <div class="member-info"><div class="member-name">${c}</div><div class="member-role">Client</div></div>
-      <span class="member-count" id="cl-count-${c.replace(/\s+/g,'-')}">0</span>
-    </button>`).join("");
-  const sel = document.getElementById("f-client");
-  if(sel) sel.innerHTML = `<option value="">— Select Client —</option>`+CLIENTS.map(c=>`<option value="${c}">${c}</option>`).join("");
+  document.getElementById("client-list").innerHTML=CLIENTS.map(c=>`<button class="member-row" id="cl-${c.replace(/\s+/g,'-')}" onclick="showClientSnapshot('${c}')"><div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${CI[c]||"🏢"}</div><div class="member-info"><div class="member-name">${c}</div><div class="member-role">Client</div></div><span class="member-count" id="cl-count-${c.replace(/\s+/g,'-')}">0</span></button>`).join("");
+  const sel=document.getElementById("f-client");
+  if(sel)sel.innerHTML=`<option value="">— Select Client —</option>`+CLIENTS.map(c=>`<option value="${c}">${c}</option>`).join("");
 }
-function updateClientCounts(){
-  CLIENTS.forEach(c => {
-    const el = document.getElementById("cl-count-"+c.replace(/\s+/g,'-'));
-    if(el) el.textContent = tasks.filter(t=>t.client===c && t.status!=="Done").length;
-  });
-}
+function updateClientCounts(){CLIENTS.forEach(c=>{const el=document.getElementById("cl-count-"+c.replace(/\s+/g,'-'));if(el)el.textContent=tasks.filter(t=>t.client===c&&t.status!=="Done").length;});}
 
-/* ─── Client Snapshot ─── */
+/* ══ Client Snapshot ══ */
 function showClientSnapshot(cn){
-  activeClient = cn;
+  activeClient=cn;
   document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
-  const btn = document.getElementById("cl-"+cn.replace(/\s+/g,'-')); if(btn) btn.classList.add("active");
-  document.getElementById("page-title").textContent = cn;
-  document.getElementById("page-sub").textContent   = "Client Snapshot";
-  document.getElementById("view-board").style.display   = "none";
-  document.getElementById("view-summary").style.display = "none";
-  document.getElementById("view-client").style.display  = "block";
-  document.getElementById("filterbar").style.display    = "none";
-  document.getElementById("kpi-strip").style.display    = "none";
+  const btn=document.getElementById("cl-"+cn.replace(/\s+/g,'-'));if(btn)btn.classList.add("active");
+  document.getElementById("page-title").textContent=cn;document.getElementById("page-sub").textContent="Client Snapshot";
+  document.getElementById("view-board").style.display="none";document.getElementById("view-summary").style.display="none";
+  document.getElementById("view-client").style.display="block";document.getElementById("filterbar").style.display="none";document.getElementById("kpi-strip").style.display="none";
   renderClientSnapshot(cn);
 }
-function exitClientSnapshot(){
-  activeClient = null;
-  document.getElementById("view-client").style.display = "none";
-  document.getElementById("kpi-strip").style.display   = "";
-  switchTab(activeTab==="client"?"board":activeTab);
-  filterByPerson("");
-}
+function exitClientSnapshot(){activeClient=null;document.getElementById("view-client").style.display="none";document.getElementById("kpi-strip").style.display="";switchTab(activeTab==="client"?"board":activeTab);filterByPerson("");}
 function renderClientSnapshot(cn){
-  const mine=tasks.filter(t=>t.client===cn), pending=mine.filter(t=>t.status!=="Done").length,
-        done=mine.filter(t=>t.status==="Done").length, total=mine.length,
-        hours=mine.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0),
-        syncDate=CLIENT_SYNC[cn]||"TBD",
-        syncFmt=syncDate!=="TBD"?new Date(syncDate).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'}):"TBD";
-  const taskRows = mine.length ? mine.map(t => {
-    const sc = t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
-    const pc = t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
-    return `<tr style="border-bottom:1px solid var(--border);">
-      <td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td>
-      <td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td>
-      <td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td>
-      <td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td>
-      <td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td>
-    </tr>`;
-  }).join("") : `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
-  document.getElementById("client-snapshot").innerHTML=`
-    <div style="max-width:900px;">
-      <button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg> Back to Board
-      </button>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px;">
-        <div class="kpi-card" style="border-left:3px solid var(--amber);"><div class="kpi-icon" style="background:var(--amber-lt);">⏳</div><div class="kpi-body"><div class="kpi-num" style="color:var(--amber);">${pending}</div><div class="kpi-label">Pending</div></div></div>
-        <div class="kpi-card" style="border-left:3px solid var(--green);"><div class="kpi-icon" style="background:var(--green-lt);">✅</div><div class="kpi-body"><div class="kpi-num" style="color:var(--green);">${done}</div><div class="kpi-label">Done</div></div></div>
-        <div class="kpi-card" style="border-left:3px solid var(--teal);"><div class="kpi-icon" style="background:var(--teal-lt);">⏱</div><div class="kpi-body"><div class="kpi-num" style="color:var(--teal);">${hours.toFixed(1)}</div><div class="kpi-label">Hours</div></div></div>
-        <div class="kpi-card" style="border-left:3px solid var(--indigo);"><div class="kpi-icon" style="background:var(--indigo-lt);">📅</div><div class="kpi-body"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);line-height:1.3;">${syncFmt}</div><div class="kpi-label">Next Call</div></div></div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(cn)}</span>
-          <span style="font-size:11px;color:var(--text-3);">${total} task${total!==1?"s":""}</span>
-        </div>
-        <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="background:var(--bg);">
-            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th>
-            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th>
-            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th>
-            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th>
-            <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);text-align:left;">Hours</th>
-          </tr></thead>
-          <tbody>${taskRows}</tbody>
-        </table></div>
-      </div>
-    </div>`;
+  const mine=tasks.filter(t=>t.client===cn),pending=mine.filter(t=>t.status!=="Done").length,done=mine.filter(t=>t.status==="Done").length,total=mine.length,hours=mine.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0),sd=CLIENT_SYNC[cn]||"TBD",sf=sd!=="TBD"?new Date(sd).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'}):"TBD";
+  const rows=mine.length?mine.map(t=>{const sc=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";const pc=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";return`<tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td><td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td><td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td><td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td></tr>`;}).join(""):`<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
+  document.getElementById("client-snapshot").innerHTML=`<div style="max-width:900px;"><button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;"><svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg> Back to Board</button><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px;"><div class="kpi-card" style="border-left:3px solid var(--amber);"><div class="kpi-icon" style="background:var(--amber-lt);">⏳</div><div class="kpi-body"><div class="kpi-num" style="color:var(--amber);">${pending}</div><div class="kpi-label">Pending</div></div></div><div class="kpi-card" style="border-left:3px solid var(--green);"><div class="kpi-icon" style="background:var(--green-lt);">✅</div><div class="kpi-body"><div class="kpi-num" style="color:var(--green);">${done}</div><div class="kpi-label">Done</div></div></div><div class="kpi-card" style="border-left:3px solid var(--teal);"><div class="kpi-icon" style="background:var(--teal-lt);">⏱</div><div class="kpi-body"><div class="kpi-num" style="color:var(--teal);">${hours.toFixed(1)}</div><div class="kpi-label">Hours</div></div></div><div class="kpi-card" style="border-left:3px solid var(--indigo);"><div class="kpi-icon" style="background:var(--indigo-lt);">📅</div><div class="kpi-body"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);line-height:1.3;">${sf}</div><div class="kpi-label">Next Call</div></div></div></div><div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);"><div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(cn)}</span><span style="font-size:11px;color:var(--text-3);">${total} task${total!==1?"s":""}</span></div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--bg);"><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);text-align:left;">Hours</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
 }
 
-/* ─── Filtering ─── */
+/* ══ Filtering ══ */
 function filterByPerson(name){
-  activeClient = null;
-  document.getElementById("view-client").style.display   = "none";
-  document.getElementById("kpi-strip").style.display     = "";
-  document.getElementById("filterbar").style.display     = activeTab==="board" ? "flex" : "none";
-  document.getElementById("view-board").style.display    = activeTab==="board" ? "block" : "none";
-  document.getElementById("view-summary").style.display  = activeTab==="summary" ? "block" : "none";
-  filterPerson = name;
+  activeClient=null;document.getElementById("view-client").style.display="none";document.getElementById("kpi-strip").style.display="";
+  document.getElementById("filterbar").style.display=activeTab==="board"?"flex":"none";
+  document.getElementById("view-board").style.display=activeTab==="board"?"block":"none";
+  document.getElementById("view-summary").style.display=activeTab==="summary"?"block":"none";
+  filterPerson=name;
   document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
-  const target = name ? document.getElementById("mb-"+name) : document.getElementById("member-all");
-  if(target) target.classList.add("active");
-  document.getElementById("page-title").textContent = name || "Task Board";
-  document.getElementById("page-sub").textContent   = name
-    ? `Showing tasks for ${name} · ${TEAM.find(m=>m.name===name)?.role}`
-    : "Showing all tasks";
+  const target=name?document.getElementById("mb-"+name):document.getElementById("member-all");
+  if(target)target.classList.add("active");
+  document.getElementById("page-title").textContent=name||"Task Board";
+  document.getElementById("page-sub").textContent=name?`Showing tasks for ${name} · ${TEAM.find(m=>m.name===name)?.role}`:"Showing all tasks";
   render();
 }
-function applyFilters(){
-  filterPriority = document.getElementById("flt-priority").value;
-  filterStatus   = document.getElementById("flt-status").value;
-  filterSearch   = document.getElementById("flt-search").value.toLowerCase();
-  filterDue      = document.getElementById("flt-due").value;
-  render();
-}
-function clearFilters(){
-  filterPriority=filterStatus=filterSearch=filterDue="";
-  ["flt-priority","flt-status","flt-search","flt-due"].forEach(id=>document.getElementById(id).value="");
-  render();
-}
-function getDueState(d){
-  if(!d) return null;
-  const today=new Date(); today.setHours(0,0,0,0);
-  const due=new Date(d); due.setHours(0,0,0,0);
-  const diff=Math.floor((due-today)/86400000);
-  if(diff<0) return "overdue"; if(diff===0) return "today"; if(diff<=3) return "soon"; return "normal";
-}
+function applyFilters(){filterPriority=document.getElementById("flt-priority").value;filterStatus=document.getElementById("flt-status").value;filterSearch=document.getElementById("flt-search").value.toLowerCase();filterDue=document.getElementById("flt-due").value;render();}
+function clearFilters(){filterPriority=filterStatus=filterSearch=filterDue="";["flt-priority","flt-status","flt-search","flt-due"].forEach(id=>document.getElementById(id).value="");render();}
+function getDueState(d){if(!d)return null;const t=new Date();t.setHours(0,0,0,0);const u=new Date(d);u.setHours(0,0,0,0);const diff=Math.floor((u-t)/86400000);if(diff<0)return"overdue";if(diff===0)return"today";if(diff<=3)return"soon";return"normal";}
 function getFiltered(){
-  const today=new Date(); today.setHours(0,0,0,0);
-  return tasks.filter(t => {
-    if(filterPerson && t.person!==filterPerson) return false;
-    if(filterPriority && t.priority!==filterPriority) return false;
-    if(filterStatus && t.status!==filterStatus) return false;
-    if(filterSearch){
-      const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")).toLowerCase();
-      if(!h.includes(filterSearch)) return false;
-    }
-    if(filterDue){
-      if(!t.due_date) return false;
-      const due=new Date(t.due_date); due.setHours(0,0,0,0);
-      const diff=Math.floor((due-today)/86400000);
-      if(filterDue==="overdue" && diff>=0) return false;
-      if(filterDue==="today"   && diff!==0) return false;
-      if(filterDue==="week"    && (diff<0||diff>7)) return false;
-    }
+  const today=new Date();today.setHours(0,0,0,0);
+  return tasks.filter(t=>{
+    if(filterPerson&&t.person!==filterPerson)return false;
+    if(filterPriority&&t.priority!==filterPriority)return false;
+    if(filterStatus&&t.status!==filterStatus)return false;
+    if(filterSearch){const h=(t.name+" "+(t.notes||"")+" "+t.person+" "+(t.added_by||"")).toLowerCase();if(!h.includes(filterSearch))return false;}
+    if(filterDue){if(!t.due_date)return false;const d=new Date(t.due_date);d.setHours(0,0,0,0);const diff=Math.floor((d-today)/86400000);if(filterDue==="overdue"&&diff>=0)return false;if(filterDue==="today"&&diff!==0)return false;if(filterDue==="week"&&(diff<0||diff>7))return false;}
     return true;
   });
 }
 
-/* ══════════════════════════════════════════════════
-   ROLE-BASED PERMISSION HELPERS
+/* ══════════════════════════════════════════════════════════════════════
+   PERMISSION HELPERS
 
-   isCreator  → the logged-in user created this task
-                matched by: user_id === currentUserId  (Supabase auth UUID)
-                fallback (old tasks without user_id):
-                  added_by name matches currentUser OR user is Manager
+   FIX 1 — Self-Assignment Priority Rule:
+   isAssignee() returns true when the current user is the person this
+   task is assigned to, regardless of whether they also created it.
+   The card rendering logic checks isAssignee FIRST so self-assigned
+   tasks always get the status dropdown and Log Work button.
 
-   isAssignee → the logged-in user is assigned this task
-                matched by: assigned_to_email === currentUserEmail (preferred)
-                fallback: person name === currentUser
-══════════════════════════════════════════════════ */
-function taskIsCreator(t){
-  if(t.user_id) return t.user_id === currentUserId;
-  // Fallback for legacy tasks that predate the user_id column
-  return currentUser === MANAGER_NAME || currentUser === t.added_by;
-}
+   taskIsCreator() is used ONLY to decide whether to show Edit/Delete.
+   It does NOT suppress the assignee controls.
+══════════════════════════════════════════════════════════════════════ */
+
+/** True if the logged-in user is the one this task is assigned to. */
 function taskIsAssignee(t){
   if(t.assigned_to_email) return t.assigned_to_email === currentUserEmail;
   return t.person === currentUser;
 }
 
-/* ─── Render ─── */
-function render(){
-  renderCounts();
-  if(activeClient){ renderClientSnapshot(activeClient); return; }
-  renderKPI();
-  if(activeTab==="board") renderBoard(); else renderSummary();
-}
-function renderCounts(){
-  document.getElementById("count-all").textContent = tasks.length;
-  TEAM.forEach(m => {
-    const el = document.getElementById("count-"+m.name);
-    if(el) el.textContent = tasks.filter(t=>t.person===m.name).length;
-  });
-  updateClientCounts();
-}
-function renderKPI(){
-  const f=getFiltered(), today=new Date(); today.setHours(0,0,0,0);
-  const ov=f.filter(t=>{
-    if(!t.due_date||t.status==="Done") return false;
-    const d=new Date(t.due_date); d.setHours(0,0,0,0); return d<today;
-  }).length;
-  document.getElementById("kpi-total").textContent  = f.length;
-  document.getElementById("kpi-inprog").textContent = f.filter(t=>t.status==="In Progress").length;
-  document.getElementById("kpi-done").textContent   = f.filter(t=>t.status==="Done").length;
-  document.getElementById("kpi-high").textContent   = f.filter(t=>t.priority==="High"&&t.status!=="Done").length;
-  document.getElementById("kpi-overdue").textContent= ov;
-}
-function hoursBadge(hours){
-  if(!hours && hours!==0) return "";
-  const h=parseFloat(hours)||0; if(h===0) return "";
-  return `<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);">⏱ ${h.toFixed(1)}h</span>`;
+/** True if the logged-in user created this task (for edit/delete only). */
+function taskIsCreator(t){
+  if(t.user_id) return t.user_id === currentUserId;
+  /* Legacy fallback: tasks created before user_id column existed */
+  return currentUser === MANAGER_NAME || currentUser === t.added_by;
 }
 
-/* ══════════════════════════════════════════════════
-   renderBoard — strict role-based permissions
-   ─────────────────────────────────────────────────
-   CREATOR  → Edit + Delete visible; status is a LOCKED static label
-   ASSIGNEE → Status dropdown ENABLED; Edit + Delete HIDDEN
-   NEITHER  → static status label; no edit/delete/log-work
-   NOTE: Buttons use data-id attributes instead of inline onclick string
-         interpolation — UUIDs contain hyphens that can break template
-         literals when passed through esc().
-══════════════════════════════════════════════════ */
+/* ══ Render ══ */
+function render(){renderCounts();if(activeClient){renderClientSnapshot(activeClient);return;}renderKPI();if(activeTab==="board")renderBoard();else renderSummary();}
+function renderCounts(){document.getElementById("count-all").textContent=tasks.length;TEAM.forEach(m=>{const el=document.getElementById("count-"+m.name);if(el)el.textContent=tasks.filter(t=>t.person===m.name).length;});updateClientCounts();}
+function renderKPI(){const f=getFiltered(),today=new Date();today.setHours(0,0,0,0);const ov=f.filter(t=>{if(!t.due_date||t.status==="Done")return false;const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;document.getElementById("kpi-total").textContent=f.length;document.getElementById("kpi-inprog").textContent=f.filter(t=>t.status==="In Progress").length;document.getElementById("kpi-done").textContent=f.filter(t=>t.status==="Done").length;document.getElementById("kpi-high").textContent=f.filter(t=>t.priority==="High"&&t.status!=="Done").length;document.getElementById("kpi-overdue").textContent=ov;}
+function hoursBadge(h){if(!h&&h!==0)return"";const v=parseFloat(h)||0;if(v===0)return"";return`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);">⏱ ${v.toFixed(1)}h</span>`;}
+
+/* ══════════════════════════════════════════════════════════════════════
+   renderBoard — FIX 1: isAssignee TAKES PRIORITY over isCreator
+   ─────────────────────────────────────────────────────────────────────
+   STATUS DROPDOWN  → shown if isAssignee  (even if also creator)
+   LOG WORK BUTTON  → shown if isAssignee  (even if also creator)
+   EDIT / DELETE    → shown if isCreator   (independent decision)
+   ROLE PILL        → "Creator & Assignee" / "Creator" / "Assignee"
+
+   UUIDs are passed via data-id attributes (never inline onclick strings)
+   to prevent any hyphen escaping issues.
+══════════════════════════════════════════════════════════════════════ */
 function renderBoard(){
-  const filtered=getFiltered(), grid=document.getElementById("cards-grid"), empty=document.getElementById("empty-state");
-  if(!filtered.length){ grid.innerHTML=""; empty.style.display="flex"; return; }
+  const filtered=getFiltered(),grid=document.getElementById("cards-grid"),empty=document.getElementById("empty-state");
+  if(!filtered.length){grid.innerHTML="";empty.style.display="flex";return;}
   empty.style.display="none";
 
-  grid.innerHTML = filtered.map((t, i) => {
-    const taskId = String(t.id);
-    const mi=TEAM.findIndex(m=>m.name===t.person), avColor=AV_COLORS[mi>=0?mi:0];
-    const role=TEAM.find(m=>m.name===t.person)?.role||"", rc=ROLE_COLOR[role]||ROLE_COLOR.Junior;
+  grid.innerHTML=filtered.map((t,i)=>{
+    const taskId=String(t.id);
+    const mi=TEAM.findIndex(m=>m.name===t.person),avColor=AV_COLORS[mi>=0?mi:0];
+    const role=TEAM.find(m=>m.name===t.person)?.role||"",rc=ROLE_COLOR[role]||ROLE_COLOR.Junior;
     const pClass=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
-
     const ds=getDueState(t.due_date);
     let dueBadge="";
-    if(t.due_date && t.status!=="Done"){
-      const lbl={overdue:"🔴 Overdue",today:"🟡 Due Today",soon:"⏰ Due Soon",normal:""};
-      if(ds!=="normal" && lbl[ds]) dueBadge=`<span class="due-chip ${ds}">${lbl[ds]}</span>`;
-      else if(ds==="normal"){ const d=new Date(t.due_date); dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`; }
-    } else if(t.due_date && t.status==="Done"){
-      const d=new Date(t.due_date); dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
-    }
-    const isOverdue  = ds==="overdue" && t.status!=="Done";
-    const addedByHtml= t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
-    const notesHtml  = t.notes    ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
+    if(t.due_date&&t.status!=="Done"){const lbl={overdue:"🔴 Overdue",today:"🟡 Due Today",soon:"⏰ Due Soon",normal:""};if(ds!=="normal"&&lbl[ds])dueBadge=`<span class="due-chip ${ds}">${lbl[ds]}</span>`;else if(ds==="normal"){const d=new Date(t.due_date);dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;}}
+    else if(t.due_date&&t.status==="Done"){const d=new Date(t.due_date);dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;}
+    const isOverdue=ds==="overdue"&&t.status!=="Done";
+    const notesHtml=t.notes?`<div class="card-notes">${esc(t.notes)}</div>`:"";
+    const addedByHtml=t.added_by?`<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`:"";
 
-    /* ── Permission flags ── */
-    const isCreator  = taskIsCreator(t);
-    const isAssignee = taskIsAssignee(t);
+    /* ── FIX 1: Evaluate both roles independently ── */
+    const isAssignee = taskIsAssignee(t);   /* controls status + log work */
+    const isCreator  = taskIsCreator(t);    /* controls edit + delete only */
 
-    /*
-     * STATUS CONTROL:
-     * • Pure Assignee (not the creator) → editable dropdown via data-id
-     * • Creator (even if also assignee) → locked static label
-     * • Neither                         → locked static label
-     */
-    const statusCls = t.status==="Done"?"status-done": t.status==="In Progress"?"status-prog":"status-todo";
-    let statusControl;
-    if(isAssignee && !isCreator){
-      statusControl = `<select class="status-select ${statusCls}" data-id="${taskId}" onchange="quickStatusFromSelect(this)">
-        <option ${t.status==="To Do"?"selected":""}>To Do</option>
-        <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
-        <option ${t.status==="Done"?"selected":""}>Done</option>
-      </select>`;
-    } else {
-      statusControl = `<span class="status-lock-hint">
-        <svg width="10" height="10" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        ${esc(t.status)}
-      </span>`;
-    }
+    /* STATUS: isAssignee wins — even if user is also the creator */
+    const statusCls=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
+    const statusControl = isAssignee
+      ? `<select class="status-select ${statusCls}" data-id="${taskId}" onchange="quickStatusFromSelect(this)">
+           <option ${t.status==="To Do"?"selected":""}>To Do</option>
+           <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
+           <option ${t.status==="Done"?"selected":""}>Done</option>
+         </select>`
+      : `<span class="status-lock-hint">
+           <svg width="10" height="10" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+           ${esc(t.status)}
+         </span>`;
 
-    /*
-     * EDIT / DELETE: Creator only, using data-id to safely pass the UUID
-     */
-    const actionBtns = isCreator ? `
-      <button class="icon-btn btn-edit-task" data-id="${taskId}" title="Edit task">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-      <button class="icon-btn danger btn-delete-task" data-id="${taskId}" title="Delete task">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>` : "";
-
-    /* LOG WORK: Assignee only */
+    /* LOG WORK: isAssignee wins — even if user is also the creator */
     const logWorkRow = isAssignee
       ? `<div class="card-footer-row" style="margin-top:4px;">
-          <button class="log-work-btn btn-log-work" data-id="${taskId}">
-            <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Log Work
-          </button>
-        </div>`
+           <button class="log-work-btn btn-log-work" data-id="${taskId}">
+             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+             Log Work
+           </button>
+         </div>`
       : `<div class="card-footer-row" style="margin-top:4px;">
-          <span class="log-work-restricted">
-            <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Assigned to ${esc(t.person)}
-          </span>
-        </div>`;
+           <span class="log-work-restricted">
+             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+             Assigned to ${esc(t.person)}
+           </span>
+         </div>`;
 
-    /* Role pill */
-    const rolePill = isCreator && isAssignee
-      ? `<span class="role-pill creator" title="You assigned this to yourself">✏️ Creator &amp; Assignee</span>`
-      : isCreator
-      ? `<span class="role-pill creator" title="You created this task">✏️ Creator</span>`
-      : isAssignee
-      ? `<span class="role-pill assignee" title="This task is assigned to you">✅ Assignee</span>`
+    /* EDIT / DELETE: isCreator only, independent of isAssignee */
+    const actionBtns = isCreator
+      ? `<button class="icon-btn btn-edit-task" data-id="${taskId}" title="Edit task">
+           <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+         </button>
+         <button class="icon-btn danger btn-delete-task" data-id="${taskId}" title="Delete task">
+           <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+         </button>`
       : "";
 
-    return `
+    /* Role pill — purely informational */
+    const rolePill = isCreator && isAssignee
+      ? `<span class="role-pill both">✏️ Creator &amp; Assignee</span>`
+      : isCreator
+      ? `<span class="role-pill creator">✏️ Creator</span>`
+      : isAssignee
+      ? `<span class="role-pill assignee">✅ Assignee</span>`
+      : "";
+
+    return`
       <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s" data-task-id="${taskId}">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
@@ -1430,344 +1181,253 @@ function renderBoard(){
   }).join("");
 }
 
-/* ── Delegated event handlers for card buttons ──────────────────────────
-   Using event delegation on #cards-grid means we never have inline onclick
-   with UUID strings — the safest approach.                               */
-document.addEventListener("click", function(e){
-  // Edit button
-  const editBtn = e.target.closest(".btn-edit-task");
-  if(editBtn){ openEdit(editBtn.dataset.id); return; }
-
-  // Delete button
-  const delBtn = e.target.closest(".btn-delete-task");
-  if(delBtn){ deleteTask(delBtn.dataset.id); return; }
-
-  // Log Work button
-  const logBtn = e.target.closest(".btn-log-work");
-  if(logBtn){ openLogModal(logBtn.dataset.id); return; }
+/* Delegated event listeners — safe UUID passing via data-id */
+document.addEventListener("click",function(e){
+  const editBtn=e.target.closest(".btn-edit-task");
+  if(editBtn){openEdit(editBtn.dataset.id);return;}
+  const delBtn=e.target.closest(".btn-delete-task");
+  if(delBtn){deleteTask(delBtn.dataset.id);return;}
+  const logBtn=e.target.closest(".btn-log-work");
+  if(logBtn){openLogModal(logBtn.dataset.id);return;}
 });
 
-/* quickStatus via data-id on the select element */
+/* FIX 2: quickStatusFromSelect — sends ONLY { status } to Supabase */
 function quickStatusFromSelect(selectEl){
-  const id = selectEl.dataset.id;
-  const status = selectEl.value;
-  quickStatus(id, status);
+  const id=selectEl.dataset.id;
+  const status=selectEl.value;
+  quickStatus(id,status);
 }
 
 function renderSummary(){
-  const grid=document.getElementById("summary-grid"),
-        maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
-  grid.innerHTML = TEAM.map((member, i) => {
-    const mine=tasks.filter(t=>t.person===member.name), total=mine.length,
-          doneC=mine.filter(t=>t.status==="Done").length,
-          inpC=mine.filter(t=>t.status==="In Progress").length,
-          todoC=mine.filter(t=>t.status==="To Do").length,
-          highC=mine.filter(t=>t.priority==="High"&&t.status!=="Done").length,
-          pct=total?Math.round(doneC/total*100):0,
-          barW=total?Math.round(total/maxLoad*100):0,
-          color=AV_COLORS[i%AV_COLORS.length], rc=ROLE_COLOR[member.role]||ROLE_COLOR.Junior,
-          loaded=total>=5;
-    const ovC=mine.filter(t=>{
-      if(!t.due_date||t.status==="Done") return false;
-      const today=new Date(); today.setHours(0,0,0,0);
-      const d=new Date(t.due_date); d.setHours(0,0,0,0); return d<today;
-    }).length;
-    return `
-      <div class="summary-card ${loaded?"overloaded":""}">
-        <div class="sc-header">
-          <div class="sc-person">
-            <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px;border-radius:10px;">${member.name[0]}</div>
-            <div><div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div><div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div></div>
-          </div>
-          <div class="sc-total"><div class="sc-total-num">${total}</div><div class="sc-total-lbl">tasks</div></div>
-        </div>
-        <div class="sc-bar-wrap"><div class="sc-bar" style="width:${barW}%;background:${color}"></div></div>
-        <div class="sc-stats">
-          <div class="sc-stat"><div class="sc-stat-num todo-num">${todoC}</div><div class="sc-stat-lbl">To Do</div></div>
-          <div class="sc-stat"><div class="sc-stat-num prog-num">${inpC}</div><div class="sc-stat-lbl">In Progress</div></div>
-          <div class="sc-stat"><div class="sc-stat-num done-num">${doneC}</div><div class="sc-stat-lbl">Done</div></div>
-        </div>
-        <div class="sc-foot">
-          <span style="color:var(--text-3)">${pct}% complete</span>
-          ${highC>0?`<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>`:`<span style="color:var(--green)">✓ No high priority</span>`}
-        </div>
-        ${ovC>0?`<div class="sc-warn">🔴 ${ovC} overdue task${ovC>1?"s":""}</div>`:""}
-        ${loaded?`<div class="sc-warn" style="background:var(--amber-lt);border-color:var(--amber-bd);color:var(--amber)">⚠ High load — ${total} tasks</div>`:""}
-      </div>`;
+  const grid=document.getElementById("summary-grid"),maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
+  grid.innerHTML=TEAM.map((member,i)=>{
+    const mine=tasks.filter(t=>t.person===member.name),total=mine.length,doneC=mine.filter(t=>t.status==="Done").length,inpC=mine.filter(t=>t.status==="In Progress").length,todoC=mine.filter(t=>t.status==="To Do").length,highC=mine.filter(t=>t.priority==="High"&&t.status!=="Done").length,pct=total?Math.round(doneC/total*100):0,barW=total?Math.round(total/maxLoad*100):0,color=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[member.role]||ROLE_COLOR.Junior,loaded=total>=5;
+    const ovC=mine.filter(t=>{if(!t.due_date||t.status==="Done")return false;const today=new Date();today.setHours(0,0,0,0);const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;
+    return`<div class="summary-card ${loaded?"overloaded":""}"><div class="sc-header"><div class="sc-person"><div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px;border-radius:10px;">${member.name[0]}</div><div><div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div><div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div></div></div><div class="sc-total"><div class="sc-total-num">${total}</div><div class="sc-total-lbl">tasks</div></div></div><div class="sc-bar-wrap"><div class="sc-bar" style="width:${barW}%;background:${color}"></div></div><div class="sc-stats"><div class="sc-stat"><div class="sc-stat-num todo-num">${todoC}</div><div class="sc-stat-lbl">To Do</div></div><div class="sc-stat"><div class="sc-stat-num prog-num">${inpC}</div><div class="sc-stat-lbl">In Progress</div></div><div class="sc-stat"><div class="sc-stat-num done-num">${doneC}</div><div class="sc-stat-lbl">Done</div></div></div><div class="sc-foot"><span style="color:var(--text-3)">${pct}% complete</span>${highC>0?`<span style="color:var(--red);font-weight:600">⚠ ${highC} high priority</span>`:`<span style="color:var(--green)">✓ No high priority</span>`}</div>${ovC>0?`<div class="sc-warn">🔴 ${ovC} overdue task${ovC>1?"s":""}</div>`:""}${loaded?`<div class="sc-warn" style="background:var(--amber-lt);border-color:var(--amber-bd);color:var(--amber)">⚠ High load — ${total} tasks</div>`:""}</div>`;
   }).join("");
 }
 
 function switchTab(tab){
-  activeClient=null; activeTab=tab;
-  document.getElementById("view-board").style.display   = tab==="board"   ? "block" : "none";
-  document.getElementById("view-summary").style.display = tab==="summary" ? "block" : "none";
-  document.getElementById("view-client").style.display  = "none";
-  document.getElementById("filterbar").style.display    = tab==="board"   ? "flex"  : "none";
-  document.getElementById("kpi-strip").style.display    = "";
-  document.getElementById("tab-board").classList.toggle("active",   tab==="board");
-  document.getElementById("tab-summary").classList.toggle("active", tab==="summary");
+  activeClient=null;activeTab=tab;
+  document.getElementById("view-board").style.display=tab==="board"?"block":"none";
+  document.getElementById("view-summary").style.display=tab==="summary"?"block":"none";
+  document.getElementById("view-client").style.display="none";
+  document.getElementById("filterbar").style.display=tab==="board"?"flex":"none";
+  document.getElementById("kpi-strip").style.display="";
+  document.getElementById("tab-board").classList.toggle("active",tab==="board");
+  document.getElementById("tab-summary").classList.toggle("active",tab==="summary");
   render();
 }
 
-/* ══════════════════════════════════════════════════
-   FORM VALIDATION HELPERS
-══════════════════════════════════════════════════ */
-function setFieldError(inputId, errId, hasError){
-  const input=document.getElementById(inputId), err=document.getElementById(errId);
-  if(!input||!err) return;
-  if(hasError){ input.classList.add("field-error"); err.classList.add("visible"); }
-  else { input.classList.remove("field-error"); err.classList.remove("visible"); }
+/* ══ Form validation ══ */
+function setFieldError(inputId,errId,hasError){
+  const input=document.getElementById(inputId),err=document.getElementById(errId);
+  if(!input||!err)return;
+  if(hasError){input.classList.add("field-error");err.classList.add("visible");}
+  else{input.classList.remove("field-error");err.classList.remove("visible");}
 }
 function clearModalErrors(){
-  ["f-name","f-client"].forEach(id => document.getElementById(id)?.classList.remove("field-error"));
-  ["err-name","err-client"].forEach(id => document.getElementById(id)?.classList.remove("visible"));
+  ["f-name","f-client"].forEach(id=>document.getElementById(id)?.classList.remove("field-error"));
+  ["err-name","err-client"].forEach(id=>document.getElementById(id)?.classList.remove("visible"));
   document.getElementById("modal-val-banner").classList.remove("visible");
 }
-
-/**
- * Validate required fields: Task Title + Client.
- * Returns true if valid, false + highlights errors if not.
- */
 function validateTaskForm(){
-  const name   = document.getElementById("f-name").value.trim();
-  const client = document.getElementById("f-client").value;
-
-  const nameErr   = !name;
-  const clientErr = !client;
-
-  setFieldError("f-name",   "err-name",   nameErr);
-  setFieldError("f-client", "err-client", clientErr);
-
-  if(nameErr || clientErr){
-    const banner    = document.getElementById("modal-val-banner");
-    const bannerMsg = document.getElementById("modal-val-msg");
-    bannerMsg.textContent = "Client and Task Title are required.";
-    banner.classList.add("visible");
+  const name=document.getElementById("f-name").value.trim();
+  const client=document.getElementById("f-client").value;
+  setFieldError("f-name","err-name",!name);
+  setFieldError("f-client","err-client",!client);
+  if(!name||!client){
+    const banner=document.getElementById("modal-val-banner"),msg=document.getElementById("modal-val-msg");
+    msg.textContent="Client and Task Title are required.";banner.classList.add("visible");
     document.querySelector(".modal-box").scrollTo({top:0,behavior:"smooth"});
-    if(nameErr) document.getElementById("f-name").focus();
-    else        document.getElementById("f-client").focus();
+    if(!name)document.getElementById("f-name").focus();else document.getElementById("f-client").focus();
     return false;
   }
   document.getElementById("modal-val-banner").classList.remove("visible");
   return true;
 }
 
-/* ─── Modals ─── */
+/* ══ Modals ══ */
 function openModal(){
-  // ── NEW TASK: clear the hidden task-ID so saveTask always inserts ──
-  document.getElementById("f-task-id").value = "";
-  editingId = null;
+  /* FIX 3: Clear hidden field → guarantees INSERT on save */
+  document.getElementById("f-task-id").value="";
   clearModalErrors();
-  document.getElementById("modal-title").textContent    = "Assign Task";
-  document.getElementById("modal-subtitle").textContent = "New task · auto-starts as To Do";
-  document.getElementById("btn-save").innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg> Assign Task`;
-  document.getElementById("f-name").value     = "";
-  document.getElementById("f-person").value   = TEAM[0].name;
-  document.getElementById("f-priority").value = "Medium";
-  document.getElementById("f-client").value   = activeClient || "";
-  document.getElementById("f-notes").value    = "";
-  document.getElementById("f-due").value      = "";
-  document.getElementById("added-by-display").textContent = currentUser;
-  document.getElementById("modal").style.display = "flex";
-  setTimeout(()=>document.getElementById("f-name").focus(), 60);
+  document.getElementById("modal-title").textContent="Assign Task";
+  document.getElementById("modal-subtitle").textContent="New task · auto-starts as To Do";
+  document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg> Assign Task`;
+  document.getElementById("f-name").value="";document.getElementById("f-person").value=TEAM[0].name;
+  document.getElementById("f-priority").value="Medium";document.getElementById("f-client").value=activeClient||"";
+  document.getElementById("f-notes").value="";document.getElementById("f-due").value="";
+  document.getElementById("added-by-display").textContent=currentUser;
+  document.getElementById("modal").style.display="flex";
+  setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
 
 function openEdit(id){
-  const t = tasks.find(x => String(x.id) === String(id));
-  if(!t){ showToast("Task not found — try refreshing","error"); return; }
-
-  // ── EDIT MODE: stamp the UUID into the hidden field immediately ──
-  editingId = String(t.id);
-  document.getElementById("f-task-id").value = editingId;
-
+  const t=tasks.find(x=>String(x.id)===String(id));
+  if(!t){showToast("Task not found — try refreshing","error");return;}
+  /* FIX 3: Stamp UUID into hidden field FIRST — it survives any re-render */
+  document.getElementById("f-task-id").value=String(t.id);
   clearModalErrors();
-  document.getElementById("modal-title").textContent    = "Edit Task Details";
-  document.getElementById("modal-subtitle").textContent = `Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
-  document.getElementById("btn-save").innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
-  document.getElementById("f-name").value     = t.name    || "";
-  document.getElementById("f-person").value   = t.person  || TEAM[0].name;
-  document.getElementById("f-priority").value = t.priority|| "Medium";
-  document.getElementById("f-client").value   = t.client  || "";
-  document.getElementById("f-notes").value    = t.notes   || "";
-  document.getElementById("f-due").value      = t.due_date|| "";
-  document.getElementById("added-by-display").textContent = t.added_by || currentUser;
-  document.getElementById("modal").style.display = "flex";
-  setTimeout(()=>document.getElementById("f-name").focus(), 60);
+  document.getElementById("modal-title").textContent="Edit Task Details";
+  document.getElementById("modal-subtitle").textContent=`Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
+  document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
+  document.getElementById("f-name").value=t.name||"";document.getElementById("f-person").value=t.person||TEAM[0].name;
+  document.getElementById("f-priority").value=t.priority||"Medium";document.getElementById("f-client").value=t.client||"";
+  document.getElementById("f-notes").value=t.notes||"";document.getElementById("f-due").value=t.due_date||"";
+  document.getElementById("added-by-display").textContent=t.added_by||currentUser;
+  document.getElementById("modal").style.display="flex";
+  setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
 
 function closeModal(){
-  document.getElementById("modal").style.display = "none";
-  // Clear both the JS variable AND the hidden field on close
-  editingId = null;
-  document.getElementById("f-task-id").value = "";
+  document.getElementById("modal").style.display="none";
+  /* FIX 3: Always clear the hidden field on close */
+  document.getElementById("f-task-id").value="";
   clearModalErrors();
 }
-function handleOverlayClick(e){ if(e.target.id==="modal") closeModal(); }
+function handleOverlayClick(e){if(e.target.id==="modal")closeModal();}
 
+/* ══════════════════════════════════════════════════════════════════════
+   saveTask — FIX 3: #f-task-id is the SOLE authority for insert vs update.
+   ─────────────────────────────────────────────────────────────────────
+   • Non-empty value → UPDATE (never creates a duplicate)
+   • Empty value     → INSERT (always a fresh row)
+   No JS module-level variable is consulted — only the DOM field.
+
+   FIX 2: Edit payload contains ONLY editable columns.
+   status / hours_worked / user_id / added_by are NOT sent on edit —
+   they stay unchanged in the database.
+══════════════════════════════════════════════════════════════════════ */
 async function saveTask(){
-  if(!validateTaskForm()) return;
-  if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
+  if(!validateTaskForm())return;
+  if(!isConfigured()){showToast("Configure Supabase first","error");return;}
 
-  /*
-   * editingTaskId is read from the hidden form field #f-task-id.
-   * This is the single authoritative source — it cannot be wiped by a
-   * background polling re-render the way a plain JS variable can.
-   *
-   * Non-empty string → EDIT MODE  → sb.from("tasks").update().eq("id", editingTaskId)
-   * Empty / null     → INSERT MODE → sb.from("tasks").insert()
-   */
-  const editingTaskId = document.getElementById("f-task-id").value.trim() || null;
-  const isEditing     = !!editingTaskId;
+  /* Read the hidden field — this is the only source of truth */
+  const editingTaskId=document.getElementById("f-task-id").value.trim()||null;
+  const isEditing=!!editingTaskId;
 
-  const assignedName  = document.getElementById("f-person").value;
-  const assignedEmail = NAME_TO_EMAIL[assignedName] || "";
+  const assignedName =document.getElementById("f-person").value;
+  const assignedEmail=NAME_TO_EMAIL[assignedName]||"";
 
-  /*
-   * Payload uses ONLY columns that exist in the Supabase "tasks" table.
-   * Intentionally excluded (no column in DB):
-   *   - "project" / "project_name"  → caught by BANNED_COLS + stripUnknownFields
-   *   - "creator_user_id"           → old name; DB column is now "user_id"
-   */
-  const editPayload = {
+  /* Shared editable fields — safe, contains NO banned columns */
+  const editPayload={
     name:              document.getElementById("f-name").value.trim(),
     person:            assignedName,
     assigned_to_email: assignedEmail,
     priority:          document.getElementById("f-priority").value,
     client:            document.getElementById("f-client").value,
     notes:             document.getElementById("f-notes").value.trim(),
-    due_date:          document.getElementById("f-due").value || null,
+    due_date:          document.getElementById("f-due").value||null,
   };
 
-  closeModal();   // clears editingId JS var + hidden field before async work
+  closeModal();   /* clears hidden field before async work */
   setSyncStatus("syncing","Saving…");
 
   if(isEditing){
-    /*
-     * UPDATE — modify only the editable fields.
-     * Do NOT send: status, hours_worked, user_id, added_by
-     * Those must not change when the creator edits task details.
-     */
-    const ok = await updateTaskDB(editingTaskId, editPayload);
-    if(ok) showToast("Task updated ✓","success");
+    /* UPDATE: send only editable fields — do not touch status/hours/user_id */
+    const ok=await updateTaskDB(editingTaskId,editPayload);
+    if(ok)showToast("Task updated ✓","success");
   } else {
-    /*
-     * INSERT — include all metadata for a brand-new task.
-     * user_id is the Supabase auth UUID stored in the DB column "user_id".
-     * (Previously this was mistakenly called "creator_user_id" — now fixed.)
-     */
-    const insertPayload = {
+    /* INSERT: add metadata for a new task */
+    const insertPayload={
       ...editPayload,
       status:       "To Do",
       hours_worked: 0,
       added_by:     currentUser,
-      user_id:      currentUserId,   // DB column = "user_id"
+      user_id:      currentUserId,   /* DB column = "user_id" — NOT "creator_user_id" */
     };
-    const ok = await insertTask(insertPayload);
-    if(ok) showToast("Task assigned ✓","success");
+    const ok=await insertTask(insertPayload);
+    if(ok)showToast("Task assigned ✓","success");
   }
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   Log Work modal — FIX 2: explicit minimal payloads only
+══════════════════════════════════════════════════════════════════════ */
 let logWorkId=null;
 function openLogModal(id){
-  if(!id||id==="null"||id==="undefined"){ showToast("Error: invalid task ID","error"); return; }
+  if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID","error");return;}
   const t=tasks.find(x=>String(x.id)===String(id));
-  if(!t){ showToast("Task not found — try refreshing","error"); return; }
+  if(!t){showToast("Task not found — try refreshing","error");return;}
   logWorkId=String(t.id);
-  document.getElementById("log-task-name").textContent     = t.name;
-  document.getElementById("log-assignee").textContent      = t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
-  document.getElementById("log-current-hours").textContent = (parseFloat(t.hours_worked)||0).toFixed(1)+"h";
-  document.getElementById("lw-status").value               = t.status;
-  document.getElementById("lw-hours").value                = t.hours_worked||"";
-  document.getElementById("lw-note").value                 = "";
-  document.getElementById("modal-log").style.display = "flex";
-  setTimeout(()=>document.getElementById("lw-hours").focus(), 60);
+  document.getElementById("log-task-name").textContent=t.name;
+  document.getElementById("log-assignee").textContent=t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
+  document.getElementById("log-current-hours").textContent=(parseFloat(t.hours_worked)||0).toFixed(1)+"h";
+  document.getElementById("lw-status").value=t.status;
+  document.getElementById("lw-hours").value=t.hours_worked||"";
+  document.getElementById("lw-note").value="";
+  document.getElementById("modal-log").style.display="flex";
+  setTimeout(()=>document.getElementById("lw-hours").focus(),60);
 }
-function closeLogModal(){ document.getElementById("modal-log").style.display="none"; logWorkId=null; }
-function handleLogOverlayClick(e){ if(e.target.id==="modal-log") closeLogModal(); }
+function closeLogModal(){document.getElementById("modal-log").style.display="none";logWorkId=null;}
+function handleLogOverlayClick(e){if(e.target.id==="modal-log")closeLogModal();}
 
 async function saveLogWork(){
-  if(!logWorkId||logWorkId==="null"){ showToast("Error: missing task ID.","error"); closeLogModal(); return; }
-  if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
+  if(!logWorkId||logWorkId==="null"){showToast("Error: missing task ID.","error");closeLogModal();return;}
+  if(!isConfigured()){showToast("Configure Supabase first","error");return;}
 
-  const newStatus = document.getElementById("lw-status").value;
-  const newHours  = parseFloat(document.getElementById("lw-hours").value)||0;
-  const workNote  = document.getElementById("lw-note").value.trim();
-  const t = tasks.find(x=>String(x.id)===String(logWorkId));
+  const newStatus=document.getElementById("lw-status").value;
+  const newHours =parseFloat(document.getElementById("lw-hours").value)||0;
+  const workNote =document.getElementById("lw-note").value.trim();
+  const t=tasks.find(x=>String(x.id)===String(logWorkId));
 
-  /*
-   * Build a minimal update payload using ONLY columns that exist in
-   * the "tasks" table. This prevents PGRST204 errors for any user.
-   *
-   * Columns written here:   status, hours_worked, notes
-   * Columns intentionally NOT written: user_id, assigned_to_email,
-   *   name, person, priority, client, due_date, added_by
-   * (Those are set only at task creation or full edit, not on log-work.)
-   */
-  const updatePayload = {
+  /* ══ FIX 2: Explicit minimal payload — ONLY hours_worked + status ══
+     If there is a work note, we also update notes (one extra allowed column).
+     "creator_user_id", "project", "project_name", "user_id", etc. are
+     NEVER included here.                                               */
+  const updatePayload={
     status:       newStatus,
     hours_worked: newHours,
   };
 
   if(workNote){
-    const stamp = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    const existingNotes = t?.notes || "";
-    updatePayload.notes = existingNotes
-      ? existingNotes + `\n[${stamp}] ${workNote}`
-      : `[${stamp}] ${workNote}`;
+    const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    const existing=t?.notes||"";
+    updatePayload.notes=existing?existing+`\n[${stamp}] ${workNote}`:`[${stamp}] ${workNote}`;
   }
 
   closeLogModal();
   setSyncStatus("syncing","Saving…");
-  const ok = await updateTaskDB(logWorkId, updatePayload);
-  if(ok) showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`,"success");
+  const ok=await updateTaskDB(logWorkId,updatePayload);
+  if(ok)showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`,"success");
 }
 
-/*
- * quickStatus — called only for assignees via the status dropdown.
- * Sends the absolute minimum payload: just the "status" column.
- * No user_id, no assigned_to_email, nothing that could cause PGRST204.
- */
-async function quickStatus(id, status){
-  if(!isConfigured()) return;
-  if(!id || id==="null" || id==="undefined"){
-    showToast("Error: invalid task ID","error"); return;
-  }
-  // Explicit single-column payload — no risk of sending banned column names
-  await updateTaskDB(id, { status: status });
+/* ══════════════════════════════════════════════════════════════════════
+   quickStatus — FIX 2: sends ONLY { status: newStatus }
+   No other columns. Cannot cause PGRST204 under any circumstances.
+══════════════════════════════════════════════════════════════════════ */
+async function quickStatus(id,status){
+  if(!isConfigured())return;
+  if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID","error");return;}
+  /* ── Explicit single-column payload — nothing else ── */
+  await updateTaskDB(id,{status:status});
 }
+
 async function deleteTask(id){
-  if(!confirm("Delete this task?")) return;
-  if(!isConfigured()) return;
+  if(!confirm("Delete this task?"))return;
+  if(!isConfigured())return;
   const ok=await deleteTaskDB(id);
-  if(ok) showToast("Task deleted","success");
+  if(ok)showToast("Task deleted","success");
 }
 
-function setSyncStatus(state, msg){
-  const dot=document.getElementById("sync-dot"), label=document.getElementById("sync-label");
-  dot.className="sync-dot"+(state==="syncing"?" syncing":state==="error"?" error":"");
-  label.textContent=msg;
-}
-function showToast(msg, type=""){
-  const c=document.getElementById("toast"), el=document.createElement("div");
-  el.className="toast-item "+type;
-  el.innerHTML=`<span>${esc(msg)}</span>`;
-  c.appendChild(el); setTimeout(()=>el.remove(), 3500);
-}
-function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function setSyncStatus(state,msg){const dot=document.getElementById("sync-dot"),label=document.getElementById("sync-label");dot.className="sync-dot"+(state==="syncing"?" syncing":state==="error"?" error":"");label.textContent=msg;}
+function showToast(msg,type=""){const c=document.getElementById("toast"),el=document.createElement("div");el.className="toast-item "+type;el.innerHTML=`<span>${esc(msg)}</span>`;c.appendChild(el);setTimeout(()=>el.remove(),3500);}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-/* ─── Keyboard shortcuts ─── */
-document.addEventListener("keydown", e => {
-  if(e.key==="Escape"){ closeModal(); closeLogModal(); }
-  if(e.key==="n" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)) openModal();
+/* ══ Keyboard shortcuts ══ */
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){closeModal();closeLogModal();}
+  if(e.key==="n"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))openModal();
 });
 
-/* ─── Live-clear field errors ─── */
-window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("f-name")?.addEventListener("input", () => {
-    if(document.getElementById("f-name").value.trim()) setFieldError("f-name","err-name",false);
+/* ══ Live-clear field errors ══ */
+window.addEventListener("DOMContentLoaded",()=>{
+  document.getElementById("f-name")?.addEventListener("input",()=>{
+    if(document.getElementById("f-name").value.trim())setFieldError("f-name","err-name",false);
   });
-  document.getElementById("f-client")?.addEventListener("change", () => {
-    if(document.getElementById("f-client").value) setFieldError("f-client","err-client",false);
+  document.getElementById("f-client")?.addEventListener("change",()=>{
+    if(document.getElementById("f-client").value)setFieldError("f-client","err-client",false);
   });
 });
 </script>
