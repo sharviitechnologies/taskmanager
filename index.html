@@ -13,7 +13,7 @@
     const ALLOWED_EMAILS  = [
       "support@sharvii.com",
       "prabhu.channappagol@sharvii.com",
-      "chaithra.lakshminarayanan@sharvii.com",
+      "pchaithra.lakshminarayanan@sharvii.com",
       "mounika@sharvii.com",
       "chaithra@sharvii.com",
       "sarikaratkalkar@gmail.com",
@@ -804,8 +804,14 @@ async function dbUpdate(id, payload) {
     showToast("Error: invalid task ID — cannot update","error"); return false;
   }
   const clean = stripUnknownFields(payload);
+  // Log the exact payload sent so any remaining column issues are visible in console
+  console.debug("[dbUpdate] id:", id, "payload:", clean);
   const { error } = await sb.from("tasks").update(clean).eq("id", id);
-  if(error) throw new Error(error.message);
+  if(error){
+    // Include the Supabase error detail so PGRST204 column name is visible
+    const detail = error.details ? ` — ${error.details}` : "";
+    throw new Error(`${error.message}${detail} (code: ${error.code})`);
+  }
   return true;
 }
 async function dbDelete(id) {
@@ -817,9 +823,16 @@ async function dbDelete(id) {
 /**
  * Remove any fields that are known NOT to exist in the database.
  * This is the definitive guard against PGRST204 schema errors.
- * Add any column names that do NOT exist in Supabase to BANNED_COLS.
+ *
+ * BANNED_COLS must include:
+ *   - "project" / "project_name"  → columns that were never created
+ *   - "creator_user_id"           → old name; renamed to "user_id" in schema
+ *
+ * stripUnknownFields() is called on EVERY insert and update payload,
+ * so even if a legacy reference slips through anywhere in the code,
+ * it will be stripped before it reaches Supabase.
  */
-const BANNED_COLS = ["project", "project_name"];
+const BANNED_COLS = ["project", "project_name", "creator_user_id"];
 function stripUnknownFields(obj) {
   const clean = { ...obj };
   BANNED_COLS.forEach(col => delete clean[col]);
@@ -1596,22 +1609,26 @@ async function saveTask(){
   if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
 
   /*
-   * Read the task ID from the hidden form field — this is the ONLY
-   * source of truth for edit-vs-insert.  The JS variable `editingId`
-   * is kept in sync as a convenience but the field is authoritative,
-   * because it cannot be accidentally wiped by a background re-render.
+   * editingTaskId is read from the hidden form field #f-task-id.
+   * This is the single authoritative source — it cannot be wiped by a
+   * background polling re-render the way a plain JS variable can.
+   *
+   * Non-empty string → EDIT MODE  → sb.from("tasks").update().eq("id", editingTaskId)
+   * Empty / null     → INSERT MODE → sb.from("tasks").insert()
    */
-  const taskId = document.getElementById("f-task-id").value.trim() || null;
-  const isEditing = !!taskId;
+  const editingTaskId = document.getElementById("f-task-id").value.trim() || null;
+  const isEditing     = !!editingTaskId;
 
   const assignedName  = document.getElementById("f-person").value;
   const assignedEmail = NAME_TO_EMAIL[assignedName] || "";
 
   /*
-   * Build payload — intentionally NO "project" or "project_name" field.
-   * stripUnknownFields() in dbInsert/dbUpdate provides a second safety net.
+   * Payload uses ONLY columns that exist in the Supabase "tasks" table.
+   * Intentionally excluded (no column in DB):
+   *   - "project" / "project_name"  → caught by BANNED_COLS + stripUnknownFields
+   *   - "creator_user_id"           → old name; DB column is now "user_id"
    */
-  const payload = {
+  const editPayload = {
     name:              document.getElementById("f-name").value.trim(),
     person:            assignedName,
     assigned_to_email: assignedEmail,
@@ -1621,22 +1638,31 @@ async function saveTask(){
     due_date:          document.getElementById("f-due").value || null,
   };
 
-  if(!isEditing){
-    // New task only: add metadata that must not change on edit
-    payload.status       = "To Do";
-    payload.hours_worked = 0;
-    payload.added_by     = currentUser;
-    payload.user_id      = currentUserId;   // Supabase auth UUID — maps to DB column "user_id"
-  }
-
-  closeModal();   // clears editingId + hidden field
+  closeModal();   // clears editingId JS var + hidden field before async work
   setSyncStatus("syncing","Saving…");
 
   if(isEditing){
-    const ok = await updateTaskDB(taskId, payload);
+    /*
+     * UPDATE — modify only the editable fields.
+     * Do NOT send: status, hours_worked, user_id, added_by
+     * Those must not change when the creator edits task details.
+     */
+    const ok = await updateTaskDB(editingTaskId, editPayload);
     if(ok) showToast("Task updated ✓","success");
   } else {
-    const ok = await insertTask(payload);
+    /*
+     * INSERT — include all metadata for a brand-new task.
+     * user_id is the Supabase auth UUID stored in the DB column "user_id".
+     * (Previously this was mistakenly called "creator_user_id" — now fixed.)
+     */
+    const insertPayload = {
+      ...editPayload,
+      status:       "To Do",
+      hours_worked: 0,
+      added_by:     currentUser,
+      user_id:      currentUserId,   // DB column = "user_id"
+    };
+    const ok = await insertTask(insertPayload);
     if(ok) showToast("Task assigned ✓","success");
   }
 }
@@ -1662,27 +1688,52 @@ function handleLogOverlayClick(e){ if(e.target.id==="modal-log") closeLogModal()
 async function saveLogWork(){
   if(!logWorkId||logWorkId==="null"){ showToast("Error: missing task ID.","error"); closeLogModal(); return; }
   if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
+
   const newStatus = document.getElementById("lw-status").value;
   const newHours  = parseFloat(document.getElementById("lw-hours").value)||0;
   const workNote  = document.getElementById("lw-note").value.trim();
-  const t=tasks.find(x=>String(x.id)===String(logWorkId));
-  let updatedNotes=t?.notes||"";
+  const t = tasks.find(x=>String(x.id)===String(logWorkId));
+
+  /*
+   * Build a minimal update payload using ONLY columns that exist in
+   * the "tasks" table. This prevents PGRST204 errors for any user.
+   *
+   * Columns written here:   status, hours_worked, notes
+   * Columns intentionally NOT written: user_id, assigned_to_email,
+   *   name, person, priority, client, due_date, added_by
+   * (Those are set only at task creation or full edit, not on log-work.)
+   */
+  const updatePayload = {
+    status:       newStatus,
+    hours_worked: newHours,
+  };
+
   if(workNote){
-    const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    updatedNotes=updatedNotes?updatedNotes+`\n[${stamp}] ${workNote}`:`[${stamp}] ${workNote}`;
+    const stamp = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    const existingNotes = t?.notes || "";
+    updatePayload.notes = existingNotes
+      ? existingNotes + `\n[${stamp}] ${workNote}`
+      : `[${stamp}] ${workNote}`;
   }
-  const payload={status:newStatus, hours_worked:newHours};
-  if(workNote) payload.notes=updatedNotes;
-  closeLogModal(); setSyncStatus("syncing","Saving…");
-  const ok=await updateTaskDB(logWorkId, payload);
+
+  closeLogModal();
+  setSyncStatus("syncing","Saving…");
+  const ok = await updateTaskDB(logWorkId, updatePayload);
   if(ok) showToast(`Work logged ✓ — ${newHours}h · ${newStatus}`,"success");
 }
 
-/* Status quick-change (assignee only — enforced in renderBoard) */
+/*
+ * quickStatus — called only for assignees via the status dropdown.
+ * Sends the absolute minimum payload: just the "status" column.
+ * No user_id, no assigned_to_email, nothing that could cause PGRST204.
+ */
 async function quickStatus(id, status){
   if(!isConfigured()) return;
-  if(!id||id==="null"){ showToast("Error: invalid task ID","error"); return; }
-  await updateTaskDB(id, {status});
+  if(!id || id==="null" || id==="undefined"){
+    showToast("Error: invalid task ID","error"); return;
+  }
+  // Explicit single-column payload — no risk of sending banned column names
+  await updateTaskDB(id, { status: status });
 }
 async function deleteTask(id){
   if(!confirm("Delete this task?")) return;
