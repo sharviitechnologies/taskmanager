@@ -12,6 +12,7 @@
     const ALLOWED_DOMAIN  = "@sharvii.com";
     const ALLOWED_EMAILS  = [
       "support@sharvii.com",
+      "prabhu.channappagol@sharvii.com",
       "pchaithra.lakshminarayanan@sharvii.com",
       "mounika@sharvii.com",
       "chaithra@sharvii.com",
@@ -435,7 +436,7 @@
       <div class="login-sub">We sent a sign-in code to <strong id="otp-email-display" style="color:var(--indigo)"></strong></div>
       <div class="login-otp-info">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Enter the 6–8 digit code from the email, or click the magic link directly.
+        Enter the 8-digit code from the email, or click the magic link directly.
       </div>
       <label class="login-label" for="login-otp-input">Sign-in Code</label>
       <input class="login-input" id="login-otp-input" type="text" inputmode="numeric" placeholder="· · · · · · · ·" maxlength="8" autocomplete="one-time-code" style="font-size:20px;letter-spacing:.3em;text-align:center;font-family:'Syne',sans-serif;color:var(--indigo);font-weight:700;" oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter') verifyOTP()"/>
@@ -877,8 +878,8 @@ async function verifyOTP() {
   const errEl=document.getElementById("otp-error");
   const errMsg=document.getElementById("otp-error-msg");
   errEl.classList.remove("visible");
-  if(token.length<6){
-    errMsg.textContent="Please enter at least 6 digits.";
+  if(token.length < 6){
+    errMsg.textContent="Please enter the full code (6–8 digits).";
     errEl.classList.add("visible"); return;
   }
   btn.disabled=true;
@@ -978,7 +979,7 @@ function startPolling() {
         // Notify: a new task assigned to me (by someone else), matched via assigned_to_email or person name
         const isForMe = (t.assigned_to_email && t.assigned_to_email === currentUserEmail) ||
                         (!t.assigned_to_email && t.person === currentUser);
-        if(!lastTaskIds.has(t.id) && isForMe && t.creator_user_id !== currentUserId){
+        if(!lastTaskIds.has(t.id) && isForMe && t.user_id !== currentUserId){
           const msg = `📋 ${t.added_by||"Someone"} assigned you: "${t.name}"`;
           pushNotification(msg, t.id);
           showToast(`New task assigned by ${t.added_by||"a teammate"}!`, "info");
@@ -1242,8 +1243,8 @@ function getFiltered(){
    ROLE-BASED PERMISSION HELPERS
 
    isCreator  → the logged-in user created this task
-                matched by: creator_user_id === currentUserId
-                fallback (old tasks without creator_user_id):
+                matched by: user_id === currentUserId  (Supabase auth UUID)
+                fallback (old tasks without user_id):
                   added_by name matches currentUser OR user is Manager
 
    isAssignee → the logged-in user is assigned this task
@@ -1251,8 +1252,8 @@ function getFiltered(){
                 fallback: person name === currentUser
 ══════════════════════════════════════════════════ */
 function taskIsCreator(t){
-  if(t.creator_user_id) return t.creator_user_id === currentUserId;
-  // Fallback for legacy tasks
+  if(t.user_id) return t.user_id === currentUserId;
+  // Fallback for legacy tasks that predate the user_id column
   return currentUser === MANAGER_NAME || currentUser === t.added_by;
 }
 function taskIsAssignee(t){
@@ -1622,10 +1623,10 @@ async function saveTask(){
 
   if(!isEditing){
     // New task only: add metadata that must not change on edit
-    payload.status          = "To Do";
-    payload.hours_worked    = 0;
-    payload.added_by        = currentUser;
-    payload.creator_user_id = currentUserId;   // Supabase auth UUID
+    payload.status       = "To Do";
+    payload.hours_worked = 0;
+    payload.added_by     = currentUser;
+    payload.user_id      = currentUserId;   // Supabase auth UUID — maps to DB column "user_id"
   }
 
   closeModal();   // clears editingId + hidden field
