@@ -600,6 +600,9 @@
       </button>
     </div>
 
+    <!-- Hidden field: stores the task UUID when editing. NEVER cleared until modal closes. -->
+    <input type="hidden" id="f-task-id" value=""/>
+
     <!-- Validation Banner -->
     <div class="modal-validation-banner" id="modal-val-banner">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -780,43 +783,46 @@ async function getHeaders() {
   };
 }
 
-/* ─── REST helpers ─── */
+/* ─── DB helpers — use the Supabase JS client exclusively ──────────────────
+   This avoids raw-fetch quirks (query-string filter escaping, Prefer headers)
+   and means update() reliably targets the exact row by UUID.              */
 async function dbSelect() {
-  const h = await getHeaders();
-  const res = await fetch(`${REST}/tasks?select=*&order=created_at.desc`, { headers:{...h,"Accept":"application/json"} });
-  if(!res.ok){const t=await res.text();throw new Error(t);}
-  return res.json();
+  const { data, error } = await sb.from("tasks").select("*").order("created_at", { ascending: false });
+  if(error) throw new Error(error.message);
+  return data;
 }
 async function dbInsert(payload) {
-  const h = await getHeaders();
-  const res = await fetch(`${REST}/tasks`,{method:"POST",headers:{...h,"Prefer":"return=representation"},body:JSON.stringify(payload)});
-  if(!res.ok){const t=await res.text();throw new Error(t);}
-  return res.json();
+  // Strip any undefined/null fields that could hit missing-column errors
+  const clean = stripUnknownFields(payload);
+  const { data, error } = await sb.from("tasks").insert(clean).select();
+  if(error) throw new Error(error.message);
+  return data;
 }
 async function dbUpdate(id, payload) {
-  if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID","error");return false;}
-  const h = await getHeaders();
-  const res = await fetch(`${REST}/tasks?id=eq.${id}`,{method:"PATCH",headers:{...h,"Prefer":"return=minimal"},body:JSON.stringify(payload)});
-  if(!res.ok){const t=await res.text();throw new Error(t);}
-  return true;
-}
-  async function saveTask() {
-  const taskId = document.getElementById('edit-task-id').value; // Hidden field for ID
-
-  if (taskId) {
-    // 1. UPDATE logic for existing task
-    const { error } = await sb.from('tasks').update(formData).eq('id', taskId);
-  } else {
-    // 2. INSERT logic for new task
-    const { error } = await sb.from('tasks').insert([formData]);
+  if(!id || id === "null" || id === "undefined") {
+    showToast("Error: invalid task ID — cannot update","error"); return false;
   }
-}
-  
-async function dbDelete(id) {
-  const h = await getHeaders();
-  const res = await fetch(`${REST}/tasks?id=eq.${id}`,{method:"DELETE",headers:h});
-  if(!res.ok){const t=await res.text();throw new Error(t);}
+  const clean = stripUnknownFields(payload);
+  const { error } = await sb.from("tasks").update(clean).eq("id", id);
+  if(error) throw new Error(error.message);
   return true;
+}
+async function dbDelete(id) {
+  const { error } = await sb.from("tasks").delete().eq("id", id);
+  if(error) throw new Error(error.message);
+  return true;
+}
+
+/**
+ * Remove any fields that are known NOT to exist in the database.
+ * This is the definitive guard against PGRST204 schema errors.
+ * Add any column names that do NOT exist in Supabase to BANNED_COLS.
+ */
+const BANNED_COLS = ["project", "project_name"];
+function stripUnknownFields(obj) {
+  const clean = { ...obj };
+  BANNED_COLS.forEach(col => delete clean[col]);
+  return clean;
 }
 
 /* ══════════════════════════════════════════════════
@@ -1290,11 +1296,12 @@ function hoursBadge(hours){
 /* ══════════════════════════════════════════════════
    renderBoard — strict role-based permissions
    ─────────────────────────────────────────────────
-   CREATOR  → can see Edit + Delete buttons
-              status is shown as a STATIC LABEL (locked)
-   ASSIGNEE → can see the status DROPDOWN (editable)
-              Edit + Delete buttons are HIDDEN
-   NEITHER  → static status label, no edit/delete
+   CREATOR  → Edit + Delete visible; status is a LOCKED static label
+   ASSIGNEE → Status dropdown ENABLED; Edit + Delete HIDDEN
+   NEITHER  → static status label; no edit/delete/log-work
+   NOTE: Buttons use data-id attributes instead of inline onclick string
+         interpolation — UUIDs contain hyphens that can break template
+         literals when passed through esc().
 ══════════════════════════════════════════════════ */
 function renderBoard(){
   const filtered=getFiltered(), grid=document.getElementById("cards-grid"), empty=document.getElementById("empty-state");
@@ -1302,6 +1309,7 @@ function renderBoard(){
   empty.style.display="none";
 
   grid.innerHTML = filtered.map((t, i) => {
+    const taskId = String(t.id);
     const mi=TEAM.findIndex(m=>m.name===t.person), avColor=AV_COLORS[mi>=0?mi:0];
     const role=TEAM.find(m=>m.name===t.person)?.role||"", rc=ROLE_COLOR[role]||ROLE_COLOR.Junior;
     const pClass=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
@@ -1315,31 +1323,29 @@ function renderBoard(){
     } else if(t.due_date && t.status==="Done"){
       const d=new Date(t.due_date); dueBadge=`<span class="due-chip normal">📅 ${d.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</span>`;
     }
-    const isOverdue = ds==="overdue" && t.status!=="Done";
-    const addedByHtml = t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
-    const notesHtml   = t.notes   ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
+    const isOverdue  = ds==="overdue" && t.status!=="Done";
+    const addedByHtml= t.added_by ? `<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>` : "";
+    const notesHtml  = t.notes    ? `<div class="card-notes">${esc(t.notes)}</div>` : "";
 
     /* ── Permission flags ── */
     const isCreator  = taskIsCreator(t);
     const isAssignee = taskIsAssignee(t);
 
     /*
-     * STATUS CONTROL RULES:
-     * • Assignee   → editable <select>
-     * • Creator    → static label with lock icon (cannot change status)
-     * • Neither    → static label
+     * STATUS CONTROL:
+     * • Pure Assignee (not the creator) → editable dropdown via data-id
+     * • Creator (even if also assignee) → locked static label
+     * • Neither                         → locked static label
      */
     const statusCls = t.status==="Done"?"status-done": t.status==="In Progress"?"status-prog":"status-todo";
     let statusControl;
     if(isAssignee && !isCreator){
-      // Pure assignee: can update status only
-      statusControl = `<select class="status-select ${statusCls}" onchange="quickStatus('${t.id}',this.value)">
+      statusControl = `<select class="status-select ${statusCls}" data-id="${taskId}" onchange="quickStatusFromSelect(this)">
         <option ${t.status==="To Do"?"selected":""}>To Do</option>
         <option ${t.status==="In Progress"?"selected":""}>In Progress</option>
         <option ${t.status==="Done"?"selected":""}>Done</option>
       </select>`;
     } else {
-      // Creator or uninvolved viewer: static label
       statusControl = `<span class="status-lock-hint">
         <svg width="10" height="10" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         ${esc(t.status)}
@@ -1347,26 +1353,20 @@ function renderBoard(){
     }
 
     /*
-     * EDIT / DELETE RULES:
-     * • Only the Creator sees these buttons
-     * • Assignee (non-creator) never sees them
+     * EDIT / DELETE: Creator only, using data-id to safely pass the UUID
      */
     const actionBtns = isCreator ? `
-      <button class="icon-btn" onclick="openEdit('${t.id}')" title="Edit task">
+      <button class="icon-btn btn-edit-task" data-id="${taskId}" title="Edit task">
         <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-      <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Delete task">
+      <button class="icon-btn danger btn-delete-task" data-id="${taskId}" title="Delete task">
         <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>` : "";
 
-    /*
-     * LOG WORK RULES:
-     * • Only the Assignee can log work
-     */
-    const canLogWork = isAssignee;
-    const logWorkRow = canLogWork
+    /* LOG WORK: Assignee only */
+    const logWorkRow = isAssignee
       ? `<div class="card-footer-row" style="margin-top:4px;">
-          <button class="log-work-btn" onclick="openLogModal('${esc(t.id)}')">
+          <button class="log-work-btn btn-log-work" data-id="${taskId}">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             Log Work
           </button>
@@ -1378,7 +1378,7 @@ function renderBoard(){
           </span>
         </div>`;
 
-    /* Role pill: show viewer's relationship to the task */
+    /* Role pill */
     const rolePill = isCreator && isAssignee
       ? `<span class="role-pill creator" title="You assigned this to yourself">✏️ Creator &amp; Assignee</span>`
       : isCreator
@@ -1388,7 +1388,7 @@ function renderBoard(){
       : "";
 
     return `
-      <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s">
+      <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s" data-task-id="${taskId}">
         <div class="card-top">
           <div class="card-name">${esc(t.name)}</div>
           <div class="card-actions">${actionBtns}</div>
@@ -1414,6 +1414,30 @@ function renderBoard(){
         </div>
       </div>`;
   }).join("");
+}
+
+/* ── Delegated event handlers for card buttons ──────────────────────────
+   Using event delegation on #cards-grid means we never have inline onclick
+   with UUID strings — the safest approach.                               */
+document.addEventListener("click", function(e){
+  // Edit button
+  const editBtn = e.target.closest(".btn-edit-task");
+  if(editBtn){ openEdit(editBtn.dataset.id); return; }
+
+  // Delete button
+  const delBtn = e.target.closest(".btn-delete-task");
+  if(delBtn){ deleteTask(delBtn.dataset.id); return; }
+
+  // Log Work button
+  const logBtn = e.target.closest(".btn-log-work");
+  if(logBtn){ openLogModal(logBtn.dataset.id); return; }
+});
+
+/* quickStatus via data-id on the select element */
+function quickStatusFromSelect(selectEl){
+  const id = selectEl.dataset.id;
+  const status = selectEl.value;
+  quickStatus(id, status);
 }
 
 function renderSummary(){
@@ -1516,7 +1540,9 @@ function validateTaskForm(){
 
 /* ─── Modals ─── */
 function openModal(){
-  editingId=null;
+  // ── NEW TASK: clear the hidden task-ID so saveTask always inserts ──
+  document.getElementById("f-task-id").value = "";
+  editingId = null;
   clearModalErrors();
   document.getElementById("modal-title").textContent    = "Assign Task";
   document.getElementById("modal-subtitle").textContent = "New task · auto-starts as To Do";
@@ -1533,35 +1559,56 @@ function openModal(){
 }
 
 function openEdit(id){
-  const t=tasks.find(x=>x.id===id); if(!t) return;
-  editingId=id;
+  const t = tasks.find(x => String(x.id) === String(id));
+  if(!t){ showToast("Task not found — try refreshing","error"); return; }
+
+  // ── EDIT MODE: stamp the UUID into the hidden field immediately ──
+  editingId = String(t.id);
+  document.getElementById("f-task-id").value = editingId;
+
   clearModalErrors();
   document.getElementById("modal-title").textContent    = "Edit Task Details";
   document.getElementById("modal-subtitle").textContent = `Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
   document.getElementById("btn-save").innerHTML = `<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
-  document.getElementById("f-name").value     = t.name;
-  document.getElementById("f-person").value   = t.person;
-  document.getElementById("f-priority").value = t.priority;
-  document.getElementById("f-client").value   = t.client||"";
-  document.getElementById("f-notes").value    = t.notes||"";
-  document.getElementById("f-due").value      = t.due_date||"";
-  document.getElementById("added-by-display").textContent = t.added_by||currentUser;
+  document.getElementById("f-name").value     = t.name    || "";
+  document.getElementById("f-person").value   = t.person  || TEAM[0].name;
+  document.getElementById("f-priority").value = t.priority|| "Medium";
+  document.getElementById("f-client").value   = t.client  || "";
+  document.getElementById("f-notes").value    = t.notes   || "";
+  document.getElementById("f-due").value      = t.due_date|| "";
+  document.getElementById("added-by-display").textContent = t.added_by || currentUser;
   document.getElementById("modal").style.display = "flex";
   setTimeout(()=>document.getElementById("f-name").focus(), 60);
 }
-function closeModal(){ document.getElementById("modal").style.display="none"; editingId=null; clearModalErrors(); }
+
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+  // Clear both the JS variable AND the hidden field on close
+  editingId = null;
+  document.getElementById("f-task-id").value = "";
+  clearModalErrors();
+}
 function handleOverlayClick(e){ if(e.target.id==="modal") closeModal(); }
 
 async function saveTask(){
   if(!validateTaskForm()) return;
   if(!isConfigured()){ showToast("Configure Supabase first","error"); return; }
 
+  /*
+   * Read the task ID from the hidden form field — this is the ONLY
+   * source of truth for edit-vs-insert.  The JS variable `editingId`
+   * is kept in sync as a convenience but the field is authoritative,
+   * because it cannot be accidentally wiped by a background re-render.
+   */
+  const taskId = document.getElementById("f-task-id").value.trim() || null;
+  const isEditing = !!taskId;
+
   const assignedName  = document.getElementById("f-person").value;
   const assignedEmail = NAME_TO_EMAIL[assignedName] || "";
 
   /*
-   * Payload intentionally excludes 'project' — the column does not exist
-   * in the database and would cause a PGRST204 schema error.
+   * Build payload — intentionally NO "project" or "project_name" field.
+   * stripUnknownFields() in dbInsert/dbUpdate provides a second safety net.
    */
   const payload = {
     name:              document.getElementById("f-name").value.trim(),
@@ -1573,18 +1620,19 @@ async function saveTask(){
     due_date:          document.getElementById("f-due").value || null,
   };
 
-  if(!editingId){
+  if(!isEditing){
+    // New task only: add metadata that must not change on edit
     payload.status          = "To Do";
     payload.hours_worked    = 0;
     payload.added_by        = currentUser;
     payload.creator_user_id = currentUserId;   // Supabase auth UUID
   }
 
-  closeModal();
+  closeModal();   // clears editingId + hidden field
   setSyncStatus("syncing","Saving…");
 
-  if(editingId){
-    const ok = await updateTaskDB(editingId, payload);
+  if(isEditing){
+    const ok = await updateTaskDB(taskId, payload);
     if(ok) showToast("Task updated ✓","success");
   } else {
     const ok = await insertTask(payload);
@@ -1595,8 +1643,9 @@ async function saveTask(){
 let logWorkId=null;
 function openLogModal(id){
   if(!id||id==="null"||id==="undefined"){ showToast("Error: invalid task ID","error"); return; }
-  const t=tasks.find(x=>x.id===id); if(!t){ showToast("Task not found.","error"); return; }
-  logWorkId=id;
+  const t=tasks.find(x=>String(x.id)===String(id));
+  if(!t){ showToast("Task not found — try refreshing","error"); return; }
+  logWorkId=String(t.id);
   document.getElementById("log-task-name").textContent     = t.name;
   document.getElementById("log-assignee").textContent      = t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
   document.getElementById("log-current-hours").textContent = (parseFloat(t.hours_worked)||0).toFixed(1)+"h";
@@ -1615,7 +1664,7 @@ async function saveLogWork(){
   const newStatus = document.getElementById("lw-status").value;
   const newHours  = parseFloat(document.getElementById("lw-hours").value)||0;
   const workNote  = document.getElementById("lw-note").value.trim();
-  const t=tasks.find(x=>x.id===logWorkId);
+  const t=tasks.find(x=>String(x.id)===String(logWorkId));
   let updatedNotes=t?.notes||"";
   if(workNote){
     const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
