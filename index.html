@@ -95,7 +95,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-md); border-radius: 99px; }
 
-    /* LOGIN SHIELD — light theme matching dashboard */
+    /* LOGIN SHIELD */
     #login-shield {
       position: fixed; inset: 0; z-index: 9999;
       background: var(--bg);
@@ -108,77 +108,41 @@
     @keyframes shieldIn { from{opacity:0} to{opacity:1} }
 
     .login-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px 38px 34px;
-      width: 100%; max-width: 420px;
-      box-shadow: var(--shadow-lg);
-      animation: cardRise .35s cubic-bezier(.16,1,.3,1) .05s both;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 40px 38px 34px; width: 100%; max-width: 420px;
+      box-shadow: var(--shadow-lg); animation: cardRise .35s cubic-bezier(.16,1,.3,1) .05s both;
     }
     @keyframes cardRise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
     .login-logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
-    .login-logo-icon {
-      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 3px 12px rgba(67,97,238,.35);
-    }
+    .login-logo-icon { width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(67,97,238,.35); }
     .login-logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: var(--text); letter-spacing: -.01em; line-height: 1.2; }
     .login-logo-sub { font-size: 11px; color: var(--text-3); margin-top: 2px; font-weight: 400; }
     .login-heading { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: #1e293b; line-height: 1.2; margin-bottom: 7px; letter-spacing: -.02em; }
     .login-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 26px; }
     .login-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-    .login-input {
-      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
-      border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text);
-      outline: none; transition: border-color .12s, background .12s;
-      font-family: 'DM Sans', sans-serif;
-    }
+    .login-input { width: 100%; background: var(--bg); border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; font-size: 13px; color: var(--text); outline: none; transition: border-color .12s, background .12s; font-family: 'DM Sans', sans-serif; }
     .login-input::placeholder { color: var(--text-3); }
     .login-input:focus { border-color: var(--indigo); background: #fff; box-shadow: 0 0 0 3px rgba(67,97,238,.12); }
-    .login-btn {
-      width: 100%; margin-top: 16px; padding: 11px;
-      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
-      color: #fff; border: none; border-radius: var(--radius);
-      font-size: 13px; font-weight: 700; font-family: 'Syne', sans-serif;
-      letter-spacing: .01em; cursor: pointer;
-      transition: opacity .15s, transform .1s;
-      box-shadow: 0 2px 8px rgba(67,97,238,.32);
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
+    .login-btn { width: 100%; margin-top: 16px; padding: 11px; background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%); color: #fff; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; font-family: 'Syne', sans-serif; letter-spacing: .01em; cursor: pointer; transition: opacity .15s, transform .1s; box-shadow: 0 2px 8px rgba(67,97,238,.32); display: flex; align-items: center; justify-content: center; gap: 8px; }
     .login-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
     .login-btn:active { transform: translateY(0); }
     .login-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-    .login-error {
-      margin-top: 10px; background: var(--red-lt); border: 1px solid var(--red-bd);
-      border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--red);
-      display: none; align-items: center; gap: 8px; line-height: 1.5;
-    }
+    .login-error { margin-top: 10px; background: var(--red-lt); border: 1px solid var(--red-bd); border-radius: 8px; padding: 9px 12px; font-size: 12px; color: var(--red); display: none; align-items: center; gap: 8px; line-height: 1.5; }
     .login-error.visible { display: flex; }
-    .login-otp-info {
-      background: var(--indigo-lt); border: 1px solid var(--indigo-bd);
-      border-radius: 9px; padding: 11px 13px; font-size: 12px; color: var(--indigo);
-      display: flex; align-items: flex-start; gap: 9px; line-height: 1.6; margin-bottom: 16px;
-    }
+    .login-otp-info { background: var(--indigo-lt); border: 1px solid var(--indigo-bd); border-radius: 9px; padding: 11px 13px; font-size: 12px; color: var(--indigo); display: flex; align-items: flex-start; gap: 9px; line-height: 1.6; margin-bottom: 16px; }
     .login-otp-info svg { flex-shrink: 0; margin-top: 1px; }
     .login-resend { background: none; border: none; color: var(--text-3); font-size: 12px; cursor: pointer; text-decoration: underline; margin-top: 14px; display: block; width: 100%; text-align: center; transition: color .12s; }
     .login-resend:hover { color: var(--indigo); }
     .login-divider { height: 1px; background: var(--border); margin: 22px 0; }
     .login-footer { text-align: center; font-size: 11px; color: var(--text-3); margin-top: 18px; }
 
-    /* Spinner — light bg version */
     .spin { width: 16px; height: 16px; border: 2px solid var(--border-md); border-top-color: var(--indigo); border-radius: 50%; animation: spin .7s linear infinite; }
-    /* White spinner variant for inside colored buttons */
     .spin-white { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
     @keyframes spin { to{ transform: rotate(360deg); } }
 
     /* SESSION CHECK */
-    #session-check {
-      position: fixed; inset: 0; z-index: 10000; background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-    }
+    #session-check { position: fixed; inset: 0; z-index: 10000; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
     #session-check .spin { width: 28px; height: 28px; border-width: 3px; }
     #session-check p { font-size: 12px; color: var(--text-3); font-family: 'DM Sans', sans-serif; }
 
@@ -186,11 +150,7 @@
     #app { display: flex; height: 100vh; overflow: hidden; }
 
     /* Sidebar */
-    #sidebar {
-      width: var(--sidebar-w); flex-shrink: 0;
-      background: var(--surface); border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; height: 100vh; overflow: hidden;
-    }
+    #sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     .sidebar-logo { height: var(--header-h); display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .logo-badge { font-size: 9px; font-weight: 700; color: var(--indigo); background: var(--indigo-lt); border: 1px solid var(--indigo-bd); border-radius: 4px; padding: 1px 5px; margin-left: 2px; letter-spacing:.04em; flex-shrink: 0; }
     .auth-user-bar { padding: 12px 16px 0; flex-shrink: 0; }
@@ -223,6 +183,25 @@
     .logout-btn { display: flex; align-items: center; gap: 8px; width: 100%; background: none; border: 1.5px solid var(--border); border-radius: 9px; padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text-3); cursor: pointer; transition: all .15s; }
     .logout-btn:hover { background: var(--red-lt); border-color: var(--red-bd); color: var(--red); }
     .logout-btn svg { flex-shrink: 0; }
+
+    /* ── CHANGED: Client sidebar rows — div instead of button so we can nest action buttons ── */
+    .client-sidebar-row { position: relative; display: flex; align-items: center; padding: 0; }
+    .client-sidebar-row .client-main-area { display: flex; align-items: center; gap: 10px; flex: 1; padding: 8px 16px; cursor: pointer; transition: background .12s; min-width: 0; }
+    .client-sidebar-row:hover .client-main-area,
+    .client-sidebar-row.active .client-main-area { background: transparent; }
+    .client-sidebar-row:hover { background: var(--bg); }
+    .client-sidebar-row.active { background: var(--indigo-lt); }
+    .client-sidebar-row.active .member-name { color: var(--indigo); font-weight: 600; }
+    .client-sidebar-row.active .client-count-badge { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+
+    /* Action icons appear on hover, replacing the count badge */
+    .client-count-badge { width: 22px; height: 22px; border-radius: 99px; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--text-2); display: flex; align-items: center; justify-content: center; line-height: 1; transition: opacity .12s; margin-right: 16px; }
+    .client-row-actions { display: none; align-items: center; gap: 2px; flex-shrink: 0; padding-right: 10px; }
+    .client-sidebar-row:hover .client-count-badge { display: none; }
+    .client-sidebar-row:hover .client-row-actions { display: flex; }
+    .client-action-btn { width: 24px; height: 24px; border: none; background: none; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-3); font-size: 12px; transition: background .12s, color .12s; cursor: pointer; }
+    .client-action-btn:hover { background: var(--surface); color: var(--text); }
+    .client-action-btn.danger:hover { background: var(--red-lt); color: var(--red); }
 
     /* Main */
     #main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; overflow: hidden; }
@@ -288,17 +267,8 @@
     .assignee-role { font-size: 10px; color: var(--text-3); }
     .added-by-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-3); background: var(--bg); border: 1px solid var(--border); border-radius: 99px; padding: 2px 8px; }
     .added-by-pill strong { color: var(--text-2); font-weight: 600; }
-    .status-lock-hint { font-size: 11px; color: var(--text-3); font-style: italic; display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; }
     .log-work-restricted { display: inline-flex; align-items: center; gap: 6px; width: 100%; justify-content: center; background: var(--bg); border: 1.5px dashed var(--border-md); color: var(--text-3); border-radius: 7px; padding: 5px 11px; font-size: 11px; font-weight: 500; cursor: default; font-style: italic; }
-    .status-select { background: transparent; border: 1px solid var(--border-md); border-radius: 7px; padding: 4px 8px; font-size: 11px; font-weight: 600; cursor: pointer; outline: none; color: var(--text-2); transition: border-color .12s; }
-    .status-select.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
-    .status-select.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
-
-    /* Static status badge on card — status only changeable via Log Work */
-    .status-badge-static {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 11px; font-weight: 600; border-radius: 7px; padding: 4px 9px; border: 1px solid;
-    }
+    .status-badge-static { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; border-radius: 7px; padding: 4px 9px; border: 1px solid; }
     .status-badge-static.status-todo { color: var(--text-2); border-color: var(--border-md); background: var(--bg); }
     .status-badge-static.status-prog { color: var(--blue);  border-color: var(--blue-bd);  background: var(--blue-lt); }
     .status-badge-static.status-done { color: var(--green); border-color: var(--green-bd); background: var(--green-lt); }
@@ -307,8 +277,6 @@
     .due-chip.today   { background: var(--orange-lt); color: var(--orange); border-color: var(--orange-bd); }
     .due-chip.soon    { background: var(--amber-lt);  color: var(--amber);  border-color: var(--amber-bd); }
     .due-chip.normal  { background: var(--bg);        color: var(--text-3); border-color: var(--border); }
-
-    /* Role pill on card */
     .role-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; border-radius: 99px; padding: 2px 7px; border: 1px solid; text-transform: uppercase; letter-spacing: .05em; }
     .role-pill.creator  { background: var(--indigo-lt); color: var(--indigo); border-color: var(--indigo-bd); }
     .role-pill.assignee { background: var(--teal-lt);   color: var(--teal);   border-color: var(--teal-bd); }
@@ -318,6 +286,7 @@
     #empty-state p { font-size: 13px; line-height: 1.6; }
     #empty-state strong { color: var(--indigo); }
 
+    /* Summary */
     #summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
     .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-sm); padding: 20px; animation: fadeUp .2s ease both; }
     .summary-card.overloaded { border-color: var(--red-bd); box-shadow: 0 0 0 1px var(--red-bd), var(--shadow-sm); }
@@ -360,8 +329,6 @@
     .btn-ghost { flex: 1; padding: 11px; border: 1.5px solid var(--border); background: none; border-radius: var(--radius); font-size: 13px; font-weight: 600; color: var(--text-2); transition: all .12s; }
     .btn-ghost:hover { background: var(--bg); border-color: var(--border-md); color: var(--text); }
     .btn-save { flex: 1; padding: 11px; }
-
-    /* Validation banner */
     .modal-validation-banner { background: var(--red-lt); border: 1.5px solid var(--red-bd); border-radius: 9px; padding: 10px 14px; font-size: 12px; color: var(--red); display: none; align-items: center; gap: 9px; line-height: 1.5; margin-bottom: 14px; font-weight: 500; }
     .modal-validation-banner.visible { display: flex; }
     .modal-validation-banner svg { flex-shrink: 0; }
@@ -402,6 +369,10 @@
     .notif-msg { font-size: 12px; color: var(--text); line-height: 1.5; }
     .notif-time { font-size: 10px; color: var(--text-3); }
     .notif-empty { padding: 32px 16px; text-align: center; color: var(--text-3); font-size: 12px; }
+
+    /* ── CHANGED: Soft-delete warning in client modal ── */
+    .soft-delete-warning { background: var(--amber-lt); border: 1px solid var(--amber-bd); border-radius: 9px; padding: 11px 14px; font-size: 12px; color: var(--amber); line-height: 1.6; margin-bottom: 18px; }
+    .soft-delete-warning strong { font-weight: 700; }
   </style>
 </head>
 <body>
@@ -424,7 +395,6 @@
         <div class="login-logo-sub">Team Task Manager</div>
       </div>
     </div>
-
     <div id="login-step-email">
       <div class="login-heading">Welcome back.</div>
       <div class="login-sub">Sign in with your Sharvii email to access the team workspace.</div>
@@ -441,7 +411,6 @@
       <div class="login-divider"></div>
       <div class="login-footer">🔒 Access restricted to authorised team members only</div>
     </div>
-
     <div id="login-step-otp" style="display:none">
       <div class="login-heading">Check your inbox.</div>
       <div class="login-sub">We sent a sign-in code to <strong id="otp-email-display" style="color:var(--indigo)"></strong></div>
@@ -509,6 +478,7 @@
       <div class="sidebar-divider"></div>
       <div id="member-list"></div>
       <div class="sidebar-divider" style="margin-top:12px;"></div>
+      <!-- CHANGED: "Clients" section header with add button -->
       <div class="sidebar-section-title" style="display:flex;align-items:center;justify-content:space-between;padding-right:16px;">
         <span>Clients</span>
         <button class="sidebar-add-btn" onclick="addClient()" title="Add client">+</button>
@@ -582,10 +552,11 @@
         </div>
       </div>
       <div id="view-summary" style="display:none">
-        <div id="hours-by-client"></div>
+        <!-- CHANGED: Single total-hours card; per-client breakdown removed -->
+        <div id="total-hours-strip"></div>
         <div id="summary-grid"></div>
       </div>
-      <div id="view-client"  style="display:none"><div id="client-snapshot"></div></div>
+      <div id="view-client" style="display:none"><div id="client-snapshot"></div></div>
     </div>
   </div>
 </div>
@@ -601,7 +572,7 @@
 
 <div id="toast"></div>
 
-<!-- MODAL: Assign / Edit Task -->
+<!-- MODAL: Assign / Edit Task (unchanged) -->
 <div class="modal-overlay" id="modal" style="display:none" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-header">
@@ -613,16 +584,11 @@
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
       </button>
     </div>
-
-    <!-- ══ FIX 3: Single source of truth for editing. Never wiped mid-session. ══ -->
     <input type="hidden" id="f-task-id" value=""/>
-
-    <!-- Validation Banner -->
     <div class="modal-validation-banner" id="modal-val-banner">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="16" x2="12.01" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       <span id="modal-val-msg">Client and Task Title are required.</span>
     </div>
-
     <div class="form-group">
       <label class="form-label">Task Title <span class="req">*</span></label>
       <input class="form-input" id="f-name" placeholder="e.g. Update homepage banner for YFS"/>
@@ -631,7 +597,6 @@
         Task title is required.
       </div>
     </div>
-
     <div class="form-row">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Assigned To</label>
@@ -642,7 +607,6 @@
         <div class="added-by-display" id="added-by-display">—</div>
       </div>
     </div>
-
     <div class="form-row" style="margin-top:14px;">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Client <span class="req">*</span></label>
@@ -661,7 +625,6 @@
         </select>
       </div>
     </div>
-
     <div class="form-group" style="margin-top:14px;">
       <label class="form-label">Due Date <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <input class="form-input" type="date" id="f-due"/>
@@ -670,7 +633,6 @@
       <label class="form-label">Notes / Brief <span style="font-weight:400;text-transform:none;color:var(--text-3)">(optional)</span></label>
       <textarea class="form-textarea" id="f-notes" rows="2" placeholder="Context, links, or instructions…"></textarea>
     </div>
-
     <div class="modal-footer">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary btn-save" id="btn-save" onclick="saveTask()">
@@ -681,7 +643,7 @@
   </div>
 </div>
 
-<!-- MODAL: Log Work -->
+<!-- MODAL: Log Work (unchanged) -->
 <div class="modal-overlay" id="modal-log" style="display:none" onclick="handleLogOverlayClick(event)">
   <div class="modal-box" style="max-width:420px;">
     <div class="modal-header">
@@ -730,6 +692,46 @@
   </div>
 </div>
 
+<!-- ══ NEW: MODAL: Edit Client ══ -->
+<div class="modal-overlay" id="modal-client-edit" style="display:none" onclick="handleClientEditOverlayClick(event)">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-header">
+      <div>
+        <span class="modal-title">Edit Client</span>
+        <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Changes are saved with UPDATE — no data is lost</div>
+      </div>
+      <button class="modal-close" onclick="closeClientEditModal()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <input type="hidden" id="fc-id" value=""/>
+    <div class="form-group">
+      <label class="form-label">Client Name <span class="req">*</span></label>
+      <input class="form-input" id="fc-name" placeholder="e.g. YFS"/>
+      <div class="form-field-msg" id="err-fc-name">
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Client name is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Weekly Call Date</label>
+      <input class="form-input" type="date" id="fc-call-date"/>
+      <div style="font-size:11px;color:var(--text-3);margin-top:5px;">This date appears in the client snapshot as "Next Call".</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji Icon</label>
+      <input class="form-input" id="fc-emoji" maxlength="2" placeholder="🏢" style="font-size:20px;width:70px;text-align:center;"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeClientEditModal()">Cancel</button>
+      <button class="btn-primary btn-save" onclick="saveClientEdit()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- JAVASCRIPT -->
 <script>
 /* ══ Supabase client ══ */
@@ -738,7 +740,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, storageKey: "sharvii_auth" }
 });
 
-/* ══ Team & Client Config ══ */
+/* ══ Team Config (hardcoded — no DB table) ══ */
 const TEAM = [
   { name: "Umesh",    role: "Manager" },
   { name: "Prabhu",   role: "Senior"  },
@@ -749,11 +751,15 @@ const TEAM = [
   { name: "Hema",     role: "Junior"  },
 ];
 const MANAGER_NAME = "Umesh";
-const CLIENTS      = ["YFS", "NAIK COLLEGE", "PFA", "SEVA IN ACTION", "Internal"];
-const CLIENT_SYNC  = {
-  "YFS":"2025-04-18", "NAIK COLLEGE":"2025-04-21",
-  "PFA":"2025-04-17", "SEVA IN ACTION":"2025-04-22", "Internal":"2025-04-14",
-};
+
+/* ══ CHANGED: Client state — loaded from DB instead of hardcoded ══
+   clientsData  = full row objects: { id, name, next_call_date, emoji, deleted_at }
+   CLIENTS      = string array of active client names (for dropdowns etc.)
+   Both are populated by loadClients() after login.
+*/
+let clientsData = [];
+let CLIENTS     = [];
+
 const ROLE_COLOR = {
   Manager:{ bg:"#fef3c7", text:"#d97706" },
   Senior: { bg:"#eef1fd", text:"#4361ee" },
@@ -761,14 +767,13 @@ const ROLE_COLOR = {
 };
 const AV_COLORS = ["#4361ee","#7c3aed","#0891b2","#0d9488","#059669","#ca8a04","#dc2626"];
 
-/* ══ localStorage config ══ */
+/* ══ localStorage config (team only — clients are now in DB) ══ */
 const CONFIG_KEY = "sharvii_config";
-function loadConfig(){try{const r=localStorage.getItem(CONFIG_KEY);return r?JSON.parse(r):{extraTeam:[],extraClients:[]};}catch(e){return{extraTeam:[],extraClients:[]};}}
+function loadConfig(){try{const r=localStorage.getItem(CONFIG_KEY);return r?JSON.parse(r):{extraTeam:[]};}catch(e){return{extraTeam:[]};}}
 function saveConfig(cfg){localStorage.setItem(CONFIG_KEY,JSON.stringify(cfg));}
 function applyConfig(){
   const cfg=loadConfig();
   (cfg.extraTeam||[]).forEach(m=>{if(!TEAM.find(x=>x.name===m.name))TEAM.push(m);});
-  (cfg.extraClients||[]).forEach(c=>{if(!CLIENTS.includes(c))CLIENTS.push(c);});
 }
 
 /* ══ App state ══ */
@@ -778,56 +783,122 @@ let tasks=[],activeTab="board",filterPerson="",filterPriority="",
 let currentUser="",currentUserEmail="",currentUserId="";
 
 /* ══════════════════════════════════════════════════════════════════════
-   DB HELPERS — use Supabase JS client only (no raw fetch).
-
-   FIX 2: Every update/insert payload is hand-written to contain ONLY
-   the exact columns that exist in the tasks table.
-   "creator_user_id", "project", "project_name" are NEVER sent anywhere.
+   DB HELPERS — TASKS (unchanged)
 ══════════════════════════════════════════════════════════════════════ */
 async function dbSelect(){
   const{data,error}=await sb.from("tasks").select("*").order("created_at",{ascending:false});
   if(error)throw new Error(error.message);
   return data;
 }
-
 async function dbInsert(payload){
-  /* Only permitted insert columns — nothing else */
   const safe={
-    name:              payload.name,
-    person:            payload.person,
-    assigned_to_email: payload.assigned_to_email||"",
-    priority:          payload.priority,
-    client:            payload.client,
-    notes:             payload.notes||"",
-    due_date:          payload.due_date||null,
-    status:            payload.status||"To Do",
-    hours_worked:      payload.hours_worked||0,
-    added_by:          payload.added_by||"",
-    user_id:           payload.user_id||null,
+    name:payload.name,person:payload.person,assigned_to_email:payload.assigned_to_email||"",
+    priority:payload.priority,client:payload.client,notes:payload.notes||"",
+    due_date:payload.due_date||null,status:payload.status||"To Do",
+    hours_worked:payload.hours_worked||0,added_by:payload.added_by||"",user_id:payload.user_id||null,
   };
   const{data,error}=await sb.from("tasks").insert(safe).select();
   if(error)throw new Error(`${error.message}${error.details?" — "+error.details:""} (${error.code})`);
   return data;
 }
-
-/* FIX 2: dbUpdate never sends banned fields.
-   It accepts only an explicit payload — no spread of unknown objects. */
-async function dbUpdate(id, payload){
-  if(!id||id==="null"||id==="undefined"){
-    showToast("Error: invalid task ID — cannot update","error");
-    return false;
-  }
-  /* Log so any future column issue is immediately visible in console */
-  console.debug("[dbUpdate] id:", id, "| cols:", Object.keys(payload));
+async function dbUpdate(id,payload){
+  if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID — cannot update","error");return false;}
+  console.debug("[dbUpdate] id:",id,"| cols:",Object.keys(payload));
   const{error}=await sb.from("tasks").update(payload).eq("id",id);
   if(error)throw new Error(`${error.message}${error.details?" — "+error.details:""} (${error.code})`);
   return true;
 }
-
 async function dbDelete(id){
   const{error}=await sb.from("tasks").delete().eq("id",id);
   if(error)throw new Error(error.message);
   return true;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   NEW: DB HELPERS — CLIENTS
+   Three operations only:
+     1. SELECT  — filter deleted_at IS NULL  (active clients only)
+     2. UPDATE  — for edit details
+     3. SOFT DELETE — UPDATE deleted_at = NOW()
+     4. INSERT  — for new clients added via addClient()
+══════════════════════════════════════════════════════════════════════ */
+
+/** Fetch all clients where deleted_at IS NULL (active only). */
+async function dbSelectClients(){
+  const{data,error}=await sb
+    .from("clients")
+    .select("*")
+    .is("deleted_at",null)          /* ← only non-deleted rows */
+    .order("created_at",{ascending:true});
+  if(error)throw new Error(error.message);
+  return data;
+}
+
+/** UPDATE a client row — only name, next_call_date, emoji. Never touches deleted_at. */
+async function dbUpdateClient(id,payload){
+  const safe={};
+  if(payload.name           !== undefined) safe.name            = payload.name;
+  if(payload.next_call_date !== undefined) safe.next_call_date  = payload.next_call_date;
+  if(payload.emoji          !== undefined) safe.emoji           = payload.emoji;
+  console.debug("[dbUpdateClient] id:",id,"| cols:",Object.keys(safe));
+  const{error}=await sb.from("clients").update(safe).eq("id",id);
+  if(error)throw new Error(`${error.message} (${error.code})`);
+  return true;
+}
+
+/**
+ * SOFT DELETE — sets deleted_at to current timestamp.
+ * The row and all its associated task data remain in the database forever.
+ * To recover: UPDATE clients SET deleted_at = NULL WHERE name = 'ClientName'
+ */
+async function dbSoftDeleteClient(id){
+  const{error}=await sb
+    .from("clients")
+    .update({deleted_at: new Date().toISOString()})  /* ← sets timestamp, no row removal */
+    .eq("id",id);
+  if(error)throw new Error(`${error.message} (${error.code})`);
+  return true;
+}
+
+/** INSERT a brand-new client row. */
+async function dbInsertClient(payload){
+  const safe={
+    name:        payload.name,
+    next_call_date: payload.next_call_date||null,
+    emoji:       payload.emoji||"🏢",
+    deleted_at:  null,
+  };
+  const{data,error}=await sb.from("clients").insert(safe).select();
+  if(error)throw new Error(`${error.message} (${error.code})`);
+  return data;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   NEW: loadClients() — populates clientsData and CLIENTS from DB.
+   Called once on boot and after any client mutation.
+══════════════════════════════════════════════════════════════════════ */
+async function loadClients(){
+  try{
+    const data=await dbSelectClients();
+    clientsData=data;
+    CLIENTS=data.map(c=>c.name);
+    buildClientSidebar();
+    rebuildClientSelect();
+    renderCounts();
+  }catch(e){
+    showToast("Could not load clients — "+e.message,"error");
+    console.error("[loadClients]",e);
+  }
+}
+
+/** Rebuild only the #f-client <select> in the task modal. */
+function rebuildClientSelect(){
+  const sel=document.getElementById("f-client");
+  if(!sel)return;
+  const current=sel.value;
+  sel.innerHTML=`<option value="">— Select Client —</option>`
+    +CLIENTS.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  if(current&&CLIENTS.includes(current))sel.value=current;
 }
 
 /* ══ AUTH ══ */
@@ -893,6 +964,7 @@ async function signOut(){
   await sb.auth.signOut();
 }
 
+/* CHANGED: bootApp now calls loadClients() before loadTasks() */
 function bootApp(session){
   currentUserEmail=session.user.email;
   currentUserId   =session.user.id;
@@ -904,9 +976,11 @@ function bootApp(session){
   document.getElementById("session-check").style.display="none";
   document.getElementById("login-shield").style.display="none";
   document.getElementById("app").style.display="flex";
-  applyConfig();buildSidebar();buildClientSidebar();buildPersonDropdown();
+  applyConfig();buildSidebar();buildPersonDropdown();
   checkSetup();requestNotifPermission();
-  if(isConfigured()){loadTasks();startPolling();}
+  if(isConfigured()){
+    loadClients().then(()=>{ loadTasks(); startPolling(); });
+  }
 }
 
 sb.auth.onAuthStateChange((event,session)=>{
@@ -983,45 +1057,243 @@ function addTeamMember(){
   TEAM.push(m);const cfg=loadConfig();cfg.extraTeam=cfg.extraTeam||[];cfg.extraTeam.push(m);saveConfig(cfg);
   buildSidebar();buildPersonDropdown();renderCounts();showToast(`${m.name} added ✓`,"success");
 }
-function addClient(){
+
+/* CHANGED: addClient() now inserts to DB instead of pushing to a local array */
+async function addClient(){
   const n=prompt("Enter new client name:");if(!n||!n.trim())return;
-  const cn=n.trim().toUpperCase();if(CLIENTS.includes(cn)){alert(`"${cn}" already exists.`);return;}
-  CLIENTS.push(cn);const cfg=loadConfig();cfg.extraClients=cfg.extraClients||[];cfg.extraClients.push(cn);saveConfig(cfg);
-  buildClientSidebar();
-  const opt=document.createElement("option");opt.value=cn;opt.textContent=cn;
-  document.getElementById("f-client").appendChild(opt);
-  renderCounts();showToast(`${cn} added ✓`,"success");
+  const cn=n.trim().toUpperCase();
+  if(CLIENTS.includes(cn)){alert(`"${cn}" already exists.`);return;}
+  const callDate=prompt("Next call date (YYYY-MM-DD, or leave blank):")||null;
+  const emoji=prompt("Emoji icon (or leave blank for 🏢):")||"🏢";
+  setSyncStatus("syncing","Adding client…");
+  try{
+    await dbInsertClient({name:cn,next_call_date:callDate||null,emoji:emoji.trim()||"🏢"});
+    await loadClients();
+    showToast(`${cn} added ✓`,"success");
+  }catch(e){
+    showToast("Failed to add client: "+e.message,"error");
+    setSyncStatus("error","Save failed");
+  }
 }
+
 function buildSidebar(){
   document.getElementById("member-list").innerHTML=TEAM.map((m,i)=>{
     const c=AV_COLORS[i%AV_COLORS.length],rc=ROLE_COLOR[m.role]||ROLE_COLOR.Junior;
     return`<button class="member-row" id="mb-${m.name}" onclick="filterByPerson('${m.name}')"><div class="member-avatar" style="background:${c}22;color:${c}">${m.name[0]}</div><div class="member-info"><div class="member-name">${m.name}</div><div class="member-role" style="color:${rc.text}">${m.role}</div></div><span class="member-count" id="count-${m.name}">0</span></button>`;
   }).join("");
 }
+
 function buildPersonDropdown(){document.getElementById("f-person").innerHTML=TEAM.map(m=>`<option value="${m.name}">${m.name} — ${m.role}</option>`).join("");}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CHANGED: buildClientSidebar()
+   – Uses clientsData (loaded from DB) instead of the old CLIENTS array.
+   – Each row is a <div> so we can nest the edit/delete action buttons.
+   – Edit button  → openEditClient(id)
+   – Delete button → softDeleteClient(id, name) — sets deleted_at only
+   – Count badge and action buttons swap on hover via CSS.
+══════════════════════════════════════════════════════════════════════ */
 function buildClientSidebar(){
-  const CI={"YFS":"🏫","NAIK COLLEGE":"🎓","PFA":"🐾","SEVA IN ACTION":"🤝","Internal":"⚙️"};
-  document.getElementById("client-list").innerHTML=CLIENTS.map(c=>`<button class="member-row" id="cl-${c.replace(/\s+/g,'-')}" onclick="showClientSnapshot('${c}')"><div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${CI[c]||"🏢"}</div><div class="member-info"><div class="member-name">${c}</div><div class="member-role">Client</div></div><span class="member-count" id="cl-count-${c.replace(/\s+/g,'-')}">0</span></button>`).join("");
-  const sel=document.getElementById("f-client");
-  if(sel)sel.innerHTML=`<option value="">— Select Client —</option>`+CLIENTS.map(c=>`<option value="${c}">${c}</option>`).join("");
+  if(!clientsData.length){
+    document.getElementById("client-list").innerHTML=
+      `<div style="padding:10px 20px;font-size:12px;color:var(--text-3);">No active clients</div>`;
+    return;
+  }
+  document.getElementById("client-list").innerHTML=clientsData.map(c=>{
+    const safeId=esc(c.id);
+    const safeName=esc(c.name);
+    const slug=c.name.replace(/\s+/g,"-");
+    return`
+    <div class="client-sidebar-row" id="cl-${slug}">
+      <div class="client-main-area" onclick="showClientSnapshot('${safeName}')">
+        <div class="member-avatar" style="background:var(--teal-lt);color:var(--teal);font-size:15px;">${c.emoji||"🏢"}</div>
+        <div class="member-info">
+          <div class="member-name">${safeName}</div>
+          <div class="member-role">Client</div>
+        </div>
+        <span class="client-count-badge" id="cl-count-${slug}">0</span>
+      </div>
+      <div class="client-row-actions">
+        <button class="client-action-btn" title="Edit client"
+          onclick="openEditClient('${safeId}')">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="client-action-btn danger" title="Soft-delete client"
+          onclick="softDeleteClient('${safeId}','${safeName}')">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join("");
 }
-function updateClientCounts(){CLIENTS.forEach(c=>{const el=document.getElementById("cl-count-"+c.replace(/\s+/g,'-'));if(el)el.textContent=tasks.filter(t=>t.client===c&&t.status!=="Done").length;});}
+
+function updateClientCounts(){
+  clientsData.forEach(c=>{
+    const slug=c.name.replace(/\s+/g,"-");
+    const el=document.getElementById("cl-count-"+slug);
+    if(el)el.textContent=tasks.filter(t=>t.client===c.name&&t.status!=="Done").length;
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   NEW: Soft Delete — sets deleted_at timestamp, never removes the row.
+   Tasks associated with this client are completely unaffected.
+══════════════════════════════════════════════════════════════════════ */
+async function softDeleteClient(id,name){
+  const confirmed=confirm(
+    `Archive "${name}"?\n\n` +
+    `This will hide the client from the sidebar and all dropdowns.\n` +
+    `All associated tasks remain safe in the database.\n\n` +
+    `To restore: run  UPDATE clients SET deleted_at = NULL WHERE name = '${name}'  in the Supabase SQL editor.`
+  );
+  if(!confirmed)return;
+  setSyncStatus("syncing","Archiving client…");
+  try{
+    await dbSoftDeleteClient(id);
+    /* If we're currently viewing this client's snapshot, go back to board */
+    if(activeClient===name)exitClientSnapshot();
+    await loadClients();
+    showToast(`"${name}" archived ✓ — tasks preserved`,"success");
+  }catch(e){
+    showToast("Failed to archive: "+e.message,"error");
+    setSyncStatus("error","Archive failed");
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   NEW: Edit Client modal — open, save, close
+   Uses UPDATE (dbUpdateClient) — existing data stays intact.
+══════════════════════════════════════════════════════════════════════ */
+function openEditClient(id){
+  const c=clientsData.find(x=>x.id===id||String(x.id)===String(id));
+  if(!c){showToast("Client not found — try refreshing","error");return;}
+  document.getElementById("fc-id").value=c.id;
+  document.getElementById("fc-name").value=c.name||"";
+  document.getElementById("fc-call-date").value=c.next_call_date||"";
+  document.getElementById("fc-emoji").value=c.emoji||"🏢";
+  /* Clear any previous error state */
+  document.getElementById("fc-name").classList.remove("field-error");
+  document.getElementById("err-fc-name").classList.remove("visible");
+  document.getElementById("modal-client-edit").style.display="flex";
+  setTimeout(()=>document.getElementById("fc-name").focus(),60);
+}
+
+function closeClientEditModal(){
+  document.getElementById("modal-client-edit").style.display="none";
+  document.getElementById("fc-id").value="";
+}
+
+function handleClientEditOverlayClick(e){
+  if(e.target.id==="modal-client-edit")closeClientEditModal();
+}
+
+async function saveClientEdit(){
+  const id=document.getElementById("fc-id").value;
+  const name=document.getElementById("fc-name").value.trim();
+  const callDate=document.getElementById("fc-call-date").value||null;
+  const emoji=document.getElementById("fc-emoji").value.trim()||"🏢";
+
+  /* Validate name */
+  if(!name){
+    document.getElementById("fc-name").classList.add("field-error");
+    document.getElementById("err-fc-name").classList.add("visible");
+    return;
+  }
+  document.getElementById("fc-name").classList.remove("field-error");
+  document.getElementById("err-fc-name").classList.remove("visible");
+
+  if(!id){showToast("Error: missing client ID","error");return;}
+
+  closeClientEditModal();
+  setSyncStatus("syncing","Saving client…");
+
+  try{
+    /* Explicit UPDATE payload — only the three editable fields */
+    await dbUpdateClient(id,{
+      name:            name,
+      next_call_date:  callDate,
+      emoji:           emoji,
+    });
+    /* If we renamed the client we're currently viewing, update the snapshot title */
+    const oldClient=clientsData.find(x=>String(x.id)===String(id));
+    if(activeClient&&oldClient&&activeClient===oldClient.name){
+      activeClient=name;
+    }
+    await loadClients();
+    showToast(`Client updated ✓`,"success");
+    /* Re-render snapshot if we're on that client's view */
+    if(activeClient===name)renderClientSnapshot(name);
+  }catch(e){
+    showToast("Failed to update client: "+e.message,"error");
+    setSyncStatus("error","Update failed");
+  }
+}
 
 /* ══ Client Snapshot ══ */
 function showClientSnapshot(cn){
   activeClient=cn;
-  document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
-  const btn=document.getElementById("cl-"+cn.replace(/\s+/g,'-'));if(btn)btn.classList.add("active");
+  document.querySelectorAll(".member-row,.client-sidebar-row").forEach(el=>el.classList.remove("active"));
+  const slug=cn.replace(/\s+/g,"-");
+  const btn=document.getElementById("cl-"+slug);if(btn)btn.classList.add("active");
   document.getElementById("page-title").textContent=cn;document.getElementById("page-sub").textContent="Client Snapshot";
   document.getElementById("view-board").style.display="none";document.getElementById("view-summary").style.display="none";
   document.getElementById("view-client").style.display="block";document.getElementById("filterbar").style.display="none";document.getElementById("kpi-strip").style.display="none";
   renderClientSnapshot(cn);
 }
+
 function exitClientSnapshot(){activeClient=null;document.getElementById("view-client").style.display="none";document.getElementById("kpi-strip").style.display="";switchTab(activeTab==="client"?"board":activeTab);filterByPerson("");}
+
+/* CHANGED: renderClientSnapshot uses clientsData for the next_call_date
+   instead of the old hardcoded CLIENT_SYNC object. */
 function renderClientSnapshot(cn){
-  const mine=tasks.filter(t=>t.client===cn),pending=mine.filter(t=>t.status!=="Done").length,done=mine.filter(t=>t.status==="Done").length,total=mine.length,hours=mine.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0),sd=CLIENT_SYNC[cn]||"TBD",sf=sd!=="TBD"?new Date(sd).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'}):"TBD";
-  const rows=mine.length?mine.map(t=>{const sc=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";const pc=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";return`<tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td><td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td><td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td><td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td></tr>`;}).join(""):`<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
-  document.getElementById("client-snapshot").innerHTML=`<div style="max-width:900px;"><button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;"><svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg> Back to Board</button><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px;"><div class="kpi-card" style="border-left:3px solid var(--amber);"><div class="kpi-icon" style="background:var(--amber-lt);">⏳</div><div class="kpi-body"><div class="kpi-num" style="color:var(--amber);">${pending}</div><div class="kpi-label">Pending</div></div></div><div class="kpi-card" style="border-left:3px solid var(--green);"><div class="kpi-icon" style="background:var(--green-lt);">✅</div><div class="kpi-body"><div class="kpi-num" style="color:var(--green);">${done}</div><div class="kpi-label">Done</div></div></div><div class="kpi-card" style="border-left:3px solid var(--teal);"><div class="kpi-icon" style="background:var(--teal-lt);">⏱</div><div class="kpi-body"><div class="kpi-num" style="color:var(--teal);">${hours.toFixed(1)}</div><div class="kpi-label">Hours</div></div></div><div class="kpi-card" style="border-left:3px solid var(--indigo);"><div class="kpi-icon" style="background:var(--indigo-lt);">📅</div><div class="kpi-body"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);line-height:1.3;">${sf}</div><div class="kpi-label">Next Call</div></div></div></div><div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);"><div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(cn)}</span><span style="font-size:11px;color:var(--text-3);">${total} task${total!==1?"s":""}</span></div><div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:var(--bg);"><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th><th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);text-align:left;">Hours</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
+  const mine=tasks.filter(t=>t.client===cn);
+  const pending=mine.filter(t=>t.status!=="Done").length;
+  const done=mine.filter(t=>t.status==="Done").length;
+  const total=mine.length;
+  const hours=mine.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0);
+
+  /* CHANGED: look up next_call_date from DB-backed clientsData */
+  const clientRow=clientsData.find(c=>c.name===cn);
+  const sd=clientRow?.next_call_date||null;
+  const sf=sd?new Date(sd).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long'}):"TBD";
+
+  const rows=mine.length?mine.map(t=>{
+    const sc=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
+    const pc=t.priority==="High"?"badge-high":t.priority==="Medium"?"badge-medium":"badge-low";
+    return`<tr style="border-bottom:1px solid var(--border);"><td style="padding:10px 12px;font-size:13px;font-weight:500;">${esc(t.name)}</td><td style="padding:10px 12px;font-size:12px;"><span class="badge ${pc}">${t.priority}</span></td><td style="padding:10px 12px;font-size:12px;"><span class="${sc}" style="padding:3px 8px;border-radius:7px;font-size:11px;font-weight:600;">${esc(t.status)}</span></td><td style="padding:10px 12px;font-size:12px;color:var(--text-2);">${esc(t.person)}</td><td style="padding:10px 12px;font-size:12px;font-weight:600;color:var(--teal);">${(parseFloat(t.hours_worked)||0).toFixed(1)} h</td></tr>`;
+  }).join(""):`<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;">No tasks yet for ${esc(cn)}</td></tr>`;
+
+  document.getElementById("client-snapshot").innerHTML=`
+    <div style="max-width:900px;">
+      <button onclick="exitClientSnapshot()" style="display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;margin-bottom:20px;">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        Back to Board
+      </button>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px;">
+        <div class="kpi-card" style="border-left:3px solid var(--amber);"><div class="kpi-icon" style="background:var(--amber-lt);">⏳</div><div class="kpi-body"><div class="kpi-num" style="color:var(--amber);">${pending}</div><div class="kpi-label">Pending</div></div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--green);"><div class="kpi-icon" style="background:var(--green-lt);">✅</div><div class="kpi-body"><div class="kpi-num" style="color:var(--green);">${done}</div><div class="kpi-label">Done</div></div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--teal);"><div class="kpi-icon" style="background:var(--teal-lt);">⏱</div><div class="kpi-body"><div class="kpi-num" style="color:var(--teal);">${hours.toFixed(1)}</div><div class="kpi-label">Hours</div></div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--indigo);"><div class="kpi-icon" style="background:var(--indigo-lt);">📅</div><div class="kpi-body"><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--indigo);line-height:1.3;">${sf}</div><div class="kpi-label">Next Call</div></div></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;">All Tasks — ${esc(cn)}</span>
+          <span style="font-size:11px;color:var(--text-3);">${total} task${total!==1?"s":""}</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:var(--bg);">
+              <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Task</th>
+              <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Priority</th>
+              <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Status</th>
+              <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);text-align:left;">Assignee</th>
+              <th style="padding:9px 12px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);text-align:left;">Hours</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
 }
 
 /* ══ Filtering ══ */
@@ -1031,7 +1303,7 @@ function filterByPerson(name){
   document.getElementById("view-board").style.display=activeTab==="board"?"block":"none";
   document.getElementById("view-summary").style.display=activeTab==="summary"?"block":"none";
   filterPerson=name;
-  document.querySelectorAll(".member-row").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".member-row,.client-sidebar-row").forEach(el=>el.classList.remove("active"));
   const target=name?document.getElementById("mb-"+name):document.getElementById("member-all");
   if(target)target.classList.add("active");
   document.getElementById("page-title").textContent=name||"Task Board";
@@ -1053,29 +1325,13 @@ function getFiltered(){
   });
 }
 
-/* ══════════════════════════════════════════════════════════════════════
-   PERMISSION HELPERS
-
-   FIX 1 — Self-Assignment Priority Rule:
-   isAssignee() returns true when the current user is the person this
-   task is assigned to, regardless of whether they also created it.
-   The card rendering logic checks isAssignee FIRST so self-assigned
-   tasks always get the status dropdown and Log Work button.
-
-   taskIsCreator() is used ONLY to decide whether to show Edit/Delete.
-   It does NOT suppress the assignee controls.
-══════════════════════════════════════════════════════════════════════ */
-
-/** True if the logged-in user is the one this task is assigned to. */
+/* ══ Permission helpers ══ */
 function taskIsAssignee(t){
   if(t.assigned_to_email) return t.assigned_to_email === currentUserEmail;
   return t.person === currentUser;
 }
-
-/** True if the logged-in user created this task (for edit/delete only). */
 function taskIsCreator(t){
   if(t.user_id) return t.user_id === currentUserId;
-  /* Legacy fallback: tasks created before user_id column existed */
   return currentUser === MANAGER_NAME || currentUser === t.added_by;
 }
 
@@ -1086,27 +1342,82 @@ function render(){
   renderKPI();
   if(activeTab==="board") renderBoard();
   else {
-    /* Summary tab: inject hours-by-client strip, then employee cards */
-    const hbc=document.getElementById("hours-by-client");
-    if(hbc) hbc.innerHTML=renderSummaryHoursByClient();
+    /* CHANGED: render single total-hours card, then employee summary cards */
+    const strip=document.getElementById("total-hours-strip");
+    if(strip) strip.innerHTML=renderTotalHoursCard();
     renderSummary();
   }
 }
-function renderCounts(){document.getElementById("count-all").textContent=tasks.length;TEAM.forEach(m=>{const el=document.getElementById("count-"+m.name);if(el)el.textContent=tasks.filter(t=>t.person===m.name).length;});updateClientCounts();}
-function renderKPI(){const f=getFiltered(),today=new Date();today.setHours(0,0,0,0);const ov=f.filter(t=>{if(!t.due_date||t.status==="Done")return false;const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;document.getElementById("kpi-total").textContent=f.length;document.getElementById("kpi-inprog").textContent=f.filter(t=>t.status==="In Progress").length;document.getElementById("kpi-done").textContent=f.filter(t=>t.status==="Done").length;document.getElementById("kpi-high").textContent=f.filter(t=>t.priority==="High"&&t.status!=="Done").length;document.getElementById("kpi-overdue").textContent=ov;}
+
+function renderCounts(){
+  document.getElementById("count-all").textContent=tasks.length;
+  TEAM.forEach(m=>{const el=document.getElementById("count-"+m.name);if(el)el.textContent=tasks.filter(t=>t.person===m.name).length;});
+  updateClientCounts();
+}
+
+function renderKPI(){
+  const f=getFiltered(),today=new Date();today.setHours(0,0,0,0);
+  const ov=f.filter(t=>{if(!t.due_date||t.status==="Done")return false;const d=new Date(t.due_date);d.setHours(0,0,0,0);return d<today;}).length;
+  document.getElementById("kpi-total").textContent=f.length;
+  document.getElementById("kpi-inprog").textContent=f.filter(t=>t.status==="In Progress").length;
+  document.getElementById("kpi-done").textContent=f.filter(t=>t.status==="Done").length;
+  document.getElementById("kpi-high").textContent=f.filter(t=>t.priority==="High"&&t.status!=="Done").length;
+  document.getElementById("kpi-overdue").textContent=ov;
+}
+
 function hoursBadge(h){if(!h&&h!==0)return"";const v=parseFloat(h)||0;if(v===0)return"";return`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);">⏱ ${v.toFixed(1)}h</span>`;}
 
 /* ══════════════════════════════════════════════════════════════════════
-   renderBoard — FIX 1: isAssignee TAKES PRIORITY over isCreator
-   ─────────────────────────────────────────────────────────────────────
-   STATUS DROPDOWN  → shown if isAssignee  (even if also creator)
-   LOG WORK BUTTON  → shown if isAssignee  (even if also creator)
-   EDIT / DELETE    → shown if isCreator   (independent decision)
-   ROLE PILL        → "Creator & Assignee" / "Creator" / "Assignee"
-
-   UUIDs are passed via data-id attributes (never inline onclick strings)
-   to prevent any hyphen escaping issues.
+   CHANGED: renderTotalHoursCard()
+   Replaces the old renderSummaryHoursByClient().
+   Shows a single grand-total with a per-person breakdown bar chart.
+   No per-client breakdown — keeping the summary clean and simple.
 ══════════════════════════════════════════════════════════════════════ */
+function renderTotalHoursCard(){
+  const totalHours=tasks.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0);
+  if(totalHours===0)return""; /* hide the card if no hours logged yet */
+
+  /* Build per-person rows, sorted by hours descending, skip zeros */
+  const personRows=TEAM
+    .map((m,i)=>({
+      name:m.name,
+      color:AV_COLORS[i%AV_COLORS.length],
+      hours:tasks.filter(t=>t.person===m.name).reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0),
+    }))
+    .filter(x=>x.hours>0)
+    .sort((a,b)=>b.hours-a.hours);
+
+  const rows=personRows.map(p=>{
+    const pct=totalHours>0?Math.round(p.hours/totalHours*100):0;
+    return`
+      <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
+        <div style="width:12px;height:12px;border-radius:3px;background:${p.color};flex-shrink:0;"></div>
+        <div style="width:90px;font-size:12px;font-weight:600;color:var(--text-2);flex-shrink:0;">${esc(p.name)}</div>
+        <div style="flex:1;background:var(--bg);border-radius:99px;height:6px;overflow:hidden;">
+          <div style="height:100%;border-radius:99px;background:${p.color};width:${pct}%;transition:width .5s cubic-bezier(.4,0,.2,1);opacity:.75;"></div>
+        </div>
+        <div style="width:54px;text-align:right;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:var(--text-2);">${p.hours.toFixed(1)}h</div>
+        <div style="width:30px;text-align:right;font-size:10px;color:var(--text-3);">${pct}%</div>
+      </div>`;
+  }).join("");
+
+  return`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow-sm);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);">⏱ Total Hours Logged</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:3px;">Across all clients and tasks · all time</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--teal);line-height:1;">${totalHours.toFixed(1)}</div>
+          <div style="font-size:11px;color:var(--text-3);margin-top:2px;">hours total</div>
+        </div>
+      </div>
+      <div style="height:1px;background:var(--border);margin:14px 0 10px;"></div>
+      ${rows}
+    </div>`;
+}
+
 function renderBoard(){
   const filtered=getFiltered(),grid=document.getElementById("cards-grid"),empty=document.getElementById("empty-state");
   if(!filtered.length){grid.innerHTML="";empty.style.display="flex";return;}
@@ -1124,71 +1435,28 @@ function renderBoard(){
     const isOverdue=ds==="overdue"&&t.status!=="Done";
     const notesHtml=t.notes?`<div class="card-notes">${esc(t.notes)}</div>`:"";
     const addedByHtml=t.added_by?`<span class="added-by-pill">by <strong>${esc(t.added_by)}</strong></span>`:"";
-
-    /* ── FIX 1: Evaluate both roles independently ── */
-    const isAssignee = taskIsAssignee(t);   /* controls status + log work */
-    const isCreator  = taskIsCreator(t);    /* controls edit + delete only */
-
-    /* STATUS: static badge only — changed exclusively via Log Work modal */
+    const isAssignee=taskIsAssignee(t);
+    const isCreator=taskIsCreator(t);
     const statusCls=t.status==="Done"?"status-done":t.status==="In Progress"?"status-prog":"status-todo";
-    const statusBadge=`<span class="status-badge-static ${statusCls}">${
-      t.status==="Done"?"✅ Done":t.status==="In Progress"?"🔵 In Progress":"📋 To Do"
-    }</span>`;
-
-    /* LOG WORK: isAssignee wins — even if user is also the creator */
-    const logWorkRow = isAssignee
-      ? `<div class="card-footer-row" style="margin-top:4px;">
-           <button class="log-work-btn btn-log-work" data-id="${taskId}">
-             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-             Log Work
-           </button>
-         </div>`
-      : `<div class="card-footer-row" style="margin-top:4px;">
-           <span class="log-work-restricted">
-             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-             Assigned to ${esc(t.person)}
-           </span>
-         </div>`;
-
-    /* EDIT / DELETE: isCreator only, independent of isAssignee */
-    const actionBtns = isCreator
-      ? `<button class="icon-btn btn-edit-task" data-id="${taskId}" title="Edit task">
-           <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-         </button>
-         <button class="icon-btn danger btn-delete-task" data-id="${taskId}" title="Delete task">
-           <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-         </button>`
-      : "";
-
-    /* Role pill — purely informational */
-    const rolePill = isCreator && isAssignee
-      ? `<span class="role-pill both">✏️ Creator &amp; Assignee</span>`
-      : isCreator
-      ? `<span class="role-pill creator">✏️ Creator</span>`
-      : isAssignee
-      ? `<span class="role-pill assignee">✅ Assignee</span>`
-      : "";
-
+    const statusBadge=`<span class="status-badge-static ${statusCls}">${t.status==="Done"?"✅ Done":t.status==="In Progress"?"🔵 In Progress":"📋 To Do"}</span>`;
+    const logWorkRow=isAssignee
+      ?`<div class="card-footer-row" style="margin-top:4px;"><button class="log-work-btn btn-log-work" data-id="${taskId}"><svg width="11" height="11" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Log Work</button></div>`
+      :`<div class="card-footer-row" style="margin-top:4px;"><span class="log-work-restricted"><svg width="11" height="11" fill="none" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Assigned to ${esc(t.person)}</span></div>`;
+    const actionBtns=isCreator
+      ?`<button class="icon-btn btn-edit-task" data-id="${taskId}" title="Edit task"><svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="icon-btn danger btn-delete-task" data-id="${taskId}" title="Delete task"><svg width="13" height="13" fill="none" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>`
+      :"";
+    const rolePill=isCreator&&isAssignee
+      ?`<span class="role-pill both">✏️ Creator &amp; Assignee</span>`
+      :isCreator?`<span class="role-pill creator">✏️ Creator</span>`
+      :isAssignee?`<span class="role-pill assignee">✅ Assignee</span>`:"";
     return`
       <div class="task-card pri-${t.priority} ${isOverdue?"overdue":""}" style="animation-delay:${i*.03}s" data-task-id="${taskId}">
-        <div class="card-top">
-          <div class="card-name">${esc(t.name)}</div>
-          <div class="card-actions">${actionBtns}</div>
-        </div>
+        <div class="card-top"><div class="card-name">${esc(t.name)}</div><div class="card-actions">${actionBtns}</div></div>
         ${notesHtml}
-        <div class="card-meta">
-          <span class="badge ${pClass}">${t.priority}</span>
-          ${hoursBadge(t.hours_worked)}
-          ${t.client?`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);font-size:10px;">🏢 ${esc(t.client)}</span>`:""}
-          ${dueBadge}
-          ${rolePill}
-        </div>
+        <div class="card-meta"><span class="badge ${pClass}">${t.priority}</span>${hoursBadge(t.hours_worked)}${t.client?`<span class="badge" style="background:var(--teal-lt);color:var(--teal);border-color:var(--teal-bd);font-size:10px;">🏢 ${esc(t.client)}</span>`:""}${dueBadge}${rolePill}</div>
         <div class="card-footer">
           <div class="card-footer-row">
-            <div class="card-assignee">
-              <div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person?t.person[0]:"?"}</div>
-              <div><div class="assignee-name">${esc(t.person)}</div><div class="assignee-role" style="color:${rc.text}">${role}</div></div>
-            </div>
+            <div class="card-assignee"><div class="assignee-avatar" style="background:${avColor}22;color:${avColor}">${t.person?t.person[0]:"?"}</div><div><div class="assignee-name">${esc(t.person)}</div><div class="assignee-role" style="color:${rc.text}">${role}</div></div></div>
             ${statusBadge}
           </div>
           ${logWorkRow}
@@ -1198,47 +1466,16 @@ function renderBoard(){
   }).join("");
 }
 
-/* Delegated event listeners — safe UUID passing via data-id */
+/* Delegated event listeners */
 document.addEventListener("click",function(e){
-  const editBtn=e.target.closest(".btn-edit-task");
-  if(editBtn){openEdit(editBtn.dataset.id);return;}
-  const delBtn=e.target.closest(".btn-delete-task");
-  if(delBtn){deleteTask(delBtn.dataset.id);return;}
-  const logBtn=e.target.closest(".btn-log-work");
-  if(logBtn){openLogModal(logBtn.dataset.id);return;}
+  const editBtn=e.target.closest(".btn-edit-task");if(editBtn){openEdit(editBtn.dataset.id);return;}
+  const delBtn=e.target.closest(".btn-delete-task");if(delBtn){deleteTask(delBtn.dataset.id);return;}
+  const logBtn=e.target.closest(".btn-log-work");if(logBtn){openLogModal(logBtn.dataset.id);return;}
 });
 
-/* quickStatus removed — status is now changed exclusively via Log Work modal */
-
-function renderSummaryHoursByClient(){
-  /* Compact hours-by-client strip shown above employee cards */
-  const totalAll=tasks.reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0);
-  const clientRows=CLIENTS.map(c=>{
-    const h=tasks.filter(t=>t.client===c).reduce((s,t)=>s+(parseFloat(t.hours_worked)||0),0);
-    if(h===0)return"";
-    const pct=totalAll>0?Math.round(h/totalAll*100):0;
-    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-      <div style="width:120px;font-size:12px;font-weight:600;color:var(--text);flex-shrink:0;">${esc(c)}</div>
-      <div style="flex:1;background:var(--bg);border-radius:99px;height:6px;overflow:hidden;">
-        <div style="height:100%;border-radius:99px;background:var(--teal);width:${pct}%;transition:width .4s;"></div>
-      </div>
-      <div style="width:60px;text-align:right;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--teal);">${h.toFixed(1)}h</div>
-    </div>`;
-  }).filter(Boolean).join("");
-
-  if(!clientRows)return"";
-
-  return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:20px;box-shadow:var(--shadow-sm);">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);">⏱ Total Hours by Client</span>
-      <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--teal);">${totalAll.toFixed(1)}h total</span>
-    </div>
-    ${clientRows}
-  </div>`;
-}
-
 function renderSummary(){
-  const grid=document.getElementById("summary-grid"),maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
+  const grid=document.getElementById("summary-grid");
+  const maxLoad=Math.max(...TEAM.map(m=>tasks.filter(t=>t.person===m.name).length),1);
   grid.innerHTML=TEAM.map((member,i)=>{
     const mine=tasks.filter(t=>t.person===member.name),total=mine.length,
           doneC=mine.filter(t=>t.status==="Done").length,
@@ -1254,14 +1491,10 @@ function renderSummary(){
       <div class="sc-header">
         <div class="sc-person">
           <div class="member-avatar" style="background:${color}22;color:${color};width:40px;height:40px;font-size:15px;border-radius:10px;">${member.name[0]}</div>
-          <div>
-            <div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div>
-            <div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div>
-          </div>
+          <div><div style="font-weight:700;font-size:14px;color:var(--text)">${member.name}</div><div style="font-size:11px;font-weight:600;color:${rc.text};margin-top:2px">${member.role}</div></div>
         </div>
         <div style="text-align:right;">
-          <div class="sc-total-num">${total}</div>
-          <div class="sc-total-lbl">tasks</div>
+          <div class="sc-total-num">${total}</div><div class="sc-total-lbl">tasks</div>
           <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--teal);margin-top:4px;line-height:1;">${totalHours.toFixed(1)}<span style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;color:var(--text-3);margin-left:2px;">hrs</span></div>
         </div>
       </div>
@@ -1294,38 +1527,18 @@ function switchTab(tab){
 }
 
 /* ══ Form validation ══ */
-function setFieldError(inputId,errId,hasError){
-  const input=document.getElementById(inputId),err=document.getElementById(errId);
-  if(!input||!err)return;
-  if(hasError){input.classList.add("field-error");err.classList.add("visible");}
-  else{input.classList.remove("field-error");err.classList.remove("visible");}
-}
-function clearModalErrors(){
-  ["f-name","f-client"].forEach(id=>document.getElementById(id)?.classList.remove("field-error"));
-  ["err-name","err-client"].forEach(id=>document.getElementById(id)?.classList.remove("visible"));
-  document.getElementById("modal-val-banner").classList.remove("visible");
-}
+function setFieldError(inputId,errId,hasError){const input=document.getElementById(inputId),err=document.getElementById(errId);if(!input||!err)return;if(hasError){input.classList.add("field-error");err.classList.add("visible");}else{input.classList.remove("field-error");err.classList.remove("visible");}}
+function clearModalErrors(){["f-name","f-client"].forEach(id=>document.getElementById(id)?.classList.remove("field-error"));["err-name","err-client"].forEach(id=>document.getElementById(id)?.classList.remove("visible"));document.getElementById("modal-val-banner").classList.remove("visible");}
 function validateTaskForm(){
-  const name=document.getElementById("f-name").value.trim();
-  const client=document.getElementById("f-client").value;
-  setFieldError("f-name","err-name",!name);
-  setFieldError("f-client","err-client",!client);
-  if(!name||!client){
-    const banner=document.getElementById("modal-val-banner"),msg=document.getElementById("modal-val-msg");
-    msg.textContent="Client and Task Title are required.";banner.classList.add("visible");
-    document.querySelector(".modal-box").scrollTo({top:0,behavior:"smooth"});
-    if(!name)document.getElementById("f-name").focus();else document.getElementById("f-client").focus();
-    return false;
-  }
-  document.getElementById("modal-val-banner").classList.remove("visible");
-  return true;
+  const name=document.getElementById("f-name").value.trim(),client=document.getElementById("f-client").value;
+  setFieldError("f-name","err-name",!name);setFieldError("f-client","err-client",!client);
+  if(!name||!client){const banner=document.getElementById("modal-val-banner"),msg=document.getElementById("modal-val-msg");msg.textContent="Client and Task Title are required.";banner.classList.add("visible");document.querySelector(".modal-box").scrollTo({top:0,behavior:"smooth"});if(!name)document.getElementById("f-name").focus();else document.getElementById("f-client").focus();return false;}
+  document.getElementById("modal-val-banner").classList.remove("visible");return true;
 }
 
-/* ══ Modals ══ */
+/* ══ Task Modals ══ */
 function openModal(){
-  /* FIX 3: Clear hidden field → guarantees INSERT on save */
-  document.getElementById("f-task-id").value="";
-  clearModalErrors();
+  document.getElementById("f-task-id").value="";clearModalErrors();
   document.getElementById("modal-title").textContent="Assign Task";
   document.getElementById("modal-subtitle").textContent="New task · auto-starts as To Do";
   document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg> Assign Task`;
@@ -1340,9 +1553,7 @@ function openModal(){
 function openEdit(id){
   const t=tasks.find(x=>String(x.id)===String(id));
   if(!t){showToast("Task not found — try refreshing","error");return;}
-  /* FIX 3: Stamp UUID into hidden field FIRST — it survives any re-render */
-  document.getElementById("f-task-id").value=String(t.id);
-  clearModalErrors();
+  document.getElementById("f-task-id").value=String(t.id);clearModalErrors();
   document.getElementById("modal-title").textContent="Edit Task Details";
   document.getElementById("modal-subtitle").textContent=`Editing · status: ${t.status} · ${(parseFloat(t.hours_worked)||0).toFixed(1)}h logged`;
   document.getElementById("btn-save").innerHTML=`<svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Save Changes`;
@@ -1354,71 +1565,30 @@ function openEdit(id){
   setTimeout(()=>document.getElementById("f-name").focus(),60);
 }
 
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-  /* FIX 3: Always clear the hidden field on close */
-  document.getElementById("f-task-id").value="";
-  clearModalErrors();
-}
+function closeModal(){document.getElementById("modal").style.display="none";document.getElementById("f-task-id").value="";clearModalErrors();}
 function handleOverlayClick(e){if(e.target.id==="modal")closeModal();}
 
-/* ══════════════════════════════════════════════════════════════════════
-   saveTask — FIX 3: #f-task-id is the SOLE authority for insert vs update.
-   ─────────────────────────────────────────────────────────────────────
-   • Non-empty value → UPDATE (never creates a duplicate)
-   • Empty value     → INSERT (always a fresh row)
-   No JS module-level variable is consulted — only the DOM field.
-
-   FIX 2: Edit payload contains ONLY editable columns.
-   status / hours_worked / user_id / added_by are NOT sent on edit —
-   they stay unchanged in the database.
-══════════════════════════════════════════════════════════════════════ */
 async function saveTask(){
   if(!validateTaskForm())return;
   if(!isConfigured()){showToast("Configure Supabase first","error");return;}
-
-  /* Read the hidden field — this is the only source of truth */
   const editingTaskId=document.getElementById("f-task-id").value.trim()||null;
   const isEditing=!!editingTaskId;
-
-  const assignedName =document.getElementById("f-person").value;
+  const assignedName=document.getElementById("f-person").value;
   const assignedEmail=NAME_TO_EMAIL[assignedName]||"";
-
-  /* Shared editable fields — safe, contains NO banned columns */
   const editPayload={
-    name:              document.getElementById("f-name").value.trim(),
-    person:            assignedName,
-    assigned_to_email: assignedEmail,
-    priority:          document.getElementById("f-priority").value,
-    client:            document.getElementById("f-client").value,
-    notes:             document.getElementById("f-notes").value.trim(),
-    due_date:          document.getElementById("f-due").value||null,
+    name:document.getElementById("f-name").value.trim(),
+    person:assignedName,assigned_to_email:assignedEmail,
+    priority:document.getElementById("f-priority").value,
+    client:document.getElementById("f-client").value,
+    notes:document.getElementById("f-notes").value.trim(),
+    due_date:document.getElementById("f-due").value||null,
   };
-
-  closeModal();   /* clears hidden field before async work */
-  setSyncStatus("syncing","Saving…");
-
-  if(isEditing){
-    /* UPDATE: send only editable fields — do not touch status/hours/user_id */
-    const ok=await updateTaskDB(editingTaskId,editPayload);
-    if(ok)showToast("Task updated ✓","success");
-  } else {
-    /* INSERT: add metadata for a new task */
-    const insertPayload={
-      ...editPayload,
-      status:       "To Do",
-      hours_worked: 0,
-      added_by:     currentUser,
-      user_id:      currentUserId,   /* DB column = "user_id" — NOT "creator_user_id" */
-    };
-    const ok=await insertTask(insertPayload);
-    if(ok)showToast("Task assigned ✓","success");
-  }
+  closeModal();setSyncStatus("syncing","Saving…");
+  if(isEditing){const ok=await updateTaskDB(editingTaskId,editPayload);if(ok)showToast("Task updated ✓","success");}
+  else{const ok=await insertTask({...editPayload,status:"To Do",hours_worked:0,added_by:currentUser,user_id:currentUserId});if(ok)showToast("Task assigned ✓","success");}
 }
 
-/* ══════════════════════════════════════════════════════════════════════
-   Log Work modal — FIX 2: explicit minimal payloads only
-══════════════════════════════════════════════════════════════════════ */
+/* ══ Log Work modal ══ */
 let logWorkId=null;
 function openLogModal(id){
   if(!id||id==="null"||id==="undefined"){showToast("Error: invalid task ID","error");return;}
@@ -1429,7 +1599,6 @@ function openLogModal(id){
   document.getElementById("log-assignee").textContent=t.person+(TEAM.find(m=>m.name===t.person)?.role?` · ${TEAM.find(m=>m.name===t.person).role}`:"");
   document.getElementById("log-current-hours").textContent=(parseFloat(t.hours_worked)||0).toFixed(1)+"h";
   document.getElementById("lw-status").value=t.status;
-  /* Additive flow: clear hours input so user enters only NEW hours this session */
   document.getElementById("lw-hours").value="";
   document.getElementById("lw-hours-preview").style.display="none";
   document.getElementById("lw-note").value="";
@@ -1438,72 +1607,37 @@ function openLogModal(id){
 }
 function updateHoursPreview(){
   const added=parseFloat(document.getElementById("lw-hours").value)||0;
-  const taskId=logWorkId;
-  const t=tasks.find(x=>String(x.id)===String(taskId));
+  const t=tasks.find(x=>String(x.id)===String(logWorkId));
   const existing=parseFloat(t?.hours_worked)||0;
   const preview=document.getElementById("lw-hours-preview");
-  if(added>0){
-    const newTotal=Math.round((existing+added)*100)/100;
-    preview.textContent=`${existing.toFixed(1)}h existing + ${added.toFixed(1)}h new = ${newTotal.toFixed(1)}h total`;
-    preview.style.display="block";
-  } else {
-    preview.style.display="none";
-  }
+  if(added>0){const newTotal=Math.round((existing+added)*100)/100;preview.textContent=`${existing.toFixed(1)}h existing + ${added.toFixed(1)}h new = ${newTotal.toFixed(1)}h total`;preview.style.display="block";}
+  else{preview.style.display="none";}
 }
 function closeLogModal(){document.getElementById("modal-log").style.display="none";logWorkId=null;}
 function handleLogOverlayClick(e){if(e.target.id==="modal-log")closeLogModal();}
 
 async function saveLogWork(){
-  /* Capture the ID BEFORE closeLogModal() nulls logWorkId */
-  const taskIdToUpdate = logWorkId;
-  if(!taskIdToUpdate||taskIdToUpdate==="null"||taskIdToUpdate==="undefined"){
-    showToast("Error: missing task ID — please refresh and try again.","error");
-    closeLogModal();return;
-  }
+  const taskIdToUpdate=logWorkId;
+  if(!taskIdToUpdate||taskIdToUpdate==="null"||taskIdToUpdate==="undefined"){showToast("Error: missing task ID — please refresh and try again.","error");closeLogModal();return;}
   if(!isConfigured()){showToast("Configure Supabase first","error");return;}
-
-  /* Read form values */
-  const newStatus   = document.getElementById("lw-status").value;
-  const addedHours  = parseFloat(document.getElementById("lw-hours").value)||0;
-  const workNote    = document.getElementById("lw-note").value.trim();
-
-  /* Look up the current task so we can ADD hours to the existing total */
-  const t = tasks.find(x=>String(x.id)===String(taskIdToUpdate));
+  const newStatus=document.getElementById("lw-status").value;
+  const addedHours=parseFloat(document.getElementById("lw-hours").value)||0;
+  const workNote=document.getElementById("lw-note").value.trim();
+  const t=tasks.find(x=>String(x.id)===String(taskIdToUpdate));
   if(!t){showToast("Task not found — please refresh.","error");closeLogModal();return;}
-
-  /* ADDITIVE hours: new total = existing + what the user just entered */
-  const existingHours = parseFloat(t.hours_worked)||0;
-  const totalHours    = Math.round((existingHours + addedHours) * 100) / 100;
-
-  /* Explicit minimal payload — ONLY the two columns being changed */
-  const updatePayload = {
-    hours_worked: totalHours,
-    status:       newStatus,
-  };
-
-  /* Append work note to existing task notes (timestamped) */
-  if(workNote){
-    const stamp   = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    const existing= t.notes||"";
-    updatePayload.notes = existing
-      ? existing + `\n[${stamp}] ${workNote}`
-      : `[${stamp}] ${workNote}`;
-  }
-
-  closeLogModal();   /* safe to close now — ID already captured above */
-  setSyncStatus("syncing","Saving…");
-
-  const ok = await updateTaskDB(taskIdToUpdate, updatePayload);
-  if(ok) showToast(`Work logged ✓ — +${addedHours}h (total: ${totalHours}h) · ${newStatus}`,"success");
+  const existingHours=parseFloat(t.hours_worked)||0;
+  const totalHours=Math.round((existingHours+addedHours)*100)/100;
+  const updatePayload={hours_worked:totalHours,status:newStatus};
+  if(workNote){const stamp=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});const existing=t.notes||"";updatePayload.notes=existing?existing+`\n[${stamp}] ${workNote}`:`[${stamp}] ${workNote}`;}
+  closeLogModal();setSyncStatus("syncing","Saving…");
+  const ok=await updateTaskDB(taskIdToUpdate,updatePayload);
+  if(ok)showToast(`Work logged ✓ — +${addedHours}h (total: ${totalHours}h) · ${newStatus}`,"success");
 }
-
-/* quickStatus removed — status changed only via Log Work modal */
 
 async function deleteTask(id){
   if(!confirm("Delete this task?"))return;
   if(!isConfigured())return;
-  const ok=await deleteTaskDB(id);
-  if(ok)showToast("Task deleted","success");
+  const ok=await deleteTaskDB(id);if(ok)showToast("Task deleted","success");
 }
 
 function setSyncStatus(state,msg){const dot=document.getElementById("sync-dot"),label=document.getElementById("sync-label");dot.className="sync-dot"+(state==="syncing"?" syncing":state==="error"?" error":"");label.textContent=msg;}
@@ -1512,18 +1646,15 @@ function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").
 
 /* ══ Keyboard shortcuts ══ */
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){closeModal();closeLogModal();}
+  if(e.key==="Escape"){closeModal();closeLogModal();closeClientEditModal();}
   if(e.key==="n"&&!["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))openModal();
 });
 
 /* ══ Live-clear field errors ══ */
 window.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("f-name")?.addEventListener("input",()=>{
-    if(document.getElementById("f-name").value.trim())setFieldError("f-name","err-name",false);
-  });
-  document.getElementById("f-client")?.addEventListener("change",()=>{
-    if(document.getElementById("f-client").value)setFieldError("f-client","err-client",false);
-  });
+  document.getElementById("f-name")?.addEventListener("input",()=>{if(document.getElementById("f-name").value.trim())setFieldError("f-name","err-name",false);});
+  document.getElementById("f-client")?.addEventListener("change",()=>{if(document.getElementById("f-client").value)setFieldError("f-client","err-client",false);});
+  document.getElementById("fc-name")?.addEventListener("input",()=>{if(document.getElementById("fc-name").value.trim()){document.getElementById("fc-name").classList.remove("field-error");document.getElementById("err-fc-name").classList.remove("visible");}});
 });
 </script>
 </body>
